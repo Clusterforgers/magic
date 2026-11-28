@@ -332,10 +332,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { P170bSprocketMoved: { player: 1, sprocket: 3 } },
     'Bo moves their sprocket marker to sprocket 3',
   ],
-  P170bCranked: [
-    { P170bCranked: { player: 1, sprocket: 1, contraptions: [3] } },
-    'Bo cranks Forest',
-  ],
+  P170bCranked: [{ P170bCranked: { player: 1, sprocket: 1, contraptions: [3] } }, 'Bo cranks Forest'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   ExtraTurnAdded: [{ ExtraTurnAdded: { player: 1 } }, 'Bo takes an extra turn after this one'],
   ExtraTurnSkipped: [{ ExtraTurnSkipped: { player: 1 } }, 'Bo skips an extra turn'],

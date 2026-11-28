@@ -2,7 +2,8 @@
 import type { PlayerId, PlayerView } from '@/protocol/generated'
 
 /** The zones a pod counts. */
-export type ZoneKey = 'hand' | 'library' | 'graveyard' | 'exile' | 'command' | 'satchel' | 'attractions' | 'contraptions'
+export type ZoneKey =
+  'hand' | 'library' | 'graveyard' | 'exile' | 'command' | 'satchel' | 'attractions' | 'contraptions'
 
 /** A zone as the chips and dialogs name it. */
 export const ZONE_NAME: Record<ZoneKey, string> = {

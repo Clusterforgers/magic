@@ -106,7 +106,16 @@ describe('podCounts and chipZones', () => {
 
   it('draws the four chips even when every one is empty: a zero is a figure', () => {
     expect(
-      chipZones({ hand: 0, library: 0, graveyard: 0, exile: 0, command: 0, satchel: 0, attractions: 0, contraptions: 0 }),
+      chipZones({
+        hand: 0,
+        library: 0,
+        graveyard: 0,
+        exile: 0,
+        command: 0,
+        satchel: 0,
+        attractions: 0,
+        contraptions: 0,
+      }),
     ).toHaveLength(4)
   })
 
