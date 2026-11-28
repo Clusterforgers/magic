@@ -171,6 +171,7 @@ mod r6102_random_counter;
 mod r6400_block;
 /// The engine's step for the step a card names.
 pub(crate) use r306_add_step::engine_step as r115_engine_step;
+mod p170b_assemble;
 mod r116_assimilate;
 mod r119_02_drain;
 mod r120_02_each_color;
@@ -206,7 +207,6 @@ mod tap;
 mod tap_bound_tests;
 mod time_travel;
 mod transform;
-mod p170b_assemble;
 mod un33_attractions;
 mod un34_stickers;
 mod untap;

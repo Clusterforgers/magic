@@ -109,10 +109,12 @@ pub(crate) fn shuffles(state: &GameState, offset: u64) -> Vec<Event> {
         .iter()
         .filter(|(_, deck)| !deck.is_empty())
         .zip(offset..)
-        .map(|((player, deck), offset)| Event::P170bContraptionDeckShuffled {
-            player: *player,
-            order: crate::mulligan::shuffled(state, offset, deck.clone()),
-        })
+        .map(
+            |((player, deck), offset)| Event::P170bContraptionDeckShuffled {
+                player: *player,
+                order: crate::mulligan::shuffled(state, offset, deck.clone()),
+            },
+        )
         .collect()
 }
 
@@ -297,8 +299,47 @@ pub(crate) fn is_contraption_card(state: &GameState, object: ObjectId) -> bool {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the sprocket marker moves to 1 first, then 1, 2, 3 and back to 1.
+    //! Goal: the sprocket marker moves to 1 first, then 1, 2, 3 and back to 1; each seat with a Contraption deck shuffles
+    //! it once before the game, its cards face down in its command zone, and a seat without one shuffles nothing.
+    use mtg_core::ids::PlayerId;
     use rstest::rstest;
+
+    use crate::events::Event;
+    use crate::fixtures::{creature, setup};
+    use crate::state::GameState;
+
+    #[rstest]
+    #[case::one_deck(vec![3, 0])]
+    #[case::both(vec![2, 1])]
+    #[case::none(vec![0, 0])]
+    fn p170b_each_deck_is_shuffled_once(#[case] sizes: Vec<usize>) {
+        let mut table = setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        for (seat, size) in sizes.iter().enumerate() {
+            table.players[seat].contraptions = (0..*size)
+                .map(|n| creature(&format!("Gizmo {seat} {n}"), 0, 0))
+                .collect();
+        }
+        let game = GameState::from_setup(&table).unwrap();
+        let events = super::shuffles(&game, 0);
+        assert_eq!(events.len(), sizes.iter().filter(|size| **size > 0).count());
+        for event in events {
+            let Event::P170bContraptionDeckShuffled { player, mut order } = event else {
+                panic!("{event:?}");
+            };
+            let mut deck = game.contraption_deck(player).to_vec();
+            deck.sort_unstable();
+            order.sort_unstable();
+            assert_eq!(order, deck);
+        }
+        for seat in 0..2 {
+            let player = PlayerId::from_index(seat);
+            for id in game.contraption_deck(player) {
+                let card = game.object(*id).unwrap();
+                assert_eq!(card.zone(), crate::zones::Zone::Command(player));
+                assert_eq!(card.face_down, Some(crate::object::FaceDown::Contraption));
+            }
+        }
+    }
 
     #[rstest]
     #[case(None, 1)]

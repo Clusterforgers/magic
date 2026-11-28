@@ -714,7 +714,10 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Explores { what } => format!("{} would explore", phrase::selector(ctx, what)),
         ReplaceWhen::Connives { what } => format!("{} would connive", phrase::selector(ctx, what)),
         ReplaceWhen::P170bAssembles { what } => {
-            format!("{} would assemble a Contraption", phrase::selector(ctx, what))
+            format!(
+                "{} would assemble a Contraption",
+                phrase::selector(ctx, what)
+            )
         }
         ReplaceWhen::Proliferates { who } => {
             format!("{} would proliferate", phrase::who(ctx, who))

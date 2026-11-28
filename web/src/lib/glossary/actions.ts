@@ -154,6 +154,8 @@ export const ACTIONS: readonly Entry[] = [
   ],
   ['Open an Attraction', 'Put the top card of your Attraction deck onto the battlefield.'],
   ['Roll to Visit Your Attractions', 'Roll a die; each Attraction you control with that number visits.'],
+  ['Assemble a Contraption', 'Put the top card of your Contraption deck onto the battlefield on one of your three sprockets.'],
+  ['Crank', 'At your precombat main phase your sprocket marker moves on; crank the Contraptions you choose on that sprocket.'],
   ['Planeswalk', 'Move to a new plane card in the planar deck.'],
   ['Set in motion', 'Turn a scheme card face up and put it into effect.'],
   ['Abandon', "Put an ongoing scheme card face up on the bottom of its owner's scheme deck."],

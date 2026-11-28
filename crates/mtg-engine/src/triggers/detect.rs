@@ -1566,10 +1566,14 @@ fn about_players_and_permanents(
             player,
             contraptions,
             ..
-        } => found.extend(contraptions.iter().map(|contraption| Happened::P170bCranked {
-            player: *player,
-            contraption: *contraption,
-        })),
+        } => found.extend(
+            contraptions
+                .iter()
+                .map(|contraption| Happened::P170bCranked {
+                    player: *player,
+                    contraption: *contraption,
+                }),
+        ),
         Event::PrizeClaimed { player, attraction } => found.push(Happened::PrizeClaimed {
             player: *player,
             attraction: *attraction,
@@ -2136,11 +2140,15 @@ fn matching_player_action(
             .then(|| counted(state, vec![Target::Player(*player)], 0))
         }
         // A crank ability triggers for the Contraption its controller cranks.
-        (TriggerPattern::P170bCranked {}, Happened::P170bCranked { player, contraption }) => {
-            (scope.source.id == *contraption
-                && crate::characteristics::controller_of(state, scope.source.id) == Some(*player))
-            .then(|| counted(state, vec![Target::Player(*player)], 0))
-        }
+        (
+            TriggerPattern::P170bCranked {},
+            Happened::P170bCranked {
+                player,
+                contraption,
+            },
+        ) => (scope.source.id == *contraption
+            && crate::characteristics::controller_of(state, scope.source.id) == Some(*player))
+        .then(|| counted(state, vec![Target::Player(*player)], 0)),
         // A prize ability triggers for the Attraction whose prize its controller claims.
         (TriggerPattern::Prize {}, Happened::PrizeClaimed { player, attraction }) => {
             (scope.source.id == *attraction

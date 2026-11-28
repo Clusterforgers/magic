@@ -4795,12 +4795,12 @@ fn r6104_worked_out(
     })
 }
 
+pub(crate) mod p170b_assemble;
 mod r109_next_batch;
 mod r1193_life;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
-pub(crate) mod p170b_assemble;
 mod r4700_choices;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;

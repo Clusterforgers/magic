@@ -7934,7 +7934,9 @@ impl Walker<'_> {
         if matches!(when, ReplaceWhen::LifeLoss { .. }) != matches!(by, ReplaceBy::LossTimes(_)) {
             self.problem("a loss of life is replaced only by a multiple of it, and only it is");
         }
-        if matches!(when, ReplaceWhen::P170bAssembles { .. }) && !matches!(by, ReplaceBy::Multiply(_)) {
+        if matches!(when, ReplaceWhen::P170bAssembles { .. })
+            && !matches!(by, ReplaceBy::Multiply(_))
+        {
             self.problem("an assembly is replaced only by a multiple of it");
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));

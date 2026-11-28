@@ -3,6 +3,7 @@ import {
   BatteryLow,
   CheckCheck,
   CircleDot,
+  Cog,
   Coins,
   Copy,
   Crosshair,
@@ -59,7 +60,7 @@ function countText(count: number): string {
   return count > 99 ? '99+' : String(count)
 }
 
-/** A status chip as a glyph: its icon, plus the number of a damage, merged or level chip. */
+/** A status chip as a glyph: its icon, plus the number of a damage, merged, level or sprocket chip. */
 export function statusGlyph(chip: StatusChip): Glyph {
   const words = chip.label === 'Sick' ? 'Summoning sick' : chip.label
   const damage = /^(\d+) dmg$/.exec(chip.label)
@@ -69,6 +70,8 @@ export function statusGlyph(chip: StatusChip): Glyph {
   if (merged !== null) return { icon: Layers, text: countText(Number(merged[1])), words }
   const level = /^Level (\d+)$/.exec(chip.label)
   if (level !== null) return { icon: null, text: `L${countText(Number(level[1]))}`, words }
+  const sprocket = /^Sprocket (\d)$/.exec(chip.label)
+  if (sprocket !== null) return { icon: Cog, text: sprocket[1], words: `On sprocket ${sprocket[1]}` }
   return { icon: STATUS_ICON[chip.label] ?? CircleDot, text: '', words }
 }
 

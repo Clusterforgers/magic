@@ -1,4 +1,4 @@
-//! Goal: Contraptions play at tables of two and four seats: the deck lies face down in its owner's command zone and is shuffled before the game; assembling puts its top cards onto the battlefield face up, each on the sprocket its controller chooses, as many as asked and no more than the deck holds, and nothing for an empty deck; Steamflogger Boss doubles the Contraptions a Rigger its controller controls assembles and gives the other Riggers +1/+0 and haste; the sprocket marker moves 1, 2, 3, 1 as its player's precombat main phase begins only while they control a Contraption, and the Contraptions they choose on that sprocket are cranked, each crank ability triggering; a destroyed Contraption goes to the scrapheap in the command zone face up; and the log replays to the same state.
+//! Goal: Contraptions play at tables of two and four seats: the deck lies face down in its owner's command zone; assembling puts its top cards onto the battlefield face up, each on the sprocket its controller chooses, as many as asked and no more than the deck holds, and nothing for an empty deck; Steamflogger Boss doubles the Contraptions a Rigger its controller controls assembles and gives the other Riggers +1/+0 and haste; the sprocket marker moves 1, 2, 3, 1 as its player's precombat main phase begins only while they control a Contraption, and the Contraptions they choose on that sprocket are cranked, each crank ability triggering once; a destroyed Contraption goes to the scrapheap in the command zone face up; and the log replays to the same state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -18,13 +18,21 @@ use rstest::rstest;
 fn table(seats: usize, deck: usize, count: i32, boss: bool) -> Scenario {
     let mut battlefield = vec![ready(p170b_rigger("Tinker", count))];
     if boss {
-        battlefield.push(ready(mtg_testkit::corpus::card("Steamflogger Boss").unwrap()));
+        battlefield.push(ready(
+            mtg_testkit::corpus::card("Steamflogger Boss").unwrap(),
+        ));
     }
     battlefield.extend([ready(mountain()), ready(mountain())]);
     Scenario::new(seats)
         .at(1, 0, Step::Upkeep)
-        .contraptions(0, (0..deck).map(|n| p170b_contraption(&format!("Gizmo {n}"))))
-        .hand(0, [mtg_testkit::corpus::card("Smash to Smithereens").unwrap()])
+        .contraptions(
+            0,
+            (0..deck).map(|n| p170b_contraption(&format!("Gizmo {n}"))),
+        )
+        .hand(
+            0,
+            [mtg_testkit::corpus::card("Smash to Smithereens").unwrap()],
+        )
         .battlefield(0, battlefield)
 }
 
@@ -37,7 +45,9 @@ fn settle(driver: &mut Driver, sprockets: &[u8]) -> Result<(), ScriptError> {
         match &decision.kind {
             DecisionKind::ChooseOption(options) if options.text.ends_with("to a sprocket.") => {
                 let sprocket = *next.next().unwrap_or(&1);
-                driver.answer(Answer::ChooseOption(OptionChoice(usize::from(sprocket) - 1)))?;
+                driver.answer(Answer::ChooseOption(OptionChoice(
+                    usize::from(sprocket) - 1,
+                )))?;
             }
             DecisionKind::Priority(_)
                 if driver.state().stack().is_empty()
@@ -89,7 +99,10 @@ fn assembling_puts_the_top_cards_on_the_chosen_sprockets(
     let mut driver = Driver::from_scenario(scenario)?;
     assert_eq!(driver.state().contraption_deck(pid(0)).len(), deck);
     for id in driver.state().contraption_deck(pid(0)) {
-        assert_eq!(driver.state().object(*id).unwrap().zone(), Zone::Command(pid(0)));
+        assert_eq!(
+            driver.state().object(*id).unwrap().zone(),
+            Zone::Command(pid(0))
+        );
         assert!(driver.state().object(*id).unwrap().face_down().is_some());
     }
     let top: Vec<ObjectId> = driver
@@ -104,33 +117,37 @@ fn assembling_puts_the_top_cards_on_the_chosen_sprockets(
     settle(&mut driver, &[3, 1, 2])?;
     let now = assembled(&driver);
     assert_eq!(
-        now.iter().map(|(id, _)| *id).collect::<std::collections::BTreeSet<_>>(),
+        now.iter()
+            .map(|(id, _)| *id)
+            .collect::<std::collections::BTreeSet<_>>(),
         top.iter().copied().collect(),
         "the top cards"
     );
     for (at, id) in top.iter().enumerate() {
-        assert_eq!(driver.state().sprocket(*id), Some([3, 1, 2][at % 3]), "{id:?}");
+        assert_eq!(
+            driver.state().sprocket(*id),
+            Some([3, 1, 2][at % 3]),
+            "{id:?}"
+        );
         assert_eq!(driver.state().object(*id).unwrap().face_down(), None);
         assert!(!driver.state().in_contraption_deck(*id));
     }
-    assert_eq!(driver.state().contraption_deck(pid(0)).len(), deck - expected);
+    assert_eq!(
+        driver.state().contraption_deck(pid(0)).len(),
+        deck - expected
+    );
     for seat in 1..seats {
         assert!(driver.state().contraption_deck(pid(seat)).is_empty());
     }
-    let shuffles = driver
-        .engine()
-        .events()
-        .iter()
-        .filter(|event| matches!(event, Event::P170bContraptionDeckShuffled { .. }))
-        .count();
-    assert_eq!(shuffles, usize::from(deck > 0), "one shuffle for a deck");
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
     Ok(())
 }
 
 #[rstest]
-fn the_boss_pumps_and_hastes_the_other_riggers(#[values(false, true)] boss: bool) -> Result<(), ScriptError> {
+fn the_boss_pumps_and_hastes_the_other_riggers(
+    #[values(false, true)] boss: bool,
+) -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(table(2, 0, 1, boss))?;
     let tinker = driver.id_of("Tinker")?;
     let chars = mtg_engine::characteristics::characteristics(driver.state(), tinker).unwrap();
@@ -155,7 +172,11 @@ fn cranks(driver: &mut Driver, turns: usize, crank: bool) -> Result<Vec<(u8, usi
             DecisionKind::ChooseCards(options) if options.text.contains("to crank") => {
                 let marker = driver.state().sprocket_marker(pid(0)).unwrap();
                 seen.push((marker, options.from.len()));
-                let chosen = if crank { options.from.clone() } else { Vec::new() };
+                let chosen = if crank {
+                    options.from.clone()
+                } else {
+                    Vec::new()
+                };
                 driver.answer(Answer::ChooseCards(CardsChoice(chosen)))?;
             }
             _ => {
@@ -181,7 +202,6 @@ fn the_marker_moves_and_the_chosen_contraptions_crank(
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_activation("Tinker")?;
     settle(&mut driver, sprockets)?;
-    let hand = driver.state().zone(Zone::Hand(pid(0))).len();
     let seen = cranks(&mut driver, expected.len(), crank)?;
     assert_eq!(seen, expected);
     settle(&mut driver, &[])?;
@@ -196,9 +216,19 @@ fn the_marker_moves_and_the_chosen_contraptions_crank(
         .sum();
     let offered: usize = expected.iter().map(|(_, n)| n).sum();
     assert_eq!(cranked, if crank { offered } else { 0 });
-    // Each crank draws a card; so does every draw step of seat 0 after the first turn.
-    let draws = expected.len() - 1;
-    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), hand + draws + cranked);
+    // Each Contraption cranked triggers its crank ability once, which draws a card.
+    let triggered = driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|event| {
+            matches!(event, Event::AbilityTriggered(trigger) if driver
+                .state()
+                .name_of(trigger.source.id)
+                .is_some_and(|name| name.starts_with("Gizmo")))
+        })
+        .count();
+    assert_eq!(triggered, cranked);
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
     Ok(())

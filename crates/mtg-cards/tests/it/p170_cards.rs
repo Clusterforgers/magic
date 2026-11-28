@@ -80,9 +80,17 @@ const PROWL: &str = "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle";
     r#""what": []"#
 )]
 #[case::myra_once("Myra the Magnificent", r#""once": false,"#, "")]
-#[case::boss_any_creature("Steamflogger Boss", r#""what": [{ "Subtype": "Rigger" }, "#, r#""what": ["#)]
+#[case::boss_any_creature(
+    "Steamflogger Boss",
+    r#""what": [{ "Subtype": "Rigger" }, "#,
+    r#""what": ["#
+)]
 #[case::boss_three("Steamflogger Boss", r#"{ "Multiply": 2 }"#, r#"{ "Multiply": 3 }"#)]
-#[case::boss_opponents("Steamflogger Boss", r#"{ "ControlledBy": "You" }] }"#, r#"{ "ControlledBy": "Opponents" }] }"#)]
+#[case::boss_opponents(
+    "Steamflogger Boss",
+    r#"{ "ControlledBy": "You" }] }"#,
+    r#"{ "ControlledBy": "Opponents" }] }"#
+)]
 fn p170_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = p170_file(name);
     assert!(file.contains(from), "{name}: the file has {from}");
