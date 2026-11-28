@@ -1,7 +1,8 @@
 //! Goal: a cost of cards alike as a set is paid only when the hand holds such a set and refuses a pick that is not
 //! one, at two to four seats: Sphinx of the Chimes discards two nonland cards with the same name (two lands of one name
 //! or two different names do not do), Illuminated Folio reveals two cards that share a color (colorless cards share
-//! none), and a bot pick refused as not alike tries every set, those before it too.
+//! none), Craft with two that share a card type refuses an instant and a creature, and a bot pick refused as not alike
+//! tries every set, those before it too.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -207,6 +208,65 @@ fn r5515_a_refused_pick_wraps_to_the_alike_set_before_it(
     let mut engine = driver.engine().clone();
     let answer = Answer::ChooseCards(CardsChoice(last));
     mtg_testkit::bot::apply_answer(&mut engine, &decision, answer)?;
+    assert!(
+        !matches!(
+            engine.decision().map(|d| &d.kind),
+            Some(DecisionKind::ChooseCards(_))
+        ),
+        "the pick was taken"
+    );
+    Ok(())
+}
+
+#[rstest]
+fn r702_a_refused_pick_for_craft_tries_the_sets_that_share_a_card_type(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .battlefield(
+            0,
+            std::iter::once(ready(card("Eye of Ojer Taq // Apex Observatory").unwrap()))
+                .chain((0..6).map(|_| ready(mountain())))
+                .collect::<Vec<_>>(),
+        )
+        .graveyard(
+            0,
+            [
+                card("Lightning Bolt").unwrap(),
+                card("Grizzly Bears").unwrap(),
+                card("Giant Growth").unwrap(),
+            ],
+        )
+        .at(1, 0, Step::Main1);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..10).map(|_| forest()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Eye of Ojer Taq")?;
+    let decision = driver.decision()?.clone();
+    let DecisionKind::ChooseCards(options) = &decision.kind else {
+        panic!("no pick of materials: {decision:?}");
+    };
+    let named = |name: &str| {
+        *options
+            .from
+            .iter()
+            .find(|id| driver.state().object(**id).unwrap().card().name == name)
+            .unwrap()
+    };
+    // An instant and a creature share no card type: the engine refuses them and the bot takes the next set.
+    let apart = Answer::ChooseCards(CardsChoice(vec![
+        named("Lightning Bolt"),
+        named("Grizzly Bears"),
+    ]));
+    let mut engine = driver.engine().clone();
+    assert!(matches!(
+        engine.apply(apart.clone()),
+        Err(EngineError::Illegal(IllegalAnswer::WrongPick(
+            "cards that share a card type"
+        )))
+    ));
+    mtg_testkit::bot::apply_answer(&mut engine, &decision, apart)?;
     assert!(
         !matches!(
             engine.decision().map(|d| &d.kind),
