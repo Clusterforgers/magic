@@ -207,7 +207,7 @@ fn hero_deck(id: String, chosen: &ChosenDeck) -> HeroDeck {
         ),
         commanders: commanders
             .iter()
-            .map(|card| commander_facts(card))
+            .map(|card| mtg_campaign::CommanderFacts::of(card))
             .collect(),
         makeup: Some(deck_makeup(chosen)),
     }
@@ -223,29 +223,6 @@ fn deck_makeup(chosen: &ChosenDeck) -> DeckMakeup {
         makeup.add_library_card(card);
     }
     makeup
-}
-
-/// What a commander card is, as far as its run upgrades go.
-fn commander_facts(card: &CardDefinition) -> mtg_campaign::CommanderFacts {
-    use mtg_core::card::CardType;
-    mtg_campaign::CommanderFacts {
-        name: card.name.clone(),
-        creature: card.types.contains(&CardType::Creature),
-        planeswalker: card.types.contains(&CardType::Planeswalker),
-        power: card.power,
-        generic: card
-            .mana_cost
-            .as_ref()
-            .map_or(0, mtg_core::mana::ManaCost::generic),
-        keywords: card
-            .rules
-            .iter()
-            .filter_map(|rule| match rule.as_ref() {
-                mtg_cards::ability::Ability::Keyword(keyword) => Some(keyword.shown_name()),
-                _ => None,
-            })
-            .collect(),
-    }
 }
 
 /// A loaded run: its header, its log and the run they fold to.

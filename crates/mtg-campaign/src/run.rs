@@ -278,6 +278,11 @@ impl Hero {
         usize::try_from(copies).unwrap_or(usize::MAX) > given
     }
 
+    /// Their deck's commanders as their upgrades see them; none before a deck is chosen.
+    pub fn commanders(&self) -> &[CommanderFacts] {
+        self.deck.as_ref().map_or(&[], |d| d.commanders.as_slice())
+    }
+
     /// Their life cap: the base life plus their relics' bonus, moved by events.
     pub fn max_life(&self, content: &Content) -> i32 {
         LIFE + self.life_cap
@@ -1751,7 +1756,9 @@ impl Run {
     }
 
     /// The events bot allies send now: a vote once every player voted (with the most votes, the torch's on a tie),
-    /// and an answer to each offer (the first relic and card, a rest when hurt, the first event option, the newest Satchel card at the Mirror Pool).
+    /// and an answer to each offer: the first relic and card; at a campfire a rest when hurt, else the best upgrade
+    /// worth a card pick or more, else a reforge; the best relic or upgrade the shop sells for their gold; the best
+    /// event option; the newest Satchel card at the Mirror Pool.
     pub fn bot_moves(&self, content: &Content) -> Vec<RunEvent> {
         let mut out = Vec::new();
         let bots = self
@@ -1813,11 +1820,16 @@ impl Run {
                             .satchel
                             .last()
                             .map_or(Pick::Skip, |card| Pick::Duplicate(card.clone())),
-                        Some(Offer::Campfire { .. }) => {
+                        Some(Offer::Campfire { upgrades }) => {
+                            let commanders = h.commanders();
                             if h.life < h.max_life(content) - 10 {
                                 Pick::Rest
                             } else {
-                                Pick::Reforge
+                                // The best upgrade, the first of equals, when it beats a card pick.
+                                best(upgrades.iter().map(|u| Some(u.worth(commanders))))
+                                    .filter(|(_, worth)| *worth >= CARD_PICK_WORTH)
+                                    .and_then(|(at, _)| u8::try_from(at).ok())
+                                    .map_or(Pick::Reforge, Pick::Take)
                             }
                         }
                         Some(Offer::Event { event }) => self.bot_event_pick(content, h, event),
@@ -1834,16 +1846,31 @@ impl Run {
                             })
                             .and_then(|(at, _)| u8::try_from(at).ok())
                             .map_or(Pick::Skip, Pick::Take),
-                        Some(Offer::Shop { items }) => items
-                            .iter()
-                            .position(|item| match item {
+                        // The ware worth most of the relics and the upgrade it can afford, the first of equals.
+                        Some(Offer::Shop { items }) => best(items.iter().map(|item| {
+                            match item {
                                 ShopItem::Relic {
-                                    price, sold: false, ..
-                                } => h.gold >= *price,
-                                _ => false,
-                            })
-                            .and_then(|i| u8::try_from(i).ok())
-                            .map_or(Pick::Skip, Pick::Take),
+                                    id,
+                                    price,
+                                    sold: false,
+                                } if h.gold >= *price => Some(
+                                    content
+                                        .cards
+                                        .get(id.as_str())
+                                        .map_or(relic_worth(Rarity::Common), |c| {
+                                            relic_worth(c.rarity)
+                                        }),
+                                ),
+                                ShopItem::Upgrade {
+                                    upgrade,
+                                    sold: false,
+                                } if h.gold >= UPGRADE_PRICE => Some(upgrade.worth(h.commanders())),
+                                _ => None,
+                            }
+                        }))
+                        .filter(|(_, worth)| *worth > 0)
+                        .and_then(|(at, _)| u8::try_from(at).ok())
+                        .map_or(Pick::Skip, Pick::Take),
                         Some(_) => Pick::Skip,
                         None => continue,
                     };
@@ -1854,6 +1881,32 @@ impl Run {
         }
         out
     }
+}
+
+/// What a card pick is worth to a bot hero, in points.
+const CARD_PICK_WORTH: i32 = 6;
+
+/// What a relic of `rarity` is worth to a bot hero, in points.
+fn relic_worth(rarity: Rarity) -> i32 {
+    match rarity {
+        Rarity::Common => 8,
+        Rarity::Rare => 15,
+        Rarity::Mythic => 28,
+    }
+}
+
+/// The index and worth of the choice worth most, the first of equals; `None` for a choice the hero cannot take.
+fn best(worths: impl Iterator<Item = Option<i32>>) -> Option<(usize, i32)> {
+    worths
+        .enumerate()
+        .filter_map(|(at, worth)| worth.map(|w| (at, w)))
+        .fold(None, |best: Option<(usize, i32)>, (at, w)| {
+            if best.is_none_or(|(_, b)| w > b) {
+                Some((at, w))
+            } else {
+                best
+            }
+        })
 }
 
 /// What an event option is worth to a bot hero, in points (a Common relic is 8); `None` when the hero cannot take it, or
@@ -1887,10 +1940,9 @@ fn worth(content: &Content, h: &Hero, option: &EventOption) -> Option<i32> {
                     n * 3 / 2
                 }
             }
-            Outcome::Relic | Outcome::RelicOf(Rarity::Common) => 8,
-            Outcome::RelicOf(Rarity::Rare) => 15,
-            Outcome::RelicOf(Rarity::Mythic) => 28,
-            Outcome::CardPick => 6,
+            Outcome::Relic => relic_worth(Rarity::Common),
+            Outcome::RelicOf(rarity) => relic_worth(*rarity),
+            Outcome::CardPick => CARD_PICK_WORTH,
             Outcome::Duplicate => 5,
             Outcome::LoseCard if h.satchel.is_empty() => return None,
             Outcome::LoseCard => -6,
