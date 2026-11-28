@@ -137,7 +137,10 @@ fn assembling_puts_the_top_cards_on_the_chosen_sprockets(
         deck - expected
     );
     for seat in 1..seats {
-        assert!(driver.state().contraption_deck(pid(seat)).is_empty());
+        assert_eq!(
+            driver.state().contraption_deck(pid(seat)),
+            &[] as &[ObjectId]
+        );
     }
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
