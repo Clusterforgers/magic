@@ -108,6 +108,7 @@ mod object_nth;
 mod observed_stasis;
 mod owner_left;
 mod p158_creatures_help;
+mod p158a_exiled_copies;
 mod paid_reads;
 mod performed_after;
 mod prepare;

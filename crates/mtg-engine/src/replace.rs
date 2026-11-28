@@ -4210,6 +4210,7 @@ impl Pass<'_> {
             r6104_while_tapped: None,
             r707_static: None,
             r115_until_face_down: false,
+            r513_until_end_step: false,
         })
     }
 

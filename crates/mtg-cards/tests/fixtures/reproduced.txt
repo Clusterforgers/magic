@@ -1766,6 +1766,7 @@ Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
 Luck Bobblehead
 Ludevic's Test Subject // Ludevic's Abomination
+Ludevic, Necrogenius // Olag, Ludevic's Hubris
 Lumen-Class Frigate
 Lunar Rejection
 Lurching Rotbeast
@@ -1991,6 +1992,7 @@ Mystic Snake
 Nadier's Nightblade
 Nagging Thoughts
 Nahiri's Binding
+Nakaya Shade
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
 Nameless Race
@@ -3025,6 +3027,7 @@ Thassa, God of the Sea
 The Beacon of Kahless
 The Best of Both Worlds
 The Birth of Meletis
+The Book of Vile Darkness
 The Caves of Androzani
 The Celestial Toymaker
 The Celestus

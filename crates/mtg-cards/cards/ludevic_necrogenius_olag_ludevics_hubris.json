@@ -1,7 +1,7 @@
 {
   "oracle_id": "f6f684f6-0c8a-4676-ba4e-d3e064293128",
   "name": "Ludevic, Necrogenius // Olag, Ludevic's Hubris",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ludevic, Necrogenius",
@@ -19,9 +19,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 49, "end": 170 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}{U}{U}{B}{B}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": "X" } },
+              { "XAtLeast": 1 }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Remember": {
+                  "what": { "Arrived": { "of": "Paid", "zone": "Exile" } },
+                  "slot": "exiled"
+                }
+              },
+              { "Transform": { "what": "This" } }
+            ]
           }
         }
       ]
@@ -31,9 +44,43 @@
       "oracle_fingerprint": "d1b8445dc9ea33bdb0984e0d57a22fda",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 341 }
+          "Replacement": {
+            "when": { "R6603Transforms": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": {
+                      "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }, { "Type": "Creature" }]
+                    },
+                    "as": "copied"
+                  }
+                },
+                {
+                  "BecomeCopy": {
+                    "what": "This",
+                    "of": { "Bound": "copied" },
+                    "except": [
+                      { "SetName": "Olag, Ludevic's Hubris" },
+                      { "SetPT": { "power": 4, "toughness": 4 } },
+                      { "AddSupertype": "Legendary" },
+                      { "AddColors": ["Blue", "Black"] },
+                      { "AddSubtype": "Zombie" }
+                    ],
+                    "duration": "Forever"
+                  }
+                },
+                {
+                  "PutCounters": {
+                    "on": "This",
+                    "counter": "+1/+1",
+                    "count": {
+                      "Count": [{ "In": "Exile" }, { "ExiledWith": "This" }, { "Type": "Creature" }]
+                    }
+                  }
+                }
+              ]
+            }
           }
         }
       ]

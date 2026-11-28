@@ -39,6 +39,7 @@ mod l31d_cards;
 mod l32a_cards;
 mod linked_exile;
 mod p158_cards;
+mod p158a_cards;
 mod p160_cards;
 mod p160w_cards;
 mod p162_cards;

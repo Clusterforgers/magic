@@ -126,6 +126,7 @@ pub(crate) fn r707_static_copies(state: &GameState) -> Vec<Event> {
                     attached_by: None,
                     r6104_tapped: None,
                     r707_static: Some(by),
+                    r513_end_step: false,
                 });
             }
         }
@@ -154,6 +155,7 @@ pub(crate) fn r707_static_copies(state: &GameState) -> Vec<Event> {
             r6104_while_tapped: None,
             r707_static: Some(it.source),
             r115_until_face_down: false,
+            r513_until_end_step: false,
         }));
     }
     events

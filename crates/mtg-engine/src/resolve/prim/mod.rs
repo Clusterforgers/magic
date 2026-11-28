@@ -113,6 +113,7 @@ mod monstrosity;
 mod move_counters;
 mod moved_as;
 mod one_of;
+mod p158_triggers_of;
 mod p160_cast_within;
 mod pair;
 mod r111_order_graveyard;

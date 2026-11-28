@@ -385,6 +385,9 @@ pub enum Duration {
     UntilYourNextTurn,
     /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).
     UntilYourNextEndStep,
+    /// Until the next end step of any player begins: the one of this turn when it has not begun yet (CR 513, "Shards you
+    /// control become copies of it until the next end step"). Only a copy effect lasts this way.
+    R513UntilNextEndStep,
     /// Until the controller's next upkeep begins: the one of a later turn, so one begun in their upkeep lasts until the
     /// upkeep of their next turn.
     UntilYourNextUpkeep,

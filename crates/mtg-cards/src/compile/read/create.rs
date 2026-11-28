@@ -571,7 +571,10 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                 sizeless,
             })
         }
-        TokenRef::CopyOf { .. } | TokenRef::R4700OfChosen { .. } => None,
+        // Vecna is written only whole (`p158_wholes`).
+        TokenRef::CopyOf { .. }
+        | TokenRef::R4700OfChosen { .. }
+        | TokenRef::P158WithTriggersOf { .. } => None,
     }
 }
 

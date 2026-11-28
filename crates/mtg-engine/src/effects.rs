@@ -576,6 +576,7 @@ pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: Pla
     let before_end = state.is_active(controller) && turn.step() < Step::End;
     let before_attacks = state.is_active(controller) && turn.step() < Step::DeclareAttackers;
     if (*duration == Duration::UntilYourNextEndStep && before_end)
+        || (*duration == Duration::R513UntilNextEndStep && turn.step() < Step::End)
         || (*duration == Duration::UntilItsControllersNextCombatEnds && before_attacks)
     {
         turn.number().saturating_sub(1)
@@ -651,6 +652,8 @@ pub(crate) fn lasts(
                     && state.is_active(controller)
                     && turn.step() >= Step::End)
         }
+        // Begun before this turn's end step, it carries the turn before (`began_turn`), so that end step ends it.
+        Duration::R513UntilNextEndStep => !(turn.number() > began && turn.step() >= Step::End),
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         // It applies only while its combat phase is under way (`r109_in_that_combat`) and ends with the turn.
         Duration::R109ThatCombat(_) => turn.number() == began,
@@ -1230,6 +1233,26 @@ mod tests {
         #[case] active: bool,
     ) {
         let duration = Duration::UntilItsControllersNextCombatEnds;
+        let mut game = game();
+        at(&mut game, began.0, began.1, began.2);
+        let turn = began_turn(&game, &duration, ME);
+        at(&mut game, now.0, now.1, now.2);
+        assert_eq!(lasts(&game, &duration, turn, ME, None), active);
+    }
+
+    #[rstest]
+    #[case::r513_this_turns_end_step_waits((3, ME, Step::Main1), (3, ME, Step::Main2), true)]
+    #[case::r513_this_turns_end_step_ends_it((3, ME, Step::Main1), (3, ME, Step::End), false)]
+    #[case::r513_another_seats_end_step_ends_it((4, FOE, Step::Main1), (4, FOE, Step::End), false)]
+    #[case::r513_begun_in_an_end_step_lasts_through_it((3, ME, Step::End), (3, ME, Step::Cleanup), true)]
+    #[case::r513_begun_in_an_end_step_through_the_next_turn((3, ME, Step::End), (4, FOE, Step::Main2), true)]
+    #[case::r513_begun_in_an_end_step_ends_at_the_next((3, ME, Step::End), (4, FOE, Step::End), false)]
+    fn r513_until_the_next_end_step_of_any_player(
+        #[case] began: (u32, PlayerId, Step),
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let duration = Duration::R513UntilNextEndStep;
         let mut game = game();
         at(&mut game, began.0, began.1, began.2);
         let turn = began_turn(&game, &duration, ME);
