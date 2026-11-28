@@ -1355,6 +1355,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     if (contraptions.length === 0) return quiet(`${n.seat(player)} cranks nothing on sprocket ${sprocket}`)
     return line(`${n.seat(player)} cranks ${joinWords(contraptions.map((id) => n.card(id)))}`)
   }
+  if ('P170bReassembled' in event) {
+    const { player, moved } = event.P170bReassembled
+    if (!moved) return quiet(`${n.seat(player)} keeps each Contraption on its sprocket`)
+    const [contraption, sprocket] = moved
+    return line(`${n.seat(player)} reassembles ${n.card(contraption)} onto sprocket ${sprocket}`)
+  }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit
     const count = visited.length

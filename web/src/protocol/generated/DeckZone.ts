@@ -3,4 +3,4 @@
 /**
  * A part of a deck.
  */
-export type DeckZone = "main" | "sideboard" | "commander" | "companion" | "attractions" | "stickers";
+export type DeckZone = "main" | "sideboard" | "commander" | "companion" | "attractions" | "contraptions" | "stickers";

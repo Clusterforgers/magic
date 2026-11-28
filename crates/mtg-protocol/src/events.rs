@@ -546,6 +546,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::P170bAssembled { .. }
         | Event::P170bSprocketMoved { .. }
         | Event::P170bCranked { .. }
+        | Event::P170bReassembled { .. }
         | Event::P170aSectorsLost
         | Event::Solved { .. }
         | Event::Harnessed { .. }

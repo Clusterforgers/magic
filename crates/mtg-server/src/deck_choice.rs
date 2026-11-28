@@ -268,7 +268,8 @@ async fn stored_of(app: &AppState, owner: Uuid, id: &str) -> Result<ChosenDeck, 
         by_hand,
     } = assemble(source, &lines).await?;
     let attractions = attractions_of(source, &lines, &mut reads).await?;
-    let stickers = stickers_of(source, &lines, &mut reads).await?;
+    let contraptions = zone_cards(source, &lines, DeckZone::Contraptions, &mut reads).await?;
+    let stickers = zone_cards(source, &lines, DeckZone::Stickers, &mut reads).await?;
     let note = SeatDeck {
         name: deck.name.clone(),
         format: deck.format.clone(),
@@ -295,6 +296,7 @@ async fn stored_of(app: &AppState, owner: Uuid, id: &str) -> Result<ChosenDeck, 
     };
     let chosen = chosen
         .with_attractions(attractions)
+        .and_then(|chosen| chosen.with_contraptions(contraptions))
         .and_then(|chosen| chosen.with_stickers(stickers))
         .map_err(unreadable)?;
     Ok(chosen
@@ -414,24 +416,25 @@ async fn attractions_of(
         .collect())
 }
 
-/// The sticker sheets of `lines` (CR 123), one entry for each copy in line order: the oracle id and the sheet; the
-/// reads its sheets play on join `reads`.
-async fn stickers_of(
+/// The cards of `lines` in `zone`, the Contraption deck or the sticker sheets (CR 123), one entry for each copy in line
+/// order: the oracle id and the card; the reads its cards play on join `reads`.
+async fn zone_cards(
     source: &CardSource,
     lines: &[Line],
+    zone: DeckZone,
     reads: &mut Reads,
 ) -> Result<Vec<(String, Arc<CardDefinition>)>, ApiError> {
     let ids: Vec<String> = lines
         .iter()
-        .filter(|line| line.zone == DeckZone::Stickers)
+        .filter(|line| line.zone == zone)
         .flat_map(|line| std::iter::repeat_n(line.oracle_id.clone(), line.count as usize))
         .collect();
     if ids.is_empty() {
         return Ok(Vec::new());
     }
-    let (sheets, pinned) = source.deck_pinned(&ids).await?;
+    let (cards, pinned) = source.deck_pinned(&ids).await?;
     reads.extend(pinned);
-    Ok(ids.into_iter().zip(sheets).collect())
+    Ok(ids.into_iter().zip(cards).collect())
 }
 
 /// Replaces each card of `cards` (the oracle ids of `ids`, one for one) that `manual` holds with that definition.

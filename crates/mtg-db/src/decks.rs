@@ -39,6 +39,8 @@ pub enum DeckZone {
     Companion,
     /// The Attraction deck.
     Attractions,
+    /// The Contraption deck.
+    Contraptions,
     /// The sticker sheets.
     Stickers,
 }
@@ -52,6 +54,7 @@ impl DeckZone {
             DeckZone::Commander => "commander",
             DeckZone::Companion => "companion",
             DeckZone::Attractions => "attractions",
+            DeckZone::Contraptions => "contraptions",
             DeckZone::Stickers => "stickers",
         }
     }
@@ -64,6 +67,7 @@ impl DeckZone {
             DeckZone::Commander,
             DeckZone::Companion,
             DeckZone::Attractions,
+            DeckZone::Contraptions,
             DeckZone::Stickers,
         ]
         .into_iter()
@@ -598,6 +602,9 @@ mod tests {
     #[case(DeckZone::Sideboard, "sideboard")]
     #[case(DeckZone::Commander, "commander")]
     #[case(DeckZone::Companion, "companion")]
+    #[case(DeckZone::Attractions, "attractions")]
+    #[case(DeckZone::Contraptions, "contraptions")]
+    #[case(DeckZone::Stickers, "stickers")]
     fn zones_round_trip_through_their_keyword(#[case] zone: DeckZone, #[case] keyword: &str) {
         assert_eq!(zone.keyword(), keyword);
         assert_eq!(DeckZone::from_keyword(keyword), Some(zone));

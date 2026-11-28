@@ -144,8 +144,8 @@ fn table_answer(
     }
 }
 
-/// The answer to a choice among options: the untap step's choice of a card type (`r112_untap_type`), else a question
-/// of the announcement or the resolution.
+/// The answer to a choice among options: the untap step's choice of a card type (`r112_untap_type`), the end step's
+/// reassembly of a Contraption, else a question of the announcement or the resolution.
 fn option_or_untap(
     state: &GameState,
     player: mtg_core::ids::PlayerId,
@@ -155,6 +155,8 @@ fn option_or_untap(
 ) -> Result<Outcome, EngineError> {
     if !announcing && crate::r112_untap_type::r112_asks(state) {
         crate::r112_untap_type::r112_answer(state, player, choice).map(Outcome::Events)
+    } else if !announcing && crate::p170b_contraptions::asks_reassembly(state) {
+        crate::p170b_contraptions::reassembly_answer(state, player, choice).map(Outcome::Events)
     } else {
         choose::option_answer(player, options, choice, announcing)
     }

@@ -147,8 +147,9 @@ impl<S: EventStore> GameActor<S> {
                 player.library = cards;
                 player.commanders = commanders;
                 player.companion = companion;
-                // The deck a seat falls back to is built in and brings no Attraction deck.
+                // The deck a seat falls back to is built in and brings no Attraction or Contraption deck.
                 player.attractions = Vec::new();
+                player.contraptions = Vec::new();
                 player.stickers = Vec::new();
                 player.satchel = Vec::new();
             }
@@ -172,6 +173,7 @@ impl<S: EventStore> GameActor<S> {
         player.commanders = deck.commanders().to_vec();
         player.companion = deck.companion().cloned();
         player.attractions = deck.attractions().to_vec();
+        player.contraptions = deck.contraptions().to_vec();
         player.stickers = deck.stickers().to_vec();
         player.satchel = deck.satchel().to_vec();
         decks.choose(seat.index(), deck);
@@ -405,6 +407,7 @@ impl<S: EventStore> GameActor<S> {
                         player.commanders = deck.commanders().to_vec();
                         player.companion = deck.companion().cloned();
                         player.attractions = deck.attractions().to_vec();
+                        player.contraptions = deck.contraptions().to_vec();
                         player.stickers = deck.stickers().to_vec();
                         player.satchel = deck.satchel().to_vec();
                     }

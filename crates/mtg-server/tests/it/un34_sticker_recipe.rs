@@ -52,6 +52,7 @@ fn oracle(stickers: Vec<String>) -> DeckRef {
         printings: Vec::new(),
         by_hand: Vec::new(),
         attractions: Vec::new(),
+        contraptions: Vec::new(),
         stickers,
         satchel: Vec::new(),
         note: None,

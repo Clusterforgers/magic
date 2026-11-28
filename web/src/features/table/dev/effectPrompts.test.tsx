@@ -1,4 +1,4 @@
-/** Goal: `?prompt=targets|targets-two|targets-trigger|targets-many|order|yesno|option|option-players|mode|mode-two|mode-trigger` and those on a clock hand the viewer, at every seat count, a decision the wire parser accepts and whose players and cards are on the table, a spell that can be taken back and a triggered ability that cannot, and each can be drawn and answered on the dev table, which clears it. */
+/** Goal: `?prompt=targets|targets-two|targets-trigger|targets-many|order|yesno|option|option-players|reassemble|mode|mode-two|mode-trigger` and those on a clock hand the viewer, at every seat count, a decision the wire parser accepts and whose players and cards are on the table, a spell that can be taken back and a triggered ability that cannot, and each can be drawn and answered on the dev table, which clears it. */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -66,7 +66,7 @@ describe.each(TARGETS)('?prompt=%s', (prompt) => {
 /** The prompt names of each question kind. */
 const QUESTIONS = [
   { kind: 'YesNo', prompts: ['yesno', 'yesno-clock'] },
-  { kind: 'ChooseOption', prompts: ['option', 'option-players', 'option-clock'] },
+  { kind: 'ChooseOption', prompts: ['option', 'option-players', 'option-clock', 'reassemble'] },
   { kind: 'ChooseMode', prompts: ['mode', 'mode-two', 'mode-trigger', 'mode-clock'] },
 ] as const
 

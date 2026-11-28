@@ -140,6 +140,7 @@ export const BOARD_LABEL: Readonly<Record<DeckZone, string>> = {
   sideboard: 'Sideboard',
   companion: 'Companion',
   attractions: 'Attraction deck',
+  contraptions: 'Contraption deck',
   stickers: 'Sticker sheets',
 }
 

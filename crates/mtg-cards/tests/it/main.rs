@@ -50,6 +50,7 @@ mod p165_cards;
 mod p166_cards;
 mod p170_cards;
 mod p170a_cards;
+mod p170c_contraptions;
 mod partial;
 mod partial_draft;
 mod player_words;
