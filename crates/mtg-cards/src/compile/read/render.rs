@@ -249,6 +249,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::their_top::possessive_wordings(&mut texts);
     super::r117_04_x_target::r117_04_sized_wordings(ability, variants, &mut texts);
+    super::lx1a_exiles::lx1a_wordings(ability, &mut texts);
     texts
 }
 
@@ -779,6 +780,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::fd1_wholes::fd1_add_wholes(ability, &mut texts);
     super::p162_wholes::p162_add_wholes(ability, &mut texts);
     super::lx1_wholes::lx1_add_wholes(ability, &mut texts);
+    super::lx1a_exiles::lx1a_wordings(ability, &mut texts);
     super::r116_01_wholes::r116_01_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
@@ -4475,7 +4477,13 @@ impl Writer<'_> {
             {
                 self.name_target()
             }
-            Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
+            Ref::Each(selector) => match super::lx1a_exiles::lx1a_namesakes_noun(selector) {
+                Some(noun) => Some(super::lx1a_exiles::lx1a_namesakes_text(
+                    &self.name_target()?,
+                    noun,
+                )),
+                None => Some(format!("all {}", phrase_text(selector, Form::All)?)),
+            },
             Ref::This => Some("~".to_owned()),
             Ref::Attached => Some("enchanted creature".to_owned()),
             Ref::Convoked => Some("each creature that convoked ~".to_owned()),

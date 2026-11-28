@@ -7,6 +7,7 @@
 //! declaration are added up, a part of each kind and filter taking all the permanents together. The player picks them
 //! one part at a time with `ChooseCards`, as for an ability's cost, after the declaration and before its mana; a
 //! creature being declared never pays a tap part. The parts are paid with the declaration's events, after it.
+//! In a combined attack of a team sharing its turns each player pays the parts of their own creatures (`R6400Share`).
 
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::value::Amount;
@@ -123,15 +124,50 @@ pub(crate) fn r6400_payable(
     declared: &[ObjectId],
     parts: &[Part],
 ) -> bool {
-    let Some(source) = declared.first().copied() else {
+    if declared.is_empty() {
         return parts.is_empty();
-    };
+    }
+    r6400_shares_payable(state, declared, &single(player, declared, parts))
+}
+
+/// The parts one player pays for their own creatures of a declaration, named for the first of them (`source`).
+pub(crate) struct R6400Share {
+    /// Who pays the parts.
+    pub(crate) player: PlayerId,
+    /// The first of their creatures.
+    pub(crate) source: ObjectId,
+    /// What their creatures cost beyond mana and life.
+    pub(crate) parts: Vec<Part>,
+}
+
+/// The declaration of one player paying every part, named for its first creature; none when nothing is declared.
+fn single(player: PlayerId, declared: &[ObjectId], parts: &[Part]) -> Vec<R6400Share> {
+    declared
+        .first()
+        .map(|source| R6400Share {
+            player,
+            source: *source,
+            parts: parts.to_vec(),
+        })
+        .into_iter()
+        .collect()
+}
+
+/// Whether each player can pay the parts of their share now, each part taking from what the parts before it would
+/// leave.
+pub(crate) fn r6400_shares_payable(
+    state: &GameState,
+    declared: &[ObjectId],
+    shares: &[R6400Share],
+) -> bool {
     let mut taken: Vec<Vec<ObjectId>> = Vec::new();
-    for part in parts {
-        let barred = barred(part, declared, &taken);
-        match part.payable(&payer(state, player, source, &barred), &[]) {
-            Some(objects) => taken.push(objects),
-            None => return false,
+    for share in shares {
+        for part in &share.parts {
+            let barred = barred(part, declared, &taken);
+            match part.payable(&payer(state, share.player, share.source, &barred), &[]) {
+                Some(objects) => taken.push(objects),
+                None => return false,
+            }
         }
     }
     true
@@ -143,43 +179,55 @@ pub(crate) fn r6400_next(
     player: PlayerId,
     declared: &[ObjectId],
     parts: &[Part],
+    picks: (&mut Choices, &mut Done),
+) -> Option<Next> {
+    r6400_shares_next(state, declared, &single(player, declared, parts), picks)
+}
+
+/// The next pick the shares need, asked of the player whose share it is, `None` once every part is picked for;
+/// `Next::Drop` when one can no longer be paid.
+pub(crate) fn r6400_shares_next(
+    state: &GameState,
+    declared: &[ObjectId],
+    shares: &[R6400Share],
     (choices, done): (&mut Choices, &mut Done),
 ) -> Option<Next> {
-    let source = declared.first().copied()?;
     let mut settled = 0;
-    for part in parts {
-        let Part::Pick(pick) = part else { continue };
-        if settled < choices.cost_picks().len() {
-            settled += 1;
-            continue;
+    for share in shares {
+        for part in &share.parts {
+            let Part::Pick(pick) = part else { continue };
+            if settled < choices.cost_picks().len() {
+                settled += 1;
+                continue;
+            }
+            let barred = barred(part, declared, choices.cost_picks());
+            let candidates = pick.candidates(&payer(state, share.player, share.source, &barred));
+            if pick.short(state, &candidates) {
+                return Some(Next::Drop);
+            }
+            if let Some(taken) = pick.unasked(state, &candidates) {
+                choices.pick_for_cost(taken);
+                settled += 1;
+                continue;
+            }
+            let (min, max) = pick.bounds(candidates.len());
+            done.asked = Some(Phase::Parts);
+            return Some(Next::Ask(Decision {
+                player: share.player,
+                kind: DecisionKind::ChooseCards(CardsOptions {
+                    one_per_name: false,
+                    source: share.source,
+                    from: candidates,
+                    min,
+                    max,
+                    text: pick.text(),
+                    can_cancel: true,
+                    total: None,
+                    groups: Vec::new(),
+                    targeted: Box::default(),
+                }),
+            }));
         }
-        let barred = barred(part, declared, choices.cost_picks());
-        let candidates = pick.candidates(&payer(state, player, source, &barred));
-        if pick.short(state, &candidates) {
-            return Some(Next::Drop);
-        }
-        if let Some(taken) = pick.unasked(state, &candidates) {
-            choices.pick_for_cost(taken);
-            settled += 1;
-            continue;
-        }
-        let (min, max) = pick.bounds(candidates.len());
-        done.asked = Some(Phase::Parts);
-        return Some(Next::Ask(Decision {
-            player,
-            kind: DecisionKind::ChooseCards(CardsOptions {
-                one_per_name: false,
-                source,
-                from: candidates,
-                min,
-                max,
-                text: pick.text(),
-                can_cancel: true,
-                total: None,
-                groups: Vec::new(),
-                targeted: Box::default(),
-            }),
-        }));
     }
     None
 }
@@ -192,18 +240,30 @@ pub(crate) fn r6400_events(
     parts: &[Part],
     choices: &Choices,
 ) -> Option<Vec<Event>> {
-    let Some(source) = declared.first().copied() else {
+    if declared.is_empty() {
         return parts.is_empty().then(Vec::new);
-    };
+    }
+    r6400_shares_events(state, &single(player, declared, parts), choices)
+}
+
+/// The events that pay each share's parts by its player with the objects picked for them, in order; `None` when a
+/// pick is missing.
+pub(crate) fn r6400_shares_events(
+    state: &GameState,
+    shares: &[R6400Share],
+    choices: &Choices,
+) -> Option<Vec<Event>> {
     let mut picks = choices.cost_picks().iter();
     let mut events = Vec::new();
-    for part in parts {
-        let picked = if matches!(part, Part::Pick(_)) {
-            picks.next()?.as_slice()
-        } else {
-            &[]
-        };
-        events.extend(part.events(state, player, source, picked));
+    for share in shares {
+        for part in &share.parts {
+            let picked = if matches!(part, Part::Pick(_)) {
+                picks.next()?.as_slice()
+            } else {
+                &[]
+            };
+            events.extend(part.events(state, share.player, share.source, picked));
+        }
     }
     Some(events)
 }

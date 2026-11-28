@@ -35,10 +35,13 @@ const FIXED = {
   'own.graveyard': { label: 'your graveyard' },
   'own.lands': { label: 'your lands', opener: 'own.lands-chip' },
   'own.lands-chip': { label: 'your lands' },
+  'own.mana': { label: 'your mana' },
   'opp.pod': { label: "the opponent's panel" },
   'opp.life': { label: "the opponent's life" },
   'opp.board': { label: "the opponent's battlefield" },
   'opp.graveyard': { label: "the opponent's graveyard" },
+  opponents: { label: 'the opponents' },
+  shared: { label: 'the middle bar' },
   'turn.badge': { label: 'the turn badge' },
   'turn.ladder': { label: 'the steps of the turn', opener: 'turn.badge' },
   ask: { label: 'the question and its answers' },
@@ -99,7 +102,7 @@ export const CARD_ZONES = ['hand', 'command', 'board', 'opp', 'stack'] as const
 /** The zone part of a card ref. */
 export type CardZone = (typeof CARD_ZONES)[number]
 
-/** A card by name in a zone: the first one there the pending decision can use, else the first. */
+/** A card by name in a zone (`*` for any card): the first one there the pending decision can use, else the first. */
 export type CardRef = `${CardZone}:${string}`
 
 /** What a step may light or press: an anchor or a card ref. */

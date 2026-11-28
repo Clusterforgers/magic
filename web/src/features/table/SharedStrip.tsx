@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { usePlay } from '@/features/game/gameContext'
 import { useAfterDelay } from '@/hooks/useAfterDelay'
 import { cn } from '@/lib/utils'
@@ -102,6 +103,7 @@ export function SharedStrip({ inset = 0 }: { inset?: number }) {
     <section
       aria-label="Turn and priority"
       data-region="shared"
+      {...anchor('shared')}
       data-your-turn={yourTurn || undefined}
       className="relative z-20 min-h-0 max-sm:[&_[data-slot=combat-key]]:hidden"
     >
