@@ -210,8 +210,7 @@ mod tests {
         assert_eq!(body["stream"], false);
         let roles: Vec<&str> = body["messages"]
             .as_array()
-            .map(|all| all.iter().filter_map(|m| m["role"].as_str()).collect())
-            .unwrap_or_default();
+            .map_or_default(|all| all.iter().filter_map(|m| m["role"].as_str()).collect());
         assert_eq!(roles, ["system", "user", "assistant", "user"]);
         assert_eq!(body["messages"][0]["content"], "rules");
         assert_eq!(body.get("response_format").is_some(), json_mode, "{body}");

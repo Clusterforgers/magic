@@ -33,10 +33,9 @@ fn probe_compiles_and_checks() {
             .filter(|c| filter.is_empty() || filter.contains(&c.name))
         {
             let compiled = mtg_cards::compile::compile(card);
-            let text = compiled
-                .card
-                .map(|rules| mtg_cards::pretty::pretty(&mtg_cards::load::canonical(&rules)))
-                .unwrap_or_default();
+            let text = compiled.card.map_or_default(|rules| {
+                mtg_cards::pretty::pretty(&mtg_cards::load::canonical(&rules))
+            });
             println!("== {}\n{text}", card.name);
         }
     }

@@ -1159,9 +1159,7 @@ mod tests {
         assert_eq!(decks.note(1).map(|n| n.name.as_str()), Some(shown));
         assert_eq!(
             decks.revealed(),
-            revealed
-                .map(|name| vec![(1, name.to_owned())])
-                .unwrap_or_default()
+            revealed.map_or_default(|name| vec![(1, name.to_owned())])
         );
         let back = decks.current[1].as_ref().unwrap();
         assert_eq!(back.fingerprint(), stored.fingerprint());

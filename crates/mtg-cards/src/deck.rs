@@ -478,8 +478,7 @@ fn report_cards(
                     draft: drafts.get(id).map(|(read, _)| *read),
                     differs: drafts
                         .get(id)
-                        .map(|(_, differs)| differs.clone())
-                        .unwrap_or_default(),
+                        .map_or_default(|(_, differs)| differs.clone()),
                     reasons,
                     whole_text,
                     by_hand: by_hand.contains(id) && support == Support::Manual,

@@ -131,8 +131,7 @@ impl From<&CardDefinition> for DeckCard {
             symbols: card
                 .mana_cost
                 .as_ref()
-                .map(|cost| cost.symbols().to_vec())
-                .unwrap_or_default(),
+                .map_or_default(|cost| cost.symbols().to_vec()),
             x_symbols: card.x_in_cost,
             activated: card.activated
                 || !card.abilities.is_empty()

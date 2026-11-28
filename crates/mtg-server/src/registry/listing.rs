@@ -98,11 +98,7 @@ impl Registry {
                 let age = now.saturating_duration_since(entry.created);
                 let listed = ListedGame {
                     game: *id,
-                    host: entry
-                        .seats
-                        .first()
-                        .map(|s| s.name.clone())
-                        .unwrap_or_default(),
+                    host: entry.seats.first().map_or_default(|s| s.name.clone()),
                     format: entry.format,
                     house_rules: entry.house_rules.clone(),
                     // The actor knows the roster; the status below fills it in.

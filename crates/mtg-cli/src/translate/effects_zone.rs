@@ -1198,13 +1198,12 @@ fn alternative_zones(p: &Params, another: bool) -> Tr<Option<Vec<String>>> {
     let listed: String = p
         .get("Origin")
         .filter(|word| word.contains(','))
-        .map(|word| {
+        .map_or_default(|word| {
             word.split(',')
                 .filter(|zone| *zone != "Library")
                 .collect::<Vec<_>>()
                 .join(",")
-        })
-        .unwrap_or_default();
+        });
     if another && (p.has("OriginAlternative") || !listed.is_empty()) {
         return unmapped("key:ChangeZone.Search.OriginAlternative-for-another-player");
     }

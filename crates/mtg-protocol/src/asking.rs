@@ -166,8 +166,9 @@ impl AskingView {
             let (text, clause) = state
                 .object(named)
                 .filter(|object| object.ability().is_none() && object.zone() != Zone::Battlefield)
-                .map(|_| spell_words(state, named, &decision.kind, &view.name, question))
-                .unwrap_or_default();
+                .map_or_default(|_| {
+                    spell_words(state, named, &decision.kind, &view.name, question)
+                });
             return Some(AskingView {
                 source: Some(named),
                 name: view.name,
@@ -347,10 +348,7 @@ fn run_of(state: &GameState, viewer: PlayerId, stack: ObjectId) -> Option<RunVie
                 }
                 None => RunEntryView {
                     object: None,
-                    name: source
-                        .as_ref()
-                        .map(|source| source.name.clone())
-                        .unwrap_or_default(),
+                    name: source.as_ref().map_or_default(|source| source.name.clone()),
                     source: source.map(|source| source.id),
                     text: None,
                     done: true,

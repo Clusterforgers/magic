@@ -42,7 +42,7 @@ async fn call(
     if let Some(browser) = who {
         headers.push(("Cookie", browser.cookie.as_str()));
     }
-    let body = body.map(|b| b.to_string()).unwrap_or_default();
+    let body = body.map_or_default(|b| b.to_string());
     if !body.is_empty() {
         headers.push(("Content-Type", "application/json"));
     }

@@ -84,7 +84,7 @@ pub fn table(rows: &[Row], total: usize) -> String {
         "#", "marks", "support", "card"
     );
     for (i, row) in rows.iter().enumerate() {
-        let note = row.note.as_deref().map(one_line).unwrap_or_default();
+        let note = row.note.as_deref().map_or_default(one_line);
         let line = format!(
             "{:>3} {:>5}  {:<10}  {:<name_width$}  {}",
             i + 1,

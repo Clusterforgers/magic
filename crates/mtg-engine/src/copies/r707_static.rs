@@ -31,8 +31,7 @@ impl CopyEffect {
         let mut found: Vec<(ObjectRef, ObjectRef)> = self
             .under
             .as_ref()
-            .map(|under| under.r707_static_ends())
-            .unwrap_or_default();
+            .map_or_default(|under| under.r707_static_ends());
         if let Some(super::C10XpCopyEnds::R707Static(by)) = self.ends {
             found.push((by, self.of));
         }

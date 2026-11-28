@@ -64,8 +64,7 @@ fn heads(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String>
         }],
     );
     probe
-        .map(|probe| written(&probe))
-        .unwrap_or_default()
+        .map_or_default(|probe| written(&probe))
         .into_iter()
         .filter_map(|text| text.strip_suffix(PROBE).map(str::to_owned))
         .collect()

@@ -124,7 +124,7 @@ fn r115_vault_destroys_the_most_voted_or_draws(
         seats,
         "every player casts one ballot"
     );
-    for seat in 0..seats {
+    for (seat, before) in hands.iter().enumerate() {
         let gone = matches!(
             driver
                 .state()
@@ -138,7 +138,7 @@ fn r115_vault_destroys_the_most_voted_or_draws(
         let drawn = usize::from(seat == 0) + usize::from(destroyed.is_empty());
         assert_eq!(
             driver.state().zone(Zone::Hand(pid(seat))).len(),
-            hands[seat] + drawn,
+            before + drawn,
             "seat {seat}"
         );
     }

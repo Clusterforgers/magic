@@ -68,9 +68,9 @@ fn open_hands_show_every_hand_to_every_seat_and_no_library(
     for viewer in viewers(players).into_iter().chain([seat(9)]) {
         let view = StateView::for_player(state, viewer);
         let known: BTreeSet<ObjectId> = view.objects.iter().map(|object| object.id).collect();
-        for owner in 0..players {
+        for (owner, player) in view.table.players.iter().enumerate() {
             let hand = state.zone(Zone::Hand(seat(owner))).to_vec();
-            let shown = view.table.players[owner].hand.cards.clone();
+            let shown = player.hand.cards.clone();
             let sees = open || viewer == seat(owner);
             assert_eq!(
                 shown,
@@ -78,7 +78,7 @@ fn open_hands_show_every_hand_to_every_seat_and_no_library(
                 "{viewer:?} and hand {owner}"
             );
             assert!(hand.iter().all(|card| known.contains(card) == sees));
-            let library = &view.table.players[owner].library;
+            let library = &player.library;
             assert!(library.cards.is_none(), "{viewer:?} sees a library");
             assert!(
                 state
@@ -230,10 +230,9 @@ fn the_top_of_every_library_is_shown_to_every_seat_and_nothing_under_it(
     for viewer in viewers(players) {
         let view = StateView::for_player(state, viewer);
         let known: BTreeSet<ObjectId> = view.objects.iter().map(|object| object.id).collect();
-        for owner in 0..players {
+        for (owner, shown) in view.table.players.iter().enumerate() {
             let library = state.zone(Zone::Library(seat(owner)));
             let top = library.last().copied();
-            let shown = &view.table.players[owner];
             assert_eq!(
                 shown.revealed_top,
                 top.filter(|_| revealed),

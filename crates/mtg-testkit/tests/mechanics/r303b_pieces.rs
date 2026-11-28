@@ -364,8 +364,7 @@ fn sick_creatures_attack_only_the_opponents_of_the_rules_controller(
         .attackers
         .iter()
         .find(|a| a.object == fresh)
-        .map(|a| a.defenders.clone())
-        .unwrap_or_default();
+        .map_or_default(|a| a.defenders.clone());
     let wanted: Vec<AttackTarget> = (1..seats)
         .filter(|seat| *seat != ruler)
         .map(|seat| AttackTarget::Player(crate::common::pid(seat)))

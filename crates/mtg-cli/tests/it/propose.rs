@@ -515,14 +515,11 @@ fn corpus_card(slug: &str) -> PrintedCard {
     PrintedCard {
         oracle_id: text("oracle_id"),
         name: text("name"),
-        keywords: record["keywords"]
-            .as_array()
-            .map(|all| {
-                all.iter()
-                    .filter_map(|k| k.as_str().map(str::to_owned))
-                    .collect()
-            })
-            .unwrap_or_default(),
+        keywords: record["keywords"].as_array().map_or_default(|all| {
+            all.iter()
+                .filter_map(|k| k.as_str().map(str::to_owned))
+                .collect()
+        }),
         layout: text("layout"),
         faces: vec![PrintedFace {
             name: text("name"),

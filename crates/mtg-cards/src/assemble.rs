@@ -160,8 +160,7 @@ fn manual_clauses(
     let own_names = printed
         .faces
         .get(index)
-        .map(crate::compile::own_names)
-        .unwrap_or_default();
+        .map_or_default(crate::compile::own_names);
     if record.support.runs_whole() {
         return Vec::new();
     }
@@ -217,11 +216,7 @@ fn whole_card(
                 whole.supertypes.extend(face.supertypes.iter().copied());
             }
             let union: ColorSet = faces.iter().flat_map(|face| face.colors().iter()).collect();
-            let from_cost = whole
-                .mana_cost
-                .as_ref()
-                .map(ManaCost::colors)
-                .unwrap_or_default();
+            let from_cost = whole.mana_cost.as_ref().map_or_default(ManaCost::colors);
             whole.color_indicator = (union != from_cost).then_some(union);
             whole.manual = faces.iter().flat_map(|face| face.manual.clone()).collect();
             whole.read = faces.iter().any(|face| face.read);
@@ -1277,7 +1272,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         .cost
         .as_ref()
         .map_or((None, 0), |cost| (Some(cost.rest().clone()), cost.x()));
-    let from_cost = mana_cost.as_ref().map(ManaCost::colors).unwrap_or_default();
+    let from_cost = mana_cost.as_ref().map_or_default(ManaCost::colors);
     // An empty list is no evidence: records of split and adventure faces often leave colors out. Nor are colors an
     // ability gives while it says it leaves the color identity alone (Fallaji Wayfarer): that ability sets them.
     let shown = if face

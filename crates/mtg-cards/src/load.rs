@@ -794,8 +794,7 @@ mod tests {
     fn errors(sources: &[Source]) -> Vec<String> {
         Library::from_sources(sources)
             .err()
-            .map(|e| e.0.iter().map(ToString::to_string).collect())
-            .unwrap_or_default()
+            .map_or_default(|e| e.0.iter().map(ToString::to_string).collect())
     }
 
     #[rstest]

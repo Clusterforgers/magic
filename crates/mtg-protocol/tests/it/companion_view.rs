@@ -38,14 +38,14 @@ fn a_hidden_companion_is_named_to_its_owner_only(#[values(2, 3, 4)] seats: usize
     let state = unrevealed(seats);
     for viewer in 0..seats {
         let view = TableView::of(&state, seat(viewer));
-        for owner in 0..seats {
-            let json = serde_json::to_value(&view.players[owner]).unwrap();
+        for (owner, player) in view.players.iter().enumerate() {
+            let json = serde_json::to_value(player).unwrap();
             if owner + 1 == seats {
-                assert!(view.players[owner].companion.is_none());
+                assert!(player.companion.is_none());
                 assert!(json.get("companion").is_none(), "left out without one");
                 continue;
             }
-            let companion = view.players[owner].companion.as_ref().unwrap();
+            let companion = player.companion.as_ref().unwrap();
             assert_eq!(companion.stage, CompanionStage::Hidden);
             assert_eq!(companion.object, None);
             if viewer == owner {

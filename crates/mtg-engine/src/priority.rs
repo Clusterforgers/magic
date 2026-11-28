@@ -975,10 +975,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     let _views = crate::faces::FaceViews::open(state);
     let hand = state.zone(Zone::Hand(player));
     let (at_priority, all_mana) = both_manas(state, player);
-    let pool = state
-        .player(player)
-        .map(|p| p.mana().clone())
-        .unwrap_or_default();
+    let pool = state.player(player).map_or_default(|p| p.mana().clone());
     let life = state.player(player).map_or(0, Player::life);
     let may_play_land = sorcery_timing(state, player) && land_play_left(state, player);
     let playable_lands: Vec<ObjectId> = if may_play_land {

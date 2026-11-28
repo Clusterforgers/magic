@@ -165,8 +165,7 @@ fn r109_illusionists_gambit_sends_the_attackers_elsewhere(
     let defenders = offered
         .iter()
         .find(|(id, _)| *id == raider)
-        .map(|(_, d)| d.clone())
-        .unwrap_or_default();
+        .map_or_default(|(_, d)| d.clone());
     assert!(
         !defenders.contains(&AttackTarget::Player(seat(0))),
         "it can't attack the caster"

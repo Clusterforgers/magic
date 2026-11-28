@@ -343,7 +343,7 @@ fn world((plain, restricted, taps, cost_text, spend): &Case) -> World {
     let mut sources = Vec::new();
     for (at, (mana, only)) in taps.iter().enumerate() {
         let mut option = ManaOption::new(tap(at as u64), TYPES[*mana]);
-        option.only = only.map(|i| restrictions[i].clone()).unwrap_or_default();
+        option.only = only.map_or_default(|i| restrictions[i].clone());
         if spend.allows(&option.only) {
             parts.push((Part::Tap(at), TYPES[*mana]));
         }

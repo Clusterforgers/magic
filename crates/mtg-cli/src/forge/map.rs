@@ -310,8 +310,7 @@ fn keyword_verbs(name: &str) -> Vec<String> {
                 let mut chars = word.chars();
                 chars
                     .next()
-                    .map(|first| first.to_uppercase().chain(chars).collect::<String>())
-                    .unwrap_or_default()
+                    .map_or_default(|first| first.to_uppercase().chain(chars).collect::<String>())
             })
             .collect()
     };

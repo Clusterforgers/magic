@@ -324,8 +324,7 @@ pub fn rows(ability: &Ability) -> Vec<DieRow> {
     let mut copy = ability.clone();
     effects_of(&mut copy)
         .and_then(|effects| tail_roll(effects))
-        .map(std::mem::take)
-        .unwrap_or_default()
+        .map_or_default(std::mem::take)
 }
 
 /// The wordings of each row of the table of the die roll an ability ends in, each with its totals before the bar.

@@ -336,15 +336,12 @@ fn protector_of(state: &GameState, object: &GameObject) -> Option<PlayerId> {
 
 /// The counters on a permanent by kind, in the order of the kind; none for an object that is no permanent.
 fn counters_view(object: &GameObject) -> Vec<(CounterKind, u32)> {
-    object
-        .permanent()
-        .map(|permanent| {
-            permanent
-                .counters()
-                .map(|(kind, count)| (kind.clone(), count))
-                .collect()
-        })
-        .unwrap_or_default()
+    object.permanent().map_or_default(|permanent| {
+        permanent
+            .counters()
+            .map(|(kind, count)| (kind.clone(), count))
+            .collect()
+    })
 }
 
 /// The cards of a merged permanent from the top down; every card of a face-up permanent is public (CR 729).
@@ -593,8 +590,7 @@ impl ObjectView {
             toughness: chars.toughness,
             lights: state
                 .lights(id)
-                .map(mtg_core::attraction::Lights::numbers)
-                .unwrap_or_default(),
+                .map_or_default(mtg_core::attraction::Lights::numbers),
             stickers: sticker_texts(state, id),
             printed_power: card.power.filter(|_| is_token),
             printed_toughness: card.toughness.filter(|_| is_token),

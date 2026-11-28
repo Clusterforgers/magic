@@ -619,12 +619,8 @@ impl CardDefinition {
     /// Printed colors: those of the color indicator if it has one (CR 204), otherwise those of the
     /// mana cost (CR 105.2).
     pub fn colors(&self) -> ColorSet {
-        self.color_indicator.unwrap_or_else(|| {
-            self.mana_cost
-                .as_ref()
-                .map(ManaCost::colors)
-                .unwrap_or_default()
-        })
+        self.color_indicator
+            .unwrap_or_else(|| self.mana_cost.as_ref().map_or_default(ManaCost::colors))
     }
 
     /// Mana value of the card (0 without a cost).

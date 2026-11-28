@@ -577,10 +577,7 @@ impl Search {
         casts.sort_by_key(|id| (std::cmp::Reverse(seen.mana_value(*id)), *id));
         let mut names: Vec<String> = Vec::new();
         casts.retain(|id| {
-            let name = seen
-                .card(*id)
-                .map(|card| card.name.clone())
-                .unwrap_or_default();
+            let name = seen.card(*id).map_or_default(|card| card.name.clone());
             if names.contains(&name) {
                 false
             } else {

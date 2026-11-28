@@ -275,23 +275,20 @@ async fn recipe(pool: &PgPool, game: &str) -> (Value, RecordStatus) {
 
 /// The commanders a lobby row names, as `(seat, name, oracle id)`.
 fn listed_commanders(row: &Value) -> Vec<(u64, String, String)> {
-    row["commanders"]
-        .as_array()
-        .map(|all| {
-            all.iter()
-                .map(|commander| {
-                    (
-                        commander["seat"].as_u64().unwrap(),
-                        commander["name"].as_str().unwrap().to_owned(),
-                        commander["identity"]["oracle_id"]
-                            .as_str()
-                            .unwrap()
-                            .to_owned(),
-                    )
-                })
-                .collect()
-        })
-        .unwrap_or_default()
+    row["commanders"].as_array().map_or_default(|all| {
+        all.iter()
+            .map(|commander| {
+                (
+                    commander["seat"].as_u64().unwrap(),
+                    commander["name"].as_str().unwrap().to_owned(),
+                    commander["identity"]["oracle_id"]
+                        .as_str()
+                        .unwrap()
+                        .to_owned(),
+                )
+            })
+            .collect()
+    })
 }
 
 /// The commanders a row names while the first `held` of `all` hold their seats.

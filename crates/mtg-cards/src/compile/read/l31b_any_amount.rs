@@ -94,8 +94,7 @@ fn capital(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_uppercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_uppercase().chain(chars).collect())
 }
 
 /// The wordings of what follows the payment, X said the card's way: the amount ("that much", "that many"), a stat

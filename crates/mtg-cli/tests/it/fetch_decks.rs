@@ -68,8 +68,7 @@ impl Remote {
                 .index
                 .iter()
                 .find(|entry| entry.0 == *file)
-                .map(|entry| entry.1.clone())
-                .unwrap_or_default();
+                .map_or_default(|entry| entry.1.clone());
             if let Some((revision, body)) = state.decks.get_mut(*file) {
                 *revision += 1;
                 *body = deck_json(&name, *revision);

@@ -36,10 +36,7 @@ fn r402_unlock_costs(driver: &Driver) -> Result<Vec<(String, String)>, ScriptErr
         .map(|face| {
             (
                 face.name.clone(),
-                face.cost
-                    .as_ref()
-                    .map(ToString::to_string)
-                    .unwrap_or_default(),
+                face.cost.as_ref().map_or_default(ToString::to_string),
             )
         })
         .collect();

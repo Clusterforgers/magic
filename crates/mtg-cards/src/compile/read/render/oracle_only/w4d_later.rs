@@ -121,7 +121,7 @@ fn referred(value: &Value, delayed: &Value, after_lead: bool) -> (Option<Value>,
 /// The kind a target is named back by: "spell" or its first card type ("creature").
 fn noun(target: &Value) -> String {
     let filter = target.pointer("/what/Object").and_then(Value::as_array);
-    let filter = filter.map(Vec::as_slice).unwrap_or_default();
+    let filter = filter.map_or_default(Vec::as_slice);
     if filter.iter().any(|part| part == "Spell") {
         return "spell".to_owned();
     }

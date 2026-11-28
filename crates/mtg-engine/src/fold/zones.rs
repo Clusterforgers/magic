@@ -333,8 +333,7 @@ fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
     let phyrexian = Subtype("Phyrexian".to_owned());
     let printed = state
         .object(id)
-        .map(|object| object.card().subtypes.clone())
-        .unwrap_or_default();
+        .map_or_default(|object| object.card().subtypes.clone());
     (
         chars.types.contains(CardType::Creature),
         chars.has_subtype(&printed, &phyrexian),

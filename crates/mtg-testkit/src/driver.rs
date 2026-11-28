@@ -689,8 +689,7 @@ impl Driver {
                 .blockers
                 .iter()
                 .find(|b| b.object == blocker_id)
-                .map(|b| b.can_block.clone())
-                .unwrap_or_default();
+                .map_or_default(|b| b.can_block.clone());
             let attacker_id = self.find(can_block, attacker, "attackers the blocker can block")?;
             chosen.push((blocker_id, attacker_id));
         }

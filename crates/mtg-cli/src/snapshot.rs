@@ -199,7 +199,7 @@ fn buckets(ordered: &[(&CardResult, Option<u32>)]) -> Vec<RankBucket> {
 
 fn missing_card(card: &CardResult, rank: Option<u32>) -> MissingCard {
     let first = card.blockers.iter().next();
-    let detail = first.map(Blocker::label).unwrap_or_default();
+    let detail = first.map_or_default(Blocker::label);
     let blocker = if card.waiting {
         "Waits for a player to read its rules".to_owned()
     } else {

@@ -69,7 +69,7 @@ fn c11b_cast_target_near_misses_stay_unread(#[case] text: &str) {
         ClauseKind::Spell
     };
     let read = clause(text, kind, false);
-    let written = read.as_ref().map(render_variants).unwrap_or_default();
+    let written = read.as_ref().map_or_default(render_variants);
     assert!(
         !written.iter().any(|w| same_text(w, text)),
         "{text}: {read:?}"
