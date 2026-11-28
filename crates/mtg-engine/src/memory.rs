@@ -318,8 +318,11 @@ fn r6072_named_by_emblem(state: &GameState, source: ObjectRef) -> bool {
         .values()
         .filter(|object| object.kind == crate::object::ObjectKind::Emblem)
         .any(|emblem| {
-            serde_json::to_string(&emblem.card().rules)
-                .is_ok_and(|written| written.contains(&named))
+            crate::ability_reader::abilities_of(state, emblem.id())
+                .iter()
+                .any(|(_, rules)| {
+                    serde_json::to_string(&**rules).is_ok_and(|written| written.contains(&named))
+                })
         })
 }
 
