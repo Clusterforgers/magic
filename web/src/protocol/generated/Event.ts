@@ -52,6 +52,7 @@ import type { Restricted } from "./Restricted";
 import type { Revealed } from "./Revealed";
 import type { RuleEffect } from "./RuleEffect";
 import type { Scried } from "./Scried";
+import type { Sector } from "./Sector";
 import type { Snapshot } from "./Snapshot";
 import type { SpellCopy } from "./SpellCopy";
 import type { SpendOn } from "./SpendOn";
@@ -1333,7 +1334,15 @@ player: PlayerId,
 /**
  * Each attacker and its pile.
  */
-piles: Array<[ObjectId, Array<ObjectId>]>, } } | { "R111GraveyardOrdered": { 
+piles: Array<[ObjectId, Array<ObjectId>]>, } } | { "P170aSectorsAssigned": { 
+/**
+ * The player who assigned them, their controller.
+ */
+player: PlayerId, 
+/**
+ * Each creature and its sector.
+ */
+sectors: Array<[ObjectId, Sector]>, } } | "P170aSectorsLost" | { "R111GraveyardOrdered": { 
 /**
  * Whose graveyard.
  */

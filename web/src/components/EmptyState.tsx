@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ElementType, ReactNode } from 'react'
+import type { CoachMark } from '@/features/learn/anchors'
 import { cn } from '@/lib/utils'
 
 interface EmptyStateProps {
@@ -13,13 +14,24 @@ interface EmptyStateProps {
   /** The way out: buttons or links. */
   action?: ReactNode
   className?: string
+  /** The coach anchor the box carries, if any. */
+  mark?: CoachMark
 }
 
 /** What a list or page shows when there is nothing to list: why, and the next step. */
-export function EmptyState({ icon: Icon, title, as = 'h2', children, action, className }: EmptyStateProps) {
+export function EmptyState({
+  icon: Icon,
+  title,
+  as = 'h2',
+  children,
+  action,
+  className,
+  mark,
+}: EmptyStateProps) {
   const Heading: ElementType = as
   return (
     <div
+      {...mark}
       data-slot="empty-state"
       className={cn('surface grid justify-items-center gap-3 border-dashed p-8 text-center', className)}
     >

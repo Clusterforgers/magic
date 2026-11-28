@@ -53,6 +53,10 @@ const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string 
   LoopDraw: { countdown: 'Letting the loop run: a draw', announced: 'lets the loop run for you: a draw' },
   DeclareBlockers: { countdown: 'Declaring no blocks', announced: 'declares no blocks for you' },
   R509BlockPiles: { countdown: 'Leaving every pile empty', announced: 'leaves every pile empty for you' },
+  P170aAssignSectors: {
+    countdown: 'Spreading them over the sectors',
+    announced: 'spreads them over the sectors for you',
+  },
   R706ChooseDice: { countdown: 'Keeping the results for you', announced: 'keeps the results for you' },
   R706Ignore: { countdown: 'Ignoring the first roll for you', announced: 'ignores the first roll for you' },
   ChooseTargets: { countdown: 'Choosing no targets', announced: 'chooses no targets for you' },

@@ -14,6 +14,7 @@ import type { NameOptions } from "./NameOptions";
 import type { NumberOptions } from "./NumberOptions";
 import type { OptionOptions } from "./OptionOptions";
 import type { OrderOptions } from "./OrderOptions";
+import type { P170aSectorsOptions } from "./P170aSectorsOptions";
 import type { PayOptions } from "./PayOptions";
 import type { PriorityOptions } from "./PriorityOptions";
 import type { R509PilesOptions } from "./R509PilesOptions";
@@ -27,4 +28,4 @@ import type { YesNoOptions } from "./YesNoOptions";
 /**
  * The kind of decision, each variant carrying its exhaustive options.
  */
-export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions } | { "ChooseTargets": TargetOptions } | { "ChooseMode": ModeOptions } | { "ChooseNumber": NumberOptions } | { "ChooseName": NameOptions } | { "DivideAmount": DivideOptions } | { "ChooseCards": CardsOptions } | { "OrderCards": OrderOptions } | { "Scry": ScryOptions } | { "YesNo": YesNoOptions } | { "ChooseOption": OptionOptions } | { "ChooseCosts": CostsOptions } | { "OrderTriggers": TriggersOptions } | { "ChooseReplacement": ReplacementOptions } | { "Loop": LoopOptions } | { "R706ChooseDice": R706DiceOptions } | { "R509BlockPiles": R509PilesOptions };
+export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions } | { "ChooseTargets": TargetOptions } | { "ChooseMode": ModeOptions } | { "ChooseNumber": NumberOptions } | { "ChooseName": NameOptions } | { "DivideAmount": DivideOptions } | { "ChooseCards": CardsOptions } | { "OrderCards": OrderOptions } | { "Scry": ScryOptions } | { "YesNo": YesNoOptions } | { "ChooseOption": OptionOptions } | { "ChooseCosts": CostsOptions } | { "OrderTriggers": TriggersOptions } | { "ChooseReplacement": ReplacementOptions } | { "Loop": LoopOptions } | { "R706ChooseDice": R706DiceOptions } | { "R509BlockPiles": R509PilesOptions } | { "P170aAssignSectors": P170aSectorsOptions };

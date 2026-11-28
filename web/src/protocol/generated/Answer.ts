@@ -15,6 +15,7 @@ import type { PayChoice } from "./PayChoice";
 import type { PriorityAction } from "./PriorityAction";
 import type { ReplacementChoice } from "./ReplacementChoice";
 import type { ScryChoice } from "./ScryChoice";
+import type { Sector } from "./Sector";
 import type { TargetChoice } from "./TargetChoice";
 import type { TriggersChoice } from "./TriggersChoice";
 import type { YesNoChoice } from "./YesNoChoice";
@@ -40,4 +41,4 @@ bands?: Array<Array<ObjectId>>,
  * The creatures attackers enlist as they attack (CR 702.154a), each (attacker, creature tapped) offered with
  * `AttackerOption::r114_enlist`.
  */
-r114_enlist?: Array<[ObjectId, ObjectId]>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "ChooseName": NameChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice } | { "Loop": LoopAnswer } | { "R706ChooseDice": Array<number> } | { "R509BlockPiles": Array<Array<ObjectId>> } | "Undo";
+r114_enlist?: Array<[ObjectId, ObjectId]>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "ChooseName": NameChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice } | { "Loop": LoopAnswer } | { "R706ChooseDice": Array<number> } | { "R509BlockPiles": Array<Array<ObjectId>> } | { "P170aAssignSectors": Array<[ObjectId, Sector]> } | "Undo";

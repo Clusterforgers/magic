@@ -13,7 +13,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (gn1la) A permanent that returns to the battlefield with its card types set ("it's an enchantment", Enduring Vitality); `Destination::Battlefield`
 - [ ] (un34s) Sticker sheet lines no reader knows (16 sheets `Partial`, `PARTIAL` in `tests/it/un34_sheets.rs`): protection from even or odd mana values and from creatures with two or more creature types, Heroic, Metalcraft and Threshold statics, cast from the graveyard, switch power and toughness, a flicker under its owner's control, "mills twice that many", divided damage by its power, "can't block this creature", "blocks this creature", Morbid at each end step, a dice-roll replacement, generic mana of the cast spell, a static and a trigger on one sticker; `compile/un34_sheets.rs`
 - [ ] (r378d) Turn history: damage by sources of a name (Blazing Effigy); `turn_log.rs`, `turn_summary.rs`
-- [ ] (p170a) Space sculptor (Space Beleren): alpha, beta and gamma sectors kept per creature, assigned by its controller with opponents first as a creature arrives unassigned (a decision with its web prompt), blocking limited to the same sector for a turn, and a sector chosen for counters and destruction; `layers`, `combat.rs`
 - [ ] (p170b) Contraptions: a Contraption deck in the command zone, sprockets, cranking and assembling, before r6013c (Steamflogger Boss); `un33_attractions.rs` as the model
 
 ## Forge coverage

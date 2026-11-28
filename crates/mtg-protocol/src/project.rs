@@ -506,6 +506,7 @@ impl ObjectView {
                 .any(|subtype| subtype.0 == "Class")
                 .then(|| p.level()),
             doors: state.dk1c5_doors(id),
+            sector: p.sector(),
         })
     }
 

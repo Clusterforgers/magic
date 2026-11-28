@@ -1398,6 +1398,16 @@ pub enum Event {
         /// Each attacker and its pile.
         piles: Vec<(ObjectId, Vec<ObjectId>)>,
     },
+    /// A player assigned their creatures that were in no sector to sectors of space sculptor (`p170a_sectors`), as a
+    /// state-based action.
+    P170aSectorsAssigned {
+        /// The player who assigned them, their controller.
+        player: PlayerId,
+        /// Each creature and its sector.
+        sectors: Vec<(ObjectId, crate::p170a_sectors::Sector)>,
+    },
+    /// Every sector of space sculptor is lost: no permanent with space sculptor is left on the battlefield.
+    P170aSectorsLost,
     /// A player put the cards of their graveyard in an order they chose (CR 404.2).
     R111GraveyardOrdered {
         /// Whose graveyard.
@@ -1981,6 +1991,8 @@ impl Event {
             | Event::R706DieIgnored { .. }
             | Event::R706VisitAsks { .. }
             | Event::R509PilesAssigned { .. }
+            | Event::P170aSectorsAssigned { .. }
+            | Event::P170aSectorsLost
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
             | Event::VotesFinished { .. }

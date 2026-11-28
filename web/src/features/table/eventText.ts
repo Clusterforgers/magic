@@ -413,6 +413,8 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if (rule === 'ReverseTurnOrder') what = 'Turn order is reversed'
   else if (rule === 'Planar') what = 'A rule about the planar die or planeswalking is in force'
   else if (rule === 'R509BlockPiles') what = 'Blockers are divided into piles this turn'
+  else if (rule === 'P170aSectorBlocks')
+    what = 'Creatures in each sector can be blocked only by creatures in the same sector this turn'
   else if ('AttackAsThoughHasteAt' in rule)
     what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
@@ -1114,6 +1116,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
         return quiet('Combat ends')
       case 'DamageCleared':
         return quiet('Damage wears off')
+      case 'P170aSectorsLost':
+        return line('The sectors are lost: no space sculptor is left')
     }
   }
   if ('FirstPlayerChosen' in event) return line(`${n.seat(event.FirstPlayerChosen.player)} goes first`)
@@ -1330,6 +1334,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, piles } = event.R509PilesAssigned
     const filled = piles.filter(([, pile]) => pile.length > 0).length
     return line(`${n.seat(player)}'s piles go to the attackers at random: ${filled} with creatures`)
+  }
+  if ('P170aSectorsAssigned' in event) {
+    const { player, sectors } = event.P170aSectorsAssigned
+    const placed = sectors.map(([object, sector]) => `${n.card(object)} to ${sector.toLowerCase()}`)
+    return line(`${n.seat(player)} assigns sectors: ${placed.join(', ')}`)
   }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit

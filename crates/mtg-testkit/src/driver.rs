@@ -801,6 +801,7 @@ impl Driver {
             DecisionKind::Loop(_) => Answer::Loop(mtg_engine::loops::LoopAnswer::Stop),
             DecisionKind::R706ChooseDice(o) => Answer::R706ChooseDice(o.passive()),
             DecisionKind::R509BlockPiles(o) => Answer::R509BlockPiles(o.empty_piles()),
+            DecisionKind::P170aAssignSectors(o) => Answer::P170aAssignSectors(o.spread()),
         }
     }
 

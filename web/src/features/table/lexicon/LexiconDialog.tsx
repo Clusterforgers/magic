@@ -76,8 +76,9 @@ export function LexiconDialog() {
           onChange={(event) => lexiconStore.setState({ query: event.target.value })}
           placeholder="Search by name or by what it does"
           aria-label="Search the lexicon"
+          {...anchor('lexicon.search')}
         />
-        <div role="group" aria-label="Show" className="flex flex-wrap gap-1">
+        <div role="group" aria-label="Show" {...anchor('lexicon.kinds')} className="flex flex-wrap gap-1">
           {(['all', ...KINDS] as const).map((each) => (
             <Button
               key={each}
@@ -102,8 +103,13 @@ export function LexiconDialog() {
             aria-label="Lexicon entries"
             className="-mx-1 grid min-h-0 content-start gap-3 overflow-y-auto px-1 text-sm"
           >
-            {found.map((term) => (
-              <li key={`${term.kind}:${term.title}`} data-slot="lexicon-entry" className="grid gap-0.5">
+            {found.map((term, at) => (
+              <li
+                key={`${term.kind}:${term.title}`}
+                data-slot="lexicon-entry"
+                {...(at === 0 ? anchor('lexicon.entry') : {})}
+                className="grid gap-0.5"
+              >
                 <p className="flex flex-wrap items-baseline gap-x-2">
                   <span className="font-medium">{term.title}</span>
                   <span className="text-xs text-muted-foreground">

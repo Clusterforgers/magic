@@ -2,6 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { CircleAlertIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useAuth, useAuthStore } from '@/features/auth/context'
@@ -219,7 +220,7 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 md:items-start md:gap-x-8" data-slot="create-columns">
-        <div className="grid content-start gap-6" data-slot="create-game-column">
+        <div className="grid content-start gap-6" data-slot="create-game-column" {...anchor('create.game')}>
           <FormatField
             value={draft.format}
             onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
@@ -257,7 +258,11 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
             />
           )}
         </div>
-        <div className="grid content-start gap-4" data-slot="create-options-column">
+        <div
+          className="grid content-start gap-4"
+          data-slot="create-options-column"
+          {...anchor('create.options')}
+        >
           {draft.links ? null : (
             <VisibilityField
               value={draft.visibility}
@@ -301,6 +306,7 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
       {/* Sticks to the bottom of the window, so a long form (a phone, an open disclosure) keeps the button in reach. */}
       <div
         data-slot="create-footer"
+        {...anchor('create.footer')}
         className="sticky bottom-0 z-10 -mx-4 border-t bg-background px-4 py-3 sm:-mx-6 sm:px-6"
       >
         <Button type="submit" size="lg" loading={pending} className="w-full sm:w-auto">

@@ -7,6 +7,7 @@
 import type { Answer, DecisionKind, ObjectId, PlayerId, Target } from '@/protocol/generated'
 import { optionLabel, modeLabel } from './choiceText'
 import { divisionAnswer, evenShares } from './divideText'
+import { spreadSectors } from './sectorsText'
 import { distinctTargets, targetKey } from './targetText'
 
 /** The most answers listed for one list of things on offer; a longer list is cut and says how many it left out. */
@@ -286,6 +287,10 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
   if ('R509BlockPiles' in kind) {
     const empty = kind.R509BlockPiles.attackers.map(() => [])
     return some(pick('piles-none', 'No blocks: every pile empty', { R509BlockPiles: empty }))
+  }
+  if ('P170aAssignSectors' in kind) {
+    const spread = spreadSectors(kind.P170aAssignSectors.creatures)
+    return some(pick('sectors-spread', 'Spread over the sectors', { P170aAssignSectors: spread }))
   }
   return none()
 }

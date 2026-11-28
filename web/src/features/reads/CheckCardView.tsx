@@ -1,5 +1,6 @@
 import { CheckIcon } from 'lucide-react'
 import { useContext, useEffect, useRef } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { Kbd } from '@/components/Kbd'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -100,6 +101,7 @@ export function CheckCardView({ card, byHand, checked, onChecked, keys = true }:
     <article
       ref={root}
       data-slot="check-card"
+      {...anchor('review.check')}
       data-oracle-id={card.oracleId}
       data-support={card.support}
       className="grid gap-4 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-start md:gap-6"
@@ -129,6 +131,7 @@ export function CheckCardView({ card, byHand, checked, onChecked, keys = true }:
         <OracleLines card={card} />
         <div
           data-slot="check-actions"
+          {...anchor('review.actions')}
           className="sticky bottom-0 z-10 -mb-4 grid gap-3 border-t border-border bg-surface pt-3 pb-4"
         >
           {byHand === undefined || decks.length === 0 ? null : (

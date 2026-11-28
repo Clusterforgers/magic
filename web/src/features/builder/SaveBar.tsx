@@ -1,5 +1,6 @@
 import { CircleAlertIcon, PencilIcon, SaveIcon } from 'lucide-react'
 import { useId } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { SaveStatus } from './saveStatus'
@@ -19,6 +20,7 @@ export function SaveBar({ status, onSave }: SaveBarProps) {
   return (
     <div
       data-slot="save-bar"
+      {...anchor('builder.save')}
       data-status={status.kind}
       className="sticky bottom-0 z-10 flex items-center justify-between gap-3 rounded-b-[inherit] border-t bg-surface p-3"
     >

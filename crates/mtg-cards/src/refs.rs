@@ -591,6 +591,8 @@ pub enum Pred {
     /// Is exactly the one colour its controller chose under the name, when each player chose one (`ChooseValue` by
     /// several players): "it's only the color its controller chose".
     R6600OnlyControllersColor(String),
+    /// Is a creature in the sector the resolution chose under the name (`ValueKind::P170aSector`, space sculptor).
+    P170aInSector(String),
     /// Its power, toughness, mana value or loyalty compares to the amount.
     Compare {
         /// The characteristic.

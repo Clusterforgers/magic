@@ -9,6 +9,7 @@ import {
   UploadIcon,
 } from 'lucide-react'
 import { useCallback, useMemo, useRef, useState } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
@@ -128,7 +129,7 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
     <Button
       type="button"
       aria-haspopup="dialog"
-      data-tour="import-deck"
+      {...anchor('decks.import')}
       onClick={() => open({ kind: 'import' })}
     >
       <UploadIcon aria-hidden="true" />
@@ -140,7 +141,7 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
       type="button"
       variant="outline"
       aria-haspopup="dialog"
-      data-tour="new-deck"
+      {...anchor('decks.new')}
       onClick={() => open({ kind: 'new' })}
     >
       <PlusIcon aria-hidden="true" />
@@ -151,7 +152,11 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
   return (
     // As high as the window under the header, and never too low for a few rows of decks: a short window scrolls the page.
     <PageShell width="wide" className="sm:flex sm:h-[calc(100dvh-3.5rem-1px)] sm:min-h-128 sm:flex-col">
-      <section aria-labelledby="decks-title" className="flex min-h-0 flex-1 flex-col gap-6">
+      <section
+        aria-labelledby="decks-title"
+        className="flex min-h-0 flex-1 flex-col gap-6"
+        {...anchor('decks.page')}
+      >
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="grid gap-1">
             <h1
@@ -304,6 +309,7 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
             ) : (
               <ul
                 aria-label="Your decks"
+                {...anchor('decks.list')}
                 aria-busy={state.status === 'ready' && state.refreshing}
                 className="grid gap-3"
               >

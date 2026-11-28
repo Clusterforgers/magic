@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { CopyButton } from '@/components/CopyButton'
 import { loadInvites } from '@/lib/invites'
 import { codeText, joinLinkUrl } from '@/lib/joinCode'
@@ -16,7 +17,12 @@ export function JoinInvite({ game }: { game: string }) {
   const shown = code === null ? null : codeText(code)
   const link = code === null ? null : joinLinkUrl(window.location.origin, code)
   return (
-    <section aria-labelledby="invite-title" data-slot="join-invite" className="surface grid gap-2 p-4">
+    <section
+      aria-labelledby="invite-title"
+      data-slot="join-invite"
+      {...anchor('lobby.invite')}
+      className="surface grid gap-2 p-4"
+    >
       <div>
         <h2 id="invite-title" className="text-lg font-semibold">
           Invite players
