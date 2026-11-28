@@ -86,9 +86,9 @@ export function devReworkedView(stage: DevRework, first: number): BossView {
       object: first + at,
     })),
     personality: {
-    name: 'Spiteful',
-    text: 'Hunts the healer: eyes the hero with the most on the table, each life they gained in the last rounds counting 2 more.',
-  },
+      name: 'Spiteful',
+      text: 'Hunts the healer: eyes the hero with the most on the table, each life they gained in the last rounds counting 2 more.',
+    },
   }
 }
 
