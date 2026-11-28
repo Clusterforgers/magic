@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a2d90efe-80f2-4069-b135-a8bd00ccd2b0",
+  "name": "Agent Maria Hill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agent Maria Hill",
+      "oracle_fingerprint": "89413e57777b3a9bb0db14ba73d4cf10",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "HasKeywordNamed": "Teamwork" },
+                  "AdditionalCostPaid",
+                  { "Lc4PaidWith": "This" }
+                ]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

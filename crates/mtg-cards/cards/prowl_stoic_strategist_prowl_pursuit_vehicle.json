@@ -1,7 +1,7 @@
 {
   "oracle_id": "8dfd9baf-c3cc-4d2f-a0b0-b323b6480562",
   "name": "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Prowl, Stoic Strategist",
@@ -9,15 +9,47 @@
       "abilities": [
         { "Keyword": { "MoreThanMeetsTheEye": "{2}{W}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 78, "end": 222 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Other",
+                    "Tapped",
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "OwnerOf": { "Bound": "exiled" } },
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 223, "end": 307 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "P170LeftExileWith": "This" }] } },
+                { "Did": { "action": "PlayedLand", "what": [{ "P170LeftExileWith": "This" }] } }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "Transform": { "what": "This" } }]
           }
         }
       ]
@@ -28,9 +60,26 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 231 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "Other",
+                  { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
           }
         }
       ]

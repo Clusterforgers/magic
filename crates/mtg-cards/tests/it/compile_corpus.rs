@@ -226,6 +226,13 @@ fn without_ability_word(text: &str) -> &str {
         {
             rest
         }
+        // An ability word split by an ellipsis across two abilities ("Throw ... — ", "... Catch — ").
+        Some((word, rest))
+            if (word.ends_with(" ...") || word.starts_with("... "))
+                && word.trim_matches(['.', ' ']).split(' ').count() <= 4 =>
+        {
+            rest
+        }
         _ => text,
     }
 }

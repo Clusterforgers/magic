@@ -292,9 +292,14 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `can't attack ${whom}`
   }
   if ('ChangeText' in modification) {
-    const word = (text: TextWord) => ('Color' in text ? text.Color.toLowerCase() : text.Subtype)
+    const word = (text: TextWord) =>
+      text === 'Lc4EveryColor'
+        ? 'every color word'
+        : 'Color' in text
+          ? `"${text.Color.toLowerCase()}"`
+          : `"${text.Subtype}"`
     const { from, to } = modification.ChangeText
-    return `${group ? 'have' : 'has'} "${word(from)}" changed to "${word(to)}" in ${group ? 'their' : 'its'} text`
+    return `${group ? 'have' : 'has'} ${word(from)} changed to ${word(to)} in ${group ? 'their' : 'its'} text`
   }
   if ('SetName' in modification) {
     return `${group ? 'are' : 'is'} named ${modification.SetName}`
@@ -347,6 +352,7 @@ function durationWords(
     UntilYourNextUpkeep: " until their controller's next upkeep",
     UntilEndOfYourNextUpkeep: " until the end of their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
+    R513UntilNextEndStep: ' until the next end step',
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     DuringItsControllersNextTurn: " during its controller's next turn",
     UntilItsControllersNextCombatEnds: " during its controller's next combat phase",

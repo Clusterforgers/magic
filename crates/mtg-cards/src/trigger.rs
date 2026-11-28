@@ -545,6 +545,9 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         who: Ref,
+        /// The Attraction visited ("whenever you visit it"); any Attraction when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
     },
     /// The prize ability of an Attraction ("Prize â "): its controller claims the prize of the source; `Triggering` is
     /// that player.

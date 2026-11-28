@@ -1096,7 +1096,11 @@ r6104_tapped?: ObjectRef,
 /**
  * The permanent whose static ability made the copy ("enchanted creature is a copy of ...", `R707CopyOf`).
  */
-r707_static?: ObjectRef, } } | { "MonarchChanged": { 
+r707_static?: ObjectRef, 
+/**
+ * The copy lasted until the next end step, which began ("until the next end step").
+ */
+r513_end_step?: boolean, } } | { "MonarchChanged": { 
 /**
  * The new monarch.
  */

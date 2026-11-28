@@ -709,7 +709,13 @@ fn keyword_way(
     let (way, name, cost, from_here) = match keyword {
         Keyword::Flashback(cost) => (CastWay::Flashback, "Flashback", cost, in_graveyard),
         Keyword::Escape(cost) => (CastWay::Escape, "Escape", cost, in_graveyard),
-        Keyword::R116BeamMeUp(cost) => (CastWay::R116BeamMeUp, "Beam me up", cost, in_graveyard),
+        // Only instant and sorcery spells are cast with beam me up.
+        Keyword::R116BeamMeUp(cost) => (
+            CastWay::R116BeamMeUp,
+            "Beam me up",
+            cost,
+            in_graveyard && r116_instant_or_sorcery(state, id),
+        ),
         Keyword::JumpStart if in_graveyard => {
             return discard_way(state, id, CastWay::JumpStart, instant);
         }
@@ -902,6 +908,13 @@ fn discard_way(state: &GameState, id: ObjectId, way: CastWay, instant: bool) -> 
 }
 
 /// Whether the card `id` is a creature card: dash is an alternative cost for a creature spell only (CR 702.109a).
+fn r116_instant_or_sorcery(state: &GameState, id: ObjectId) -> bool {
+    state.object(id).is_some_and(|card| {
+        let types = card.base_types();
+        types.contains(CardType::Instant) || types.contains(CardType::Sorcery)
+    })
+}
+
 fn is_creature(state: &GameState, id: ObjectId) -> bool {
     state
         .object(id)

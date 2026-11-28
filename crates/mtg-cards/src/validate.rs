@@ -932,6 +932,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "TargetedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::Lc4PaidWith(who) => {
+                self.uses("Pred", "Lc4PaidWith");
+                self.reference(who, Kind::Object);
+            }
             Pred::R113CopyOf(who) => {
                 self.uses("Pred", "R113CopyOf");
                 self.reference(who, Kind::Object);
@@ -1046,6 +1050,7 @@ impl<'a> Walker<'a> {
             | Pred::SharesSubtype(r)
             | Pred::SharesCreatureTypeWithEach(r)
             | Pred::ExiledWith(r)
+            | Pred::P170LeftExileWith(r)
             | Pred::R114ExiledByThem(r)
             | Pred::R114EnlistedBy(r)
             | Pred::EncodedWith(r)
@@ -1157,6 +1162,7 @@ impl<'a> Walker<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::Lc4PaidWith(_)
             | Pred::R113CopyOf(_)
             | Pred::R114CouldTarget(_)
             | Pred::R114TargetsOnlyOne(_)
@@ -2246,7 +2252,9 @@ impl<'a> Walker<'a> {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
-                    CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
+                    CostItem::ExileSpell { filter } | CostItem::Lc4UnattachFrom { filter } => {
+                        w.at("filter", |w| w.selector(filter));
+                    }
                     CostItem::R6012ChooseOrExiled { filter, exiled } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("exiled", |w| w.selector(exiled));
@@ -3269,6 +3277,7 @@ impl<'a> Walker<'a> {
             Modification::AddChosenSubtype
             | Modification::SetChosenColor
             | Modification::AddChosenColor
+            | Modification::Lc4ChosenColorWords
             | Modification::R6001AddChosenAbilities
             | Modification::R121SetChosenName
             | Modification::SetLandTypesNthChosen(_) => {
@@ -3545,7 +3554,6 @@ impl<'a> Walker<'a> {
             | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
             | TriggerPattern::RolledToVisit { who }
-            | TriggerPattern::VisitedAttraction { who }
             | TriggerPattern::ClaimedPrize { who }
             | TriggerPattern::OpenedAttraction { who }
             | TriggerPattern::PlayerAttacked { who }
@@ -3566,7 +3574,9 @@ impl<'a> Walker<'a> {
             | TriggerPattern::PlayerCountersPut { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
-            TriggerPattern::Drew { who, what, .. } | TriggerPattern::Did { who, what, .. } => {
+            TriggerPattern::Drew { who, what, .. }
+            | TriggerPattern::Did { who, what, .. }
+            | TriggerPattern::VisitedAttraction { who, what } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.selector(what));
             }
@@ -4129,6 +4139,13 @@ impl Walker<'_> {
             TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.ep23_token_copy_exceptions(except);
+            }
+            TokenRef::P158WithTriggersOf { token, of } => {
+                self.at("token", |w| w.token_spec(token, false));
+                for named in of {
+                    self.at("of", |w| w.reference(named, Kind::Object));
+                }
+                self.uses("Effect", "CreateToken.P158WithTriggersOf");
             }
             TokenRef::R4700OfChosen { size } => {
                 self.at("size", |w| w.amount(size));
@@ -8739,6 +8756,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::R6012ChooseOrExiled { .. }
+                | CostItem::Lc4UnattachFrom { .. }
                 | CostItem::ExiledToGraveyard { .. }
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }

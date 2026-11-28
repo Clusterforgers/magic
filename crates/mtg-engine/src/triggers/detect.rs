@@ -298,7 +298,10 @@ enum Happened {
         mentored: ObjectId,
     },
     /// A player visited an Attraction, once for each visited.
-    VisitedAttraction { player: PlayerId },
+    VisitedAttraction {
+        player: PlayerId,
+        attraction: ObjectId,
+    },
     /// A campaign phase of a player began, its emblem the new object.
     PhaseBegan { player: PlayerId, emblem: ObjectId },
     /// A player claimed the prize of an Attraction.
@@ -1544,7 +1547,10 @@ fn about_players_and_permanents(
             found.extend(
                 visited
                     .iter()
-                    .map(|_| Happened::VisitedAttraction { player: *player }),
+                    .map(|attraction| Happened::VisitedAttraction {
+                        player: *player,
+                        attraction: *attraction,
+                    }),
             );
         }
         Event::PhaseBegan { player, emblem } => found.push(Happened::PhaseBegan {
@@ -2023,6 +2029,23 @@ fn player_targeted(
 }
 
 /// What `pattern` finds in the player actions of a game: a venture, a die roll, a crime and the mana spent in a turn.
+/// A visit of `attraction` by `player` against "whenever `who` visit(s) `what`" (any Attraction when `what` is empty).
+fn p170_visited(
+    who: &Ref,
+    what: &mtg_cards::refs::Selector,
+    player: PlayerId,
+    attraction: ObjectId,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let visited = state.object(attraction).map(GameObject::reference)?;
+    let by = scope.players(who).is_ok_and(|p| p.contains(&player));
+    (by && (what.is_empty() || scope.selects(what, visited).ok()?))
+        .then(|| counted(state, vec![Target::Player(player)], 0))
+}
+
+// One arm for each player action a trigger waits for.
+#[allow(clippy::too_many_lines)]
 fn matching_player_action(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -2109,8 +2132,11 @@ fn matching_player_action(
         (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, result }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], *result))
         }
+        (
+            TriggerPattern::VisitedAttraction { who, what },
+            Happened::VisitedAttraction { player, attraction },
+        ) => p170_visited(who, what, *player, *attraction, scope),
         (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player })
-        | (TriggerPattern::VisitedAttraction { who }, Happened::VisitedAttraction { player })
         | (TriggerPattern::ClaimedPrize { who }, Happened::PrizeClaimed { player, .. }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
         }

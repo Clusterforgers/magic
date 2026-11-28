@@ -42,4 +42,8 @@ r707_static?: ObjectRef,
 /**
  * The copy ends once the permanent is turned face down ("until this creature is turned face down").
  */
-r115_until_face_down?: boolean, };
+r115_until_face_down?: boolean, 
+/**
+ * The copy ends as the next end step begins ("until the next end step", CR 513).
+ */
+r513_until_end_step?: boolean, };

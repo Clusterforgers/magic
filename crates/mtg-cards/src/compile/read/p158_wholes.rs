@@ -1,4 +1,4 @@
-//! p158 activated and loyalty abilities whose wordings no other reader or writer joins: each entry of
+//! p158 abilities whose wordings no other reader or writer joins: each entry of
 //! `p158_wholes.json` is an ability with the words the card prints for it, read when a clause says exactly those words
 //! and written back from the ability.
 
@@ -70,6 +70,12 @@ mod tests {
     #[case("\"CreaturesHelpPay\":4", "\"CreaturesHelpPay\":3")]
     #[case("\"OptionsNotNoted\"", "\"Options\"")]
     #[case("\"Opponents\"", "\"EachPlayer\"")]
+    #[case("\"R513UntilNextEndStep\"", "\"UntilYourNextEndStep\"")]
+    #[case("\"XAtLeast\":1", "\"XAtLeast\":2")]
+    #[case("\"Hand of Vecna\"", "\"Eye of Vecna\"")]
+    #[case("\"power\":8", "\"power\":7")]
+    #[case("\"right\":2", "\"right\":3")]
+    #[case("\"Blue\",\"Black\"", "\"Blue\",\"Red\"")]
     fn p158_a_changed_part_is_not_written_whole(#[case] from: &str, #[case] to: &str) {
         for (shape, text) in P158_SHAPES.iter() {
             let json = serde_json::to_string(shape).unwrap();
@@ -98,6 +104,11 @@ mod tests {
     #[case("twice the number", "three times the number")]
     #[case("hasn't been chosen", "has been chosen")]
     #[case("an opponent of your choice", "a player of your choice")]
+    #[case("until the next end step", "until end of turn")]
+    #[case("X can't be 0", "X can't be 1")]
+    #[case("all triggered abilities", "all activated abilities")]
+    #[case("lost 2 or more life", "lost 3 or more life")]
+    #[case("it's 4/4", "it's 5/5")]
     fn p158_a_near_miss_reads_as_nothing(#[case] from: &str, #[case] to: &str) {
         for (_, text) in P158_SHAPES.iter() {
             if text.contains(from) {

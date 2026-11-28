@@ -9,7 +9,7 @@ use super::{Own, clause_with};
 use crate::ability::Ability;
 use crate::compile::ClauseKind;
 use crate::effect::Effect;
-use crate::refs::{Ref, ZoneKind};
+use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
 use crate::value::Amount;
 
@@ -82,9 +82,10 @@ pub(super) fn un33_event(r: &mut Reader<'_>, verb: &str, by: Ref) -> Option<Trig
             visit_roll(r, &by)?;
             Some(TriggerPattern::RolledToVisit { who: by })
         }
-        "visit" | "visits" => {
-            (attractions(r)? == 1).then_some(TriggerPattern::VisitedAttraction { who: by })
-        }
+        "visit" | "visits" => (attractions(r)? == 1).then_some(TriggerPattern::VisitedAttraction {
+            who: by,
+            what: Selector::default(),
+        }),
         "claim" | "claims" => {
             r.need("the prize of")?;
             (attractions(r)? == 1).then_some(TriggerPattern::ClaimedPrize { who: by })
@@ -102,9 +103,10 @@ pub(super) fn un33_event_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::RolledToVisit { who: Ref::You } => {
             Some("Whenever you roll to visit your Attractions".to_owned())
         }
-        TriggerPattern::VisitedAttraction { who: Ref::You } => {
-            Some("Whenever you visit an Attraction".to_owned())
-        }
+        TriggerPattern::VisitedAttraction {
+            who: Ref::You,
+            what,
+        } if what.is_empty() => Some("Whenever you visit an Attraction".to_owned()),
         TriggerPattern::ClaimedPrize { who: Ref::You } => {
             Some("Whenever you claim the prize of an Attraction".to_owned())
         }

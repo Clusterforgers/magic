@@ -106,6 +106,7 @@ impl Scope<'_> {
             Pred::CastBefore(named) => self.r4703_cast_before(named, reference)?,
             Pred::Blocks(named) => self.fe1a_blocked(named, reference, true)?,
             Pred::TargetedBy(named) => self.fe1a_targeted_by(named, reference)?,
+            Pred::Lc4PaidWith(named) => self.lc4_paid_with(named, reference, seen)?,
             Pred::R113CopyOf(named) => self.r113_copy_of(named, reference)?,
             Pred::SingleTarget => {
                 self.r114_stack_choices(reference, seen)
@@ -337,6 +338,24 @@ impl Scope<'_> {
     }
 
     /// Whether the object is a target of a spell or ability on the stack that the reference names.
+    /// Whether the object is a spell whose announced cost picked one of the objects `named` names (`Pred::Lc4PaidWith`):
+    /// "becomes tapped to pay a teamwork cost".
+    fn lc4_paid_with(
+        &self,
+        named: &Ref,
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        let Some(choices) = self.r114_stack_choices(reference, seen) else {
+            return Ok(false);
+        };
+        let paid: Vec<_> = choices.cost_picks().iter().flatten().copied().collect();
+        Ok(self
+            .objects(named)?
+            .iter()
+            .any(|object| paid.contains(&object.id)))
+    }
+
     fn fe1a_targeted_by(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
         Ok(self.objects(named)?.into_iter().any(|source| {
             self.state

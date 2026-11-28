@@ -380,6 +380,10 @@ pub enum Pred {
     /// Is a card exiled by one of the permanents the reference names, which has not left since: face down by hideaway
     /// (CR 702.75a), or by any effect of that permanent (CR 607.2a), read from its `exiled` memory.
     ExiledWith(Ref),
+    /// Is a card that left exile with its latest zone change while it was a card exiled by one of the permanents the
+    /// reference names: a spell cast or a land played from among the cards exiled with it ("whenever a player plays a
+    /// card exiled with ~").
+    P170LeftExileWith(Ref),
     /// Is a card in exile that the player a cast permission or a look is worked out for exiled with one of the permanents the
     /// reference names (CR 607.2a), as its `exiled` memory kept for that player holds it (`Effect::Remember` with `per`): "cards
     /// they exiled with ~"; outside a permission or a look, the player is the controller.
@@ -794,6 +798,9 @@ pub enum Pred {
     Kicked,
     /// Is a spell, or a permanent that entered as a spell, cast with an additional cost paid (bargain, casualty, gift; CR 601.2b).
     AdditionalCostPaid,
+    /// Is a spell on the stack whose announced cost tapped or took the object the reference names ("becomes tapped to pay a
+    /// teamwork cost").
+    Lc4PaidWith(Ref),
     /// Is a modal spell (CR 700.2): its spell ability chooses modes as it is cast ("a modal spell"); a modal double-faced
     /// card is not one for that.
     R112Modal,

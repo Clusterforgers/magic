@@ -85,6 +85,7 @@ mod r401_riders;
 mod r404_commander_color;
 mod r4701_boast;
 mod r4707_pay_costs;
+mod r513_copy_ends;
 mod r5512_until_cast;
 mod r5523_sentinels;
 mod r6013_winds;

@@ -291,6 +291,12 @@ pub(super) fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, 
             except,
             no_mana_cost,
         } => copies_of(cx, of, except, *no_mana_cost)?,
+        TokenRef::P158WithTriggersOf { token, of } => vec![(
+            Arc::new(super::p158_triggers_of::p158_with_triggers_of(
+                cx, token, of,
+            )?),
+            None,
+        )],
         TokenRef::R4700OfChosen { size } => {
             let Some(spec) = r4700_of_chosen(cx, size)? else {
                 return Ok(Vec::new());

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8e5057ae-165c-4fe4-b712-a638b7eea038",
+  "name": "Scotty, Miracle Worker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scotty, Miracle Worker",
+      "oracle_fingerprint": "df7ac3b462be89cf309a0cef65771ce1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "R116BeamMeUp": [
+                    "OwnManaCost",
+                    {
+                      "ReturnToHand": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          "R119CanBeBeamedUp",
+                          { "Not": { "Is": "Granter" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "condition": {
+              "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

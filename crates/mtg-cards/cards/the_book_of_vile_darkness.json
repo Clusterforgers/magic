@@ -1,0 +1,80 @@
+{
+  "oracle_id": "fcc666bc-6fea-44e0-94bc-462c742db528",
+  "name": "The Book of Vile Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Book of Vile Darkness",
+      "oracle_fingerprint": "7f32e54ba2523e48ad4325072301e0d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              "ExileSelf",
+              {
+                "ExilePermanents": {
+                  "filter": [{ "Type": "Artifact" }, { "Named": "Eye of Vecna" }]
+                }
+              },
+              {
+                "ExilePermanents": {
+                  "filter": [{ "Type": "Artifact" }, { "Named": "Hand of Vecna" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "P158WithTriggersOf": {
+                      "token": {
+                        "name": "Vecna",
+                        "colors": ["Black"],
+                        "supertypes": ["Legendary"],
+                        "types": ["Creature"],
+                        "subtypes": ["Zombie", "God"],
+                        "power": 8,
+                        "toughness": 8,
+                        "abilities": [{ "Keyword": "Indestructible" }]
+                      },
+                      "of": ["Paid", { "Arrived": { "of": "This", "zone": "Exile" } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

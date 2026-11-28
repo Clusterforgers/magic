@@ -66,7 +66,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let state = cx.state();
     let (until_end_of_turn, until_next_turn_of) = match duration {
         Duration::UntilEndOfTurn => (true, None),
-        Duration::Forever | Duration::WhileSourceAttached | Duration::WhileTapped => (false, None),
+        Duration::Forever
+        | Duration::WhileSourceAttached
+        | Duration::WhileTapped
+        | Duration::R513UntilNextEndStep => (false, None),
         Duration::UntilYourNextTurn => (false, Some(cx.controller())),
         _ => return Err(ResolveError::Unsupported("Copy.Duration")),
     };
@@ -121,6 +124,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     r6104_while_tapped: (*duration == Duration::WhileTapped).then_some(original),
                     r707_static: None,
                     r115_until_face_down: false,
+                    r513_until_end_step: *duration == Duration::R513UntilNextEndStep,
                 }));
             }
         }

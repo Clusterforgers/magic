@@ -1173,6 +1173,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         r707_static: Option<ObjectRef>,
+        /// The copy lasted until the next end step, which began ("until the next end step").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        r513_end_step: bool,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {

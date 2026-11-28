@@ -431,7 +431,10 @@ impl Held {
             Modification::SetController(player) => self.controller = *player,
             Modification::AddKeyword(keyword) => {
                 let own = self.own_cost.clone().unwrap_or_default();
-                let read = keyword.clone().with_own_mana_cost_x(&own, self.own_x);
+                let mut read = keyword.clone().with_own_mana_cost_x(&own, self.own_x);
+                if let Grant::Static { source, .. } = origin {
+                    read = crate::keywords::r116_beam_me_up::r116_fix_granter(read, source);
+                }
                 let keyword = &read;
                 if self.locked.contains(keyword) {
                     return;
@@ -871,7 +874,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
     Some(match wanted {
         Wanted::SetController(_) => Layer::Control,
         Wanted::ChangeTextChosen { .. }
-        | Wanted::ChangeTextChosenTo { .. }
+                | Wanted::Lc4ChosenColorWords
+| Wanted::ChangeTextChosenTo { .. }
         | Wanted::R612ExchangeTextBoxes
         | Wanted::SetName(_)
         | Wanted::R2013AllCreatureNames
