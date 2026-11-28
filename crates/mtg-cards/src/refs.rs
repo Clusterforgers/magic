@@ -380,6 +380,10 @@ pub enum Pred {
     /// Is a card exiled by one of the permanents the reference names, which has not left since: face down by hideaway
     /// (CR 702.75a), or by any effect of that permanent (CR 607.2a), read from its `exiled` memory.
     ExiledWith(Ref),
+    /// Is a card that left exile with its latest zone change while it was a card exiled by one of the permanents the
+    /// reference names: a spell cast or a land played from among the cards exiled with it ("whenever a player plays a
+    /// card exiled with ~").
+    P170LeftExileWith(Ref),
     /// Is a card in exile that the player a cast permission or a look is worked out for exiled with one of the permanents the
     /// reference names (CR 607.2a), as its `exiled` memory kept for that player holds it (`Effect::Remember` with `per`): "cards
     /// they exiled with ~"; outside a permission or a look, the player is the controller.

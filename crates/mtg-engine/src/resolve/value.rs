@@ -2188,6 +2188,30 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
+    /// Whether the object left exile with its latest zone change while one of the permanents the reference names held
+    /// it as a card it exiled.
+    fn p170_left_exile_with(
+        &self,
+        named: &Ref,
+        reference: ObjectRef,
+    ) -> Result<bool, ResolveError> {
+        let now = self
+            .state
+            .object(reference.id)
+            .is_some_and(|object| object.counter() == reference.counter);
+        if !now {
+            return Ok(false);
+        }
+        Ok(self.objects(named)?.into_iter().any(|source| {
+            crate::memory::p170_held_before(
+                self.state,
+                source,
+                mtg_cards::refs::EXILED_SLOT,
+                reference,
+            )
+        }))
+    }
+
     /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway) or exiled.
     fn exiled_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
         let card = self
@@ -2390,6 +2414,7 @@ impl<'a> Scope<'a> {
             | Pred::AttachedTo(_) => self.w6d_pred(pred, reference, seen)?,
             Pred::Paired | Pred::PairedWith(_) => self.soulbond_pred(pred, reference)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
+            Pred::P170LeftExileWith(named) => self.p170_left_exile_with(named, reference)?,
             Pred::R114ExiledByThem(named) => self.r114_exiled_by_them(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::HauntedBy(named) => self

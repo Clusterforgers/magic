@@ -634,7 +634,10 @@ pub fn un34_fan(name: &str) -> Arc<CardDefinition> {
             .with_type(CardType::Creature)
             .with_power_toughness(1, 1)
             .with_rules(gain(
-                mtg_cards::trigger::TriggerPattern::VisitedAttraction { who: Ref::You },
+                mtg_cards::trigger::TriggerPattern::VisitedAttraction {
+                    who: Ref::You,
+                    what: mtg_cards::refs::Selector::default(),
+                },
                 1,
             ))
             .with_rules(gain(

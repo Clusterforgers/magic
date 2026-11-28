@@ -651,6 +651,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
         super::p163_wholes::p163_add_wholes(ability, &mut texts);
         super::p165_wholes::p165_add_wholes(ability, &mut texts);
         super::lc4_wholes::lc4_add_wholes(ability, &mut texts);
+        super::p170_wholes::p170_add_wholes(ability, &mut texts);
         super::p166_wholes::p166_add_wholes(ability, &mut texts);
         super::cx8_wholes::cx8_add_wholes(ability, &mut texts);
         super::r123_02_wholes::r123_02_add_wholes(ability, &mut texts);
@@ -773,6 +774,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::p163_wholes::p163_add_wholes(ability, &mut texts);
     super::p165_wholes::p165_add_wholes(ability, &mut texts);
     super::lc4_wholes::lc4_add_wholes(ability, &mut texts);
+    super::p170_wholes::p170_add_wholes(ability, &mut texts);
     super::p166_wholes::p166_add_wholes(ability, &mut texts);
     super::cx8_wholes::cx8_add_wholes(ability, &mut texts);
     super::r123_02_wholes::r123_02_add_wholes(ability, &mut texts);

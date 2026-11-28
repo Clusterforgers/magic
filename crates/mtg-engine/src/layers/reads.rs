@@ -479,6 +479,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AttackingPlaneswalkerOf(who)
         | Pred::AttackingPlayerOrPlaneswalker(who)
         | Pred::ExiledWith(who)
+        | Pred::P170LeftExileWith(who)
         | Pred::R114ExiledByThem(who)
         | Pred::R114EnlistedBy(who)
         | Pred::R117SurveilledBy(who)

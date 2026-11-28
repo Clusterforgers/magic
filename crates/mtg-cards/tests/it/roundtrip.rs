@@ -337,6 +337,7 @@ fn pred() -> impl Strategy<Value = Pred> {
             leaf_ref().prop_map(Pred::OwnedBy),
             leaf_ref().prop_map(Pred::Is),
             leaf_ref().prop_map(Pred::ExiledWith),
+            leaf_ref().prop_map(Pred::P170LeftExileWith),
             leaf_ref().prop_map(Pred::EncodedWith),
             leaf_ref().prop_map(Pred::Crewed),
             leaf_ref().prop_map(Pred::Saddled),
