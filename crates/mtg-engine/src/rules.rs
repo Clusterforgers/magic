@@ -4428,10 +4428,7 @@ pub(crate) fn r401_cast_riders(
         })
         .collect();
     covering.sort_by_key(|cast| cast.once);
-    covering
-        .first()
-        .map(|cast| cast.riders.clone())
-        .unwrap_or_default()
+    covering.first().map_or_default(|cast| cast.riders.clone())
 }
 
 /// The source of the permission that works once each turn whose cost a cast of `card` by `player` for an alternative cost

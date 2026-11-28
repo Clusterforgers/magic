@@ -38,18 +38,21 @@ pub enum DeckZone {
     Companion,
     /// The Attraction deck (CR 717.2), a supplementary deck outside the main deck.
     Attractions,
+    /// The Contraption deck (Unstable), a supplementary deck outside the main deck.
+    Contraptions,
     /// The sticker sheets (CR 123.2a), of which three are chosen at random as the game begins.
     Stickers,
 }
 
 impl DeckZone {
     /// Every zone, in the order a report lists them.
-    pub const ALL: [DeckZone; 6] = [
+    pub const ALL: [DeckZone; 7] = [
         DeckZone::Main,
         DeckZone::Sideboard,
         DeckZone::Commander,
         DeckZone::Companion,
         DeckZone::Attractions,
+        DeckZone::Contraptions,
         DeckZone::Stickers,
     ];
 
@@ -61,6 +64,7 @@ impl DeckZone {
             DeckZone::Commander => "commander",
             DeckZone::Companion => "companion",
             DeckZone::Attractions => "attractions",
+            DeckZone::Contraptions => "contraptions",
             DeckZone::Stickers => "stickers",
         }
     }
@@ -478,8 +482,7 @@ fn report_cards(
                     draft: drafts.get(id).map(|(read, _)| *read),
                     differs: drafts
                         .get(id)
-                        .map(|(_, differs)| differs.clone())
-                        .unwrap_or_default(),
+                        .map_or_default(|(_, differs)| differs.clone()),
                     reasons,
                     whole_text,
                     by_hand: by_hand.contains(id) && support == Support::Manual,

@@ -85,9 +85,7 @@ pub(crate) fn r6400_parts(items: &[CostItem]) -> Vec<Part> {
             .map(|(one, n)| with_count(one, |_| *n))
             .collect(),
     );
-    Price::announced(&cost)
-        .map(|price| price.parts)
-        .unwrap_or_default()
+    Price::announced(&cost).map_or_default(|price| price.parts)
 }
 
 /// What the pick of `part` cannot take: what earlier parts took and, for a part that taps, the creatures being declared

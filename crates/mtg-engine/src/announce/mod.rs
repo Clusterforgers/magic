@@ -331,8 +331,7 @@ impl Needs {
             .ways
             .iter()
             .find(|way| way.is(choices))
-            .map(|way| way.parts.clone())
-            .unwrap_or_default();
+            .map_or_default(|way| way.parts.clone());
         parts.extend(optional::parts_paid(&self.optional, choices));
         parts.extend(splice::parts_paid(&self.splice, choices));
         parts.extend(self.r110_sacrifices.iter().cloned());
@@ -533,8 +532,7 @@ impl Pending {
         let mut parts: Vec<Part> = self
             .needs
             .as_ref()
-            .map(|needs| needs.cost_parts(&self.choices))
-            .unwrap_or_default()
+            .map_or_default(|needs| needs.cost_parts(&self.choices))
             .iter()
             .map(|part| part.at(x))
             .collect();

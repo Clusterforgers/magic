@@ -92,8 +92,7 @@ pub fn choose_land(engine: &Engine, lands: &[ObjectId]) -> Option<PriorityAction
         let name = engine
             .state()
             .object(*land)
-            .map(|object| object.card().name.clone())
-            .unwrap_or_default();
+            .map_or_default(|object| object.card().name.clone());
         if names.contains(&name) {
             continue;
         }

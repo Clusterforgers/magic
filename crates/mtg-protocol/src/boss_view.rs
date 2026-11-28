@@ -78,9 +78,7 @@ fn round_phases(player: &Player, sheet: Option<&BossSheet>) -> Vec<RoundPhaseVie
         .filter_map(|(at, phase)| match phase.begins {
             PhaseStart::AtRound(round) => Some(RoundPhaseView {
                 name: phase.emblem.name.clone(),
-                text: sheet
-                    .map(|sheet| sheet.phase_text(&phase.emblem.name).to_owned())
-                    .unwrap_or_default(),
+                text: sheet.map_or_default(|sheet| sheet.phase_text(&phase.emblem.name).to_owned()),
                 round,
                 begun: at < begun,
             }),

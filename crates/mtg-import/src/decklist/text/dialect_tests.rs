@@ -5,7 +5,7 @@ use proptest::prelude::*;
 use rstest::rstest;
 
 use super::super::types::DeckFormat;
-use Section::{Attractions, Commander, Main, Maybeboard, Sideboard, Stickers};
+use Section::{Attractions, Commander, Contraptions, Main, Maybeboard, Sideboard, Stickers};
 
 fn archidekt() -> TextOptions {
     options(DeckFormat::Archidekt)
@@ -83,6 +83,11 @@ fn a_stray_line_inside_a_block_is_still_an_error() {
     "1 A (ABC) 1\n\nATTRACTIONS:\n1 R (UNF) 200\n1 Q (UNF) 201\n",
     &[(1, "A", Main), (1, "R", Attractions), (1, "Q", Attractions)]
 )]
+#[case::contraptions(
+    DeckFormat::Moxfield,
+    "1 Steamflogger Boss (UST) 93\n\nCONTRAPTIONS:\n1 Gnomeball Machine (UST) 233\n1 Hypnotic Swirly Disc (UST) 238\n",
+    &[(1, "Steamflogger Boss", Main), (1, "Gnomeball Machine", Contraptions), (1, "Hypnotic Swirly Disc", Contraptions)]
+)]
 #[case::plain_text_any_case(
     DeckFormat::PlainText,
     "4 A\nStickers (2)\n1 S\n1 T",
@@ -93,7 +98,7 @@ fn a_stray_line_inside_a_block_is_still_an_error() {
     "1 A (ABC) 1\nSTICKERS:\n1 S\nSIDEBOARD:\n1 B (ABC) 2\nSTICKERS:\n2 T",
     &[(1, "A", Main), (1, "S", Stickers), (1, "B", Sideboard), (2, "T", Stickers)]
 )]
-fn the_attraction_deck_and_the_sticker_sheets_are_parts_of_the_deck(
+fn the_attraction_and_contraption_decks_and_the_sticker_sheets_are_parts_of_the_deck(
     #[case] format: DeckFormat,
     #[case] input: &str,
     #[case] expected: &[(u32, &str, Section)],

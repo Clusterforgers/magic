@@ -90,9 +90,9 @@ fn r112_goblin_game_costs_each_number_and_half_for_the_fewest(#[values(2, 3, 4)]
         "the caster first, then turn order"
     );
     let fewest = chosen[..seats].iter().min().copied().unwrap();
-    for seat in 0..seats {
-        let after = 20 - i32::try_from(chosen[seat]).unwrap();
-        let expected = if chosen[seat] == fewest {
+    for (seat, picked) in chosen.iter().enumerate().take(seats) {
+        let after = 20 - i32::try_from(*picked).unwrap();
+        let expected = if *picked == fewest {
             after - (after + 1) / 2
         } else {
             after
@@ -488,14 +488,13 @@ fn r112_raging_river_lets_only_fliers_and_the_chosen_pile_block(#[values(2, 3)] 
             .blockers
             .iter()
             .find(|option| option.object == id)
-            .map(|option| {
+            .map_or_default(|option| {
                 option
                     .can_block
                     .iter()
                     .map(|a| crate::common::name_of(driver.state(), *a))
                     .collect()
-            })
-            .unwrap_or_default();
+            });
         blocks.sort();
         blocks
     };

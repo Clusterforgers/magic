@@ -14,8 +14,7 @@ fn views(driver: &Driver, name: &str) -> Vec<ActivatedView> {
     view.objects
         .iter()
         .find(|object| object.name == name)
-        .map(|object| object.activated.clone())
-        .unwrap_or_default()
+        .map_or_default(|object| object.activated.clone())
 }
 
 #[rstest]

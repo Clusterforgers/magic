@@ -3801,6 +3801,7 @@ impl Writer<'_> {
             Effect::OpenAttraction { .. }
             | Effect::RollToVisit { .. }
             | Effect::ClaimPrize { .. } => super::un33_attractions::un33_effect_text(effect)?,
+            Effect::P170bAssemble { .. } => super::p170c_contraptions::p170c_assemble_text(effect)?,
             Effect::PutSticker {
                 who,
                 on,

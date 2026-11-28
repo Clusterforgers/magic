@@ -75,7 +75,7 @@ fn action_parts(head: &str, body: &serde_json::Map<String, Value>) -> Vec<String
             probe[head]["intervening_if"] = held;
         }
         if !writes(&probe) {
-            let name = get("when").map(|when| variant(&when)).unwrap_or_default();
+            let name = get("when").map_or_default(|when| variant(&when));
             parts.push(format!("trigger {name} or its condition"));
         }
     }

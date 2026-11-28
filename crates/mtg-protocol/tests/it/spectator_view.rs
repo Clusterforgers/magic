@@ -120,8 +120,7 @@ fn a_spectator_sees_every_public_zone_and_no_seats_hidden_cards(
     let spectator = StateView::for_spectator(state);
     let known = ids(&spectator);
     let text = json(&spectator);
-    for owner in 0..seats {
-        let player = &spectator.table.players[owner];
+    for (owner, player) in spectator.table.players.iter().enumerate() {
         let hand = state.zone(Zone::Hand(seat(owner))).to_vec();
         assert_eq!(player.hand.count as usize, hand.len());
         assert_eq!(player.hand.cards, open_hands.then(|| hand.clone()));

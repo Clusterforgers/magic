@@ -129,6 +129,7 @@ const ZONES: Record<DeckZone, true> = {
   commander: true,
   companion: true,
   attractions: true,
+  contraptions: true,
   stickers: true,
 }
 const SOURCES: Record<ImportSource, true> = {

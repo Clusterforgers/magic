@@ -837,7 +837,7 @@ fn kinds_text(subject: Subject, these: &[Modification]) -> Option<String> {
         .collect::<Option<Vec<_>>>()?;
     let names = words.join(" ");
     let article = article(size.as_deref().unwrap_or(&names));
-    let size = size.map(|size| format!("{size} ")).unwrap_or_default();
+    let size = size.map_or_default(|size| format!("{size} "));
     Some(format!(
         "{} {article} {size}{names} in addition to its other types",
         subject.is(),
@@ -1117,9 +1117,7 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
     } else {
         ""
     };
-    let each = each
-        .map(|each| format!("for each {each}, "))
-        .unwrap_or_default();
+    let each = each.map_or_default(|each| format!("for each {each}, "));
     Some(format!("{each}create {head} {of}{attack}{tail}"))
 }
 

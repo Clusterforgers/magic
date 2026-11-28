@@ -304,8 +304,7 @@ fn capital(words: &str) -> String {
     let mut chars = words.chars();
     chars
         .next()
-        .map(|first| first.to_uppercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_uppercase().chain(chars).collect())
 }
 
 /// The other wordings of "the rest" in a sentence this module writes.

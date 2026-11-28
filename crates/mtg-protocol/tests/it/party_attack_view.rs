@@ -166,8 +166,8 @@ fn what_a_heros_trigger_adds_to_the_party_attack_is_seen_beside_every_declared_a
         }
         table.run(Driver::answer_passively);
     }
-    for viewer in 0..=2 {
-        let seen = &table.views[viewer].table.combat.attackers;
+    for (viewer, view) in table.views.iter().enumerate().take(3) {
+        let seen = &view.table.combat.attackers;
         assert_eq!(
             seen.len(),
             declared.len() + 2,

@@ -562,6 +562,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "proliferate" => Effect::Proliferate { who },
         "venture" => w11d_venture(r, who)?,
         "open" => super::un33_attractions::un33_open(r, who)?,
+        "assemble" => super::p170c_contraptions::p170c_assemble(r, who)?,
         "roll" if r.words("the planar die") => Effect::Planechase {
             act: PlanarAct::RollPlanarDie,
         },
@@ -911,6 +912,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         word @ ("become" | "becomes" | "can't") => r4710_monarch(r, word, who)?,
         "venture" | "ventures" => w11d_venture(r, who)?,
         "open" | "opens" => super::un33_attractions::un33_open(r, who)?,
+        "assemble" | "assembles" => super::p170c_contraptions::p170c_assemble(r, who)?,
         "claim" | "claims" if r.words("the prize") => Effect::ClaimPrize { who },
         "roll" | "rolls" if r.word_at(0) == Some("to") => {
             super::un33_attractions::un33_roll(r, who)?

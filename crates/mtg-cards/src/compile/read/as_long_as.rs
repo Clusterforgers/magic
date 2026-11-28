@@ -597,14 +597,12 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
         }
         (Amount::Count(of), Cmp::Ge) if of.0.starts_with(&graveyard_cards().0) => {
             let kind = Selector(of.0[graveyard_cards().0.len()..].to_vec());
-            library::filter_text(&kind, true)
-                .map(|kind| {
-                    vec![
-                        format!("there are at least {words} {kind} in your graveyard"),
-                        format!("there are {words} or more {kind} in your graveyard"),
-                    ]
-                })
-                .unwrap_or_default()
+            library::filter_text(&kind, true).map_or_default(|kind| {
+                vec![
+                    format!("there are at least {words} {kind} in your graveyard"),
+                    format!("there are {words} or more {kind} in your graveyard"),
+                ]
+            })
         }
         (Amount::Count(of), Cmp::Lt) if *of == graveyard_cards() => {
             vec![format!(

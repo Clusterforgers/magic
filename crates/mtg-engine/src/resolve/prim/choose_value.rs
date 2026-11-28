@@ -353,8 +353,7 @@ fn r111_spell_damage(
             let name = cx
                 .state()
                 .source_object(shot.id)
-                .map(|object| object.card().name.clone())
-                .unwrap_or_default();
+                .map_or_default(|object| object.card().name.clone());
             ChoiceOption::Label(format!("{name} ({damage} damage)"))
         })
         .collect();

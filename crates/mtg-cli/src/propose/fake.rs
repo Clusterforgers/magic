@@ -41,7 +41,7 @@ impl ScriptedClient {
 
     /// Every request the client got, in order.
     pub fn requests(&self) -> Vec<Request> {
-        self.log.lock().map(|log| log.clone()).unwrap_or_default()
+        self.log.lock().map_or_default(|log| log.clone())
     }
 }
 

@@ -96,8 +96,7 @@ impl CopyEffect {
         let mut found: Vec<ObjectRef> = self
             .under
             .as_ref()
-            .map(|under| under.r370_attached_ends())
-            .unwrap_or_default();
+            .map_or_default(|under| under.r370_attached_ends());
         if let Some(C10XpCopyEnds::Unattached(by)) = self.ends {
             found.push(by);
         }
@@ -109,8 +108,7 @@ impl CopyEffect {
         let mut found: Vec<ObjectRef> = self
             .under
             .as_ref()
-            .map(|under| under.r6104_tapped_ends())
-            .unwrap_or_default();
+            .map_or_default(|under| under.r6104_tapped_ends());
         if let Some(C10XpCopyEnds::R6104Untapped(by)) = self.ends {
             found.push(by);
         }

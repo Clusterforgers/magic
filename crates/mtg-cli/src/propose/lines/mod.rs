@@ -142,8 +142,7 @@ fn oracle_of(card: &PrintedCard) -> String {
         return card
             .faces
             .first()
-            .map(|face| face.oracle_text.clone())
-            .unwrap_or_default();
+            .map_or_default(|face| face.oracle_text.clone());
     }
     card.faces
         .iter()

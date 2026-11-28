@@ -2,12 +2,14 @@
 //! one, at two to four seats: Sphinx of the Chimes discards two nonland cards with the same name (two lands of one name
 //! or two different names do not do), Illuminated Folio reveals two cards that share a color (colorless cards share
 //! none), Craft with two that share a card type refuses an instant and a creature, and a bot pick refused as not alike
-//! tries every set, those before it too.
+//! (a card type or a creature type not shared included) tries every set, those before it too.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_cards::cost::{Alike, CostItem};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::CardsChoice;
 use mtg_engine::decision::{Answer, DecisionKind};
@@ -264,6 +266,61 @@ fn r702_a_refused_pick_for_craft_tries_the_sets_that_share_a_card_type(
         engine.apply(apart.clone()),
         Err(EngineError::Illegal(IllegalAnswer::WrongPick(
             "cards that share a card type"
+        )))
+    ));
+    mtg_testkit::bot::apply_answer(&mut engine, &decision, apart)?;
+    assert!(
+        !matches!(
+            engine.decision().map(|d| &d.kind),
+            Some(DecisionKind::ChooseCards(_))
+        ),
+        "the pick was taken"
+    );
+    Ok(())
+}
+
+/// Illuminated Folio asking its two revealed cards to share a creature type, the set a behold before its type is chosen
+/// asks for.
+fn r6012_folio() -> Arc<CardDefinition> {
+    let mut definition = (*card("Illuminated Folio").unwrap()).clone();
+    for rule in &mut definition.rules {
+        if let Ability::Activated { cost, .. } = Arc::make_mut(rule) {
+            for item in &mut cost.0 {
+                if let CostItem::AlikeFromHand { alike, .. } = item {
+                    *alike = Alike::R6012ShareCreatureType;
+                }
+            }
+        }
+    }
+    Arc::new(definition)
+}
+
+#[rstest]
+fn r6012_a_refused_pick_tries_the_sets_that_share_a_creature_type(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let hand = vec![
+        card("Grizzly Bears").unwrap(),
+        card("Llanowar Elves").unwrap(),
+        card("Elvish Visionary").unwrap(),
+    ];
+    let mut driver = r5518_table(seats, vec![r6012_folio(), mountain()], hand)?;
+    driver.begin_activation("Illuminated Folio")?;
+    let decision = driver.decision()?.clone();
+    assert!(
+        matches!(decision.kind, DecisionKind::ChooseCards(_)),
+        "{decision:?}"
+    );
+    // A Bear and an Elf share no creature type: the engine refuses them and the bot goes on to the Elves.
+    let apart = Answer::ChooseCards(CardsChoice(vec![
+        r5518_in_hand(&driver, "Grizzly Bears")[0],
+        r5518_in_hand(&driver, "Llanowar Elves")[0],
+    ]));
+    let mut engine = driver.engine().clone();
+    assert!(matches!(
+        engine.apply(apart.clone()),
+        Err(EngineError::Illegal(IllegalAnswer::WrongPick(
+            "objects that share a creature type"
         )))
     ));
     mtg_testkit::bot::apply_answer(&mut engine, &decision, apart)?;

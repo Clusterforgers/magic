@@ -272,8 +272,7 @@ fn announced_texts(condition: &Condition) -> Vec<String> {
         } => {
             let more = if *op == Cmp::Ge { "more" } else { "less" };
             u32::try_from(*number)
-                .map(super::facts::quantity_texts)
-                .unwrap_or_default()
+                .map_or_default(super::facts::quantity_texts)
                 .iter()
                 .map(|words| format!("X is {words} or {more}"))
                 .collect()

@@ -184,10 +184,7 @@ pub(crate) async fn resume_named<S: EventStore>(
     }
     // A game with a log began long ago: the table is the one the records stored.
     let manual_play = recorder.as_ref().is_some_and(Recorder::manual_play);
-    let public = decks
-        .as_ref()
-        .map(SeatDecks::public_seats)
-        .unwrap_or_default();
+    let public = decks.as_ref().map_or_default(SeatDecks::public_seats);
     let mut running = Running::new(engine, config.pace)
         .with_manual_play(manual_play)
         .with_public_lists(public);

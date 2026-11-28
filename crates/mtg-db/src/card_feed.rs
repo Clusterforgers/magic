@@ -392,7 +392,7 @@ impl CardFeedRepo {
         )
         .fetch_optional(&self.pool)
         .await?;
-        Ok(row.map(|row| (row.id, row.missing.map(|list| list.0).unwrap_or_default())))
+        Ok(row.map(|row| (row.id, row.missing.map_or_default(|list| list.0))))
     }
 
     /// Every stored deck card as its oracle id and name.

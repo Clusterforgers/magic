@@ -44,6 +44,7 @@ pub(crate) fn stored_zone(zone: DeckZone) -> StoredZone {
         DeckZone::Commander => StoredZone::Commander,
         DeckZone::Companion => StoredZone::Companion,
         DeckZone::Attractions => StoredZone::Attractions,
+        DeckZone::Contraptions => StoredZone::Contraptions,
         DeckZone::Stickers => StoredZone::Stickers,
     }
 }
@@ -55,6 +56,7 @@ fn zone_of(zone: StoredZone) -> DeckZone {
         StoredZone::Commander => DeckZone::Commander,
         StoredZone::Companion => DeckZone::Companion,
         StoredZone::Attractions => DeckZone::Attractions,
+        StoredZone::Contraptions => DeckZone::Contraptions,
         StoredZone::Stickers => DeckZone::Stickers,
     }
 }

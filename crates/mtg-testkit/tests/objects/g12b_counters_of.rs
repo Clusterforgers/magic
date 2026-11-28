@@ -51,13 +51,12 @@ fn g12b_counters(driver: &Driver, name: &str) -> Vec<(CounterKind, u32)> {
         .find(|id| name_of(state, **id) == name)
         .and_then(|id| state.object(*id))
         .and_then(|object| object.permanent())
-        .map(|permanent| {
+        .map_or_default(|permanent| {
             permanent
                 .counters()
                 .map(|(kind, n)| (kind.clone(), n))
                 .collect()
         })
-        .unwrap_or_default()
 }
 
 /// Passes until the stack is empty, aiming each trigger at the Bear.

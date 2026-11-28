@@ -113,6 +113,8 @@ pub enum IssueCode {
     NotLegal,
     /// An Attraction deck of fewer than ten cards, or with a name twice (CR 717.2a).
     AttractionDeck,
+    /// A Contraption deck of fewer than fifteen cards, with a name twice, or with a card that is no Contraption (Unstable).
+    ContraptionDeck,
 }
 
 impl IssueCode {
@@ -597,6 +599,7 @@ pub(super) fn check(format: &str, deck: &Deck, cards: &Cards) -> Vec<Issue> {
         Some(Rules::Constructed) => constructed(deck, cards, format, &mut issues),
     }
     attraction_deck(deck, cards, &mut issues);
+    contraption_deck(deck, cards, &mut issues);
     issues
 }
 
@@ -630,6 +633,48 @@ fn attraction_deck(deck: &Deck, cards: &Cards, issues: &mut Vec<Issue>) {
                     "an Attraction deck has one card of each name, this one {count} of {}",
                     name_of(facts, id)
                 ),
+            ));
+        }
+    }
+}
+
+/// The fewest cards of a Contraption deck in Constructed (Unstable release notes).
+const CONTRAPTION_DECK_MINIMUM: u32 = 15;
+
+/// A Contraption deck holds fifteen Contraptions or more with different names (Unstable release notes), in every
+/// format; a deck without one has nothing to check.
+fn contraption_deck(deck: &Deck, cards: &Cards, issues: &mut Vec<Issue>) {
+    let size = copies_in(deck, DeckZone::Contraptions);
+    if size == 0 {
+        return;
+    }
+    if size < CONTRAPTION_DECK_MINIMUM {
+        issues.push(Issue::zone(
+            IssueCode::ContraptionDeck,
+            DeckZone::Contraptions,
+            format!(
+                "a Contraption deck has at least {CONTRAPTION_DECK_MINIMUM} cards, this one {size}"
+            ),
+        ));
+    }
+    for (zone, id, count, facts) in cards_in(deck, cards, &[DeckZone::Contraptions]) {
+        let name = name_of(facts, id);
+        if count > 1 {
+            issues.push(Issue::card(
+                IssueCode::ContraptionDeck,
+                zone,
+                id,
+                facts,
+                format!("a Contraption deck has one card of each name, this one {count} of {name}"),
+            ));
+        }
+        if facts.is_some_and(|facts| !has_word(&type_words(facts), "Contraption")) {
+            issues.push(Issue::card(
+                IssueCode::ContraptionDeck,
+                zone,
+                id,
+                facts,
+                format!("a Contraption deck holds only Contraptions, and {name} is none"),
             ));
         }
     }

@@ -80,8 +80,7 @@ pub fn exports() -> Vec<Export> {
         for file in files {
             let variant = file
                 .file_stem()
-                .map(|s| s.to_string_lossy().into_owned())
-                .unwrap_or_default();
+                .map_or_default(|s| s.to_string_lossy().into_owned());
             let text =
                 fs::read_to_string(&file).unwrap_or_else(|e| panic!("{}: {e}", file.display()));
             exports.push(Export {

@@ -41,7 +41,7 @@ fn c11b_once_reads_and_writes_back(#[case] text: &str) {
 )]
 fn c11b_once_near_misses_stay_unread(#[case] text: &str) {
     let read = clause(text, ClauseKind::Static, false);
-    let written = read.as_ref().map(render_variants).unwrap_or_default();
+    let written = read.as_ref().map_or_default(render_variants);
     assert!(
         !written.iter().any(|w| same_text(w, text)),
         "{text}: {read:?}"

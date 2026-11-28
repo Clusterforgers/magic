@@ -182,8 +182,7 @@ fn r372_compiler_reads_the_wording(#[case] name: &str, #[case] text: &str, #[cas
     let compiled = mtg_cards::compile::compile(&card);
     let read: Vec<Ability> = compiled
         .card
-        .map(|card| card.faces[0].abilities.clone())
-        .unwrap_or_default();
+        .map_or_default(|card| card.faces[0].abilities.clone());
     let file: mtg_cards::card::Card = serde_json::from_str(&r372_file(name)).unwrap();
     let [read] = read.as_slice() else {
         panic!("{name}: {read:?}");

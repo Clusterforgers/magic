@@ -27,9 +27,7 @@ pub(super) fn with_effects(value: &Value, effects: &[Value]) -> Vec<String> {
 
 /// The wordings the checker accepts for an ability given as JSON; empty when the JSON is no ability.
 pub(super) fn wordings(value: Value) -> Vec<String> {
-    serde_json::from_value::<Ability>(value)
-        .map(|ability| written_variants(&ability))
-        .unwrap_or_default()
+    serde_json::from_value::<Ability>(value).map_or_default(|ability| written_variants(&ability))
 }
 
 /// The wordings of a spell with these effects, without the closing period and with a lower-case first letter.
@@ -75,8 +73,7 @@ pub(super) fn capitalized(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_uppercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_uppercase().chain(chars).collect())
 }
 
 /// The JSON with every `from` (and every `{"Is": from}`) replaced by `to`; whether anything was replaced.

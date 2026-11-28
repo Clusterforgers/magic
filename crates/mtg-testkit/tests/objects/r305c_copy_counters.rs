@@ -76,8 +76,7 @@ fn cast_copying(
             }
             DecisionKind::ChooseCards(options) if options.text.contains("copy") => {
                 let pick: Vec<ObjectId> = copy
-                    .map(|name| named(driver, name))
-                    .unwrap_or_default()
+                    .map_or_default(|name| named(driver, name))
                     .into_iter()
                     .filter(|id| options.from.contains(id))
                     .take(1)

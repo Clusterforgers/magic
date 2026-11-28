@@ -45,12 +45,11 @@ fn game(enchanting: &[(usize, usize)]) -> GameState {
         ],
     );
     // Every Aura starts on seat 1 unless the case says otherwise.
-    for place in 0..3 {
+    for (place, preset) in game.players[0].battlefield.iter_mut().take(3).enumerate() {
         let seat = enchanting
             .iter()
             .find(|(at, _)| *at == place)
             .map_or(1, |(_, seat)| *seat);
-        let preset = &mut game.players[0].battlefield[place];
         *preset = PresetPermanent {
             attached_player: Some(seat),
             ..preset.clone()

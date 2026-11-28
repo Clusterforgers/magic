@@ -218,6 +218,7 @@ pub fn apply_answer(
                         R5518_ALIKE_SAME_NAME
                         | R5518_ALIKE_SHARE_COLOR
                         | R702_ALIKE_SHARE_CARD_TYPE
+                        | R6012_ALIKE_SHARE_CREATURE_TYPE
                         | R112_ONE_GRAVEYARD,
                     ),
                 ),
@@ -291,6 +292,8 @@ const R5518_ALIKE_SAME_NAME: &str = "cards with the same name";
 const R5518_ALIKE_SHARE_COLOR: &str = "cards that share a color";
 /// The refusal of a pick of cards that share no card type (Craft with two that share a card type).
 const R702_ALIKE_SHARE_CARD_TYPE: &str = "cards that share a card type";
+/// The refusal of a pick of objects that share no creature type (a behold before its type is chosen).
+const R6012_ALIKE_SHARE_CREATURE_TYPE: &str = "objects that share a creature type";
 
 /// Whether a pick of cards may take every card offered: its upper bound reaches them all.
 fn takes_all(options: &CardsOptions) -> bool {

@@ -142,7 +142,5 @@ fn r110_sacrifices(filter: &Selector, count: u32) -> Vec<Part> {
         filter: filter.clone(),
         count: Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX)),
     }]);
-    Price::announced(&cost)
-        .map(|price| price.parts)
-        .unwrap_or_default()
+    Price::announced(&cost).map_or_default(|price| price.parts)
 }

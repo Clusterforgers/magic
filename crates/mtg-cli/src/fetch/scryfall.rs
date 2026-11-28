@@ -187,8 +187,7 @@ async fn fetch_bulk(
         "scryfall: downloading {kind} {}from {url}",
         entry
             .compressed_size
-            .map(|size| format!("({}) ", human_size(size)))
-            .unwrap_or_default()
+            .map_or_default(|size| format!("({}) ", human_size(size)))
     ));
     let packed = Path::new(name)
         .extension()
@@ -241,8 +240,7 @@ async fn fetch_bulk(
 pub fn partial_path(target: &Path) -> PathBuf {
     let mut name = target
         .file_name()
-        .map(std::ffi::OsStr::to_os_string)
-        .unwrap_or_default();
+        .map_or_default(std::ffi::OsStr::to_os_string);
     name.push(".part");
     target.with_file_name(name)
 }

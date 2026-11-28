@@ -192,6 +192,34 @@ const optionPlayers: DevPrompt = ({ view }) => ({
   },
 })
 
+/**
+ * The end step's reassembly: keep each of the viewer's Contraptions on its sprocket or move one to another; with
+ * `?states=1` the viewer's assembled Contraption asks, else one of their creatures.
+ */
+const reassemble: DevPrompt = ({ view }) => {
+  const contraption = view.objects.find(
+    (o) => o.zone === 'Battlefield' && o.controller === view.viewer && o.permanent?.sprocket != null,
+  )
+  const from = contraption?.permanent?.sprocket ?? 1
+  const name = contraption?.name ?? 'Gizmo'
+  const moves = [1, 2, 3]
+    .filter((to) => to !== from)
+    .map((to): ChoiceOption => ({ Label: `Sprocket ${from} → ${to}: ${name}` }))
+  return {
+    id: 1,
+    decision: {
+      player: view.viewer,
+      kind: {
+        ChooseOption: {
+          source: contraption?.id ?? askerOf(view),
+          options: [{ Label: 'Move none' }, ...moves],
+          text: 'You may reassemble one of your Contraptions onto another sprocket.',
+        },
+      },
+    },
+  }
+}
+
 const CHARM = [
   'Deal 2 damage to target creature unless its controller discards a card',
   'Counter target noncreature spell unless its controller pays {2}',
@@ -438,6 +466,7 @@ export const EFFECT_PROMPTS: Record<string, DevPrompt> = {
   yesno: yesNo,
   'yesno-clock': (fixture) => ({ ...yesNo(fixture), deadlineMs: 10_000 }),
   option,
+  reassemble,
   'option-players': optionPlayers,
   'option-clock': (fixture) => ({ ...option(fixture), deadlineMs: 10_000 }),
   mode,

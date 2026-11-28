@@ -1226,8 +1226,7 @@ impl Engine {
         let position = self
             .state
             .resolving()
-            .map(|resolving| resolving.r115_step_position().to_vec())
-            .unwrap_or_default();
+            .map_or_default(|resolving| resolving.r115_step_position().to_vec());
         self.commit(vec![Event::StepDone {
             position,
             bound: Vec::new(),

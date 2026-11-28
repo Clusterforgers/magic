@@ -206,7 +206,7 @@ fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: Obje
     let mut granters: Vec<ObjectId> = state
         .layers()
         .get(host)
-        .map(|held| {
+        .map_or_default(|held| {
             held.applied
                 .iter()
                 .filter(|applied| {
@@ -226,8 +226,7 @@ fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: Obje
                     | Grant::R114Sticker(_) => None,
                 })
                 .collect()
-        })
-        .unwrap_or_default();
+        });
     if granters.is_empty() {
         granters.push(host);
     }

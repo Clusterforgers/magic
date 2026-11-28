@@ -113,7 +113,7 @@ fn a_permission_for_what_a_conditional_step_took_runs_with_the_condition(#[case]
     ));
     assert_eq!(gaps(&script), Vec::<String>::new());
     let all = effects(&script);
-    let [only] = all.as_array().map(Vec::as_slice).unwrap_or_default() else {
+    let [only] = all.as_array().map_or_default(Vec::as_slice) else {
         panic!("one step holds both: {all}");
     };
     let then = &only["If"]["then"];

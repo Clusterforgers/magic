@@ -1819,11 +1819,7 @@ impl InvariantChecker {
             }
             Some(_) => return Ok(()),
         };
-        let units = self
-            .unsettled_spend
-            .take()
-            .map(|p| p.units)
-            .unwrap_or_default();
+        let units = self.unsettled_spend.take().map_or_default(|p| p.units);
         match units.iter().find(|unit| !spend.allows(&unit.only)) {
             Some(unit) => Err(Violation::Mana(format!(
                 "{:?} mana restricted to {:?} was spent on {on}",
