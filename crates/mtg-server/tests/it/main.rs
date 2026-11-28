@@ -121,6 +121,7 @@ mod pg_visibility;
 mod practice_games;
 mod presence;
 mod printing_recipe;
+mod p170c_contraption_recipe;
 mod question_clocks;
 mod reconnect;
 mod registry;

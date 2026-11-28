@@ -588,12 +588,17 @@ impl Registry {
             .iter()
             .map(|deck| deck.attractions().to_vec())
             .collect();
+        let contraptions = held
+            .iter()
+            .map(|deck| deck.contraptions().to_vec())
+            .collect();
         let stickers = held.iter().map(|deck| deck.stickers().to_vec()).collect();
         let satchels = held.iter().map(|deck| deck.satchel().to_vec()).collect();
         let mut setup = GameSetup::new(options.format.rules(), seed, libraries)
             .with_commanders(commanders)
             .with_companions(companions)
             .with_attractions(attractions)
+            .with_contraptions(contraptions)
             .with_stickers(stickers)
             .with_satchels(satchels)
             .with_house_rules(options.house_rules.clone())

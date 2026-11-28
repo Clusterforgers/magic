@@ -3,7 +3,8 @@
 //! deck onto the battlefield on one of its controller's three sprockets; the sprocket marker, which moves to the next
 //! sprocket as its player's precombat main phase begins while they control a Contraption, after which they crank the
 //! Contraptions they choose on that sprocket; and the scrapheap, the face-up pile in the command zone a Contraption card
-//! goes to in place of a hand, a library or a graveyard.
+//! goes to in place of a hand, a library or a graveyard; and the reassembly as the end step of its controller's turn
+//! begins, when they may move one of their Contraptions to another of their sprockets.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -12,9 +13,11 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;
 use crate::characteristics::seen_as;
-use crate::choose::{CardsChoice, CardsOptions, check_cards};
+use crate::choose::{
+    CardsChoice, CardsOptions, ChoiceOption, OptionChoice, OptionOptions, check_cards,
+};
 use crate::decision::{Decision, DecisionKind};
-use crate::error::EngineError;
+use crate::error::{EngineError, IllegalAnswer};
 use crate::events::{Event, ZoneCause};
 use crate::fold::invalid;
 use crate::object::GameObject;
@@ -33,6 +36,8 @@ pub struct Contraptions {
     pub(crate) markers: BTreeMap<PlayerId, u8>,
     /// The player who chooses the Contraptions to crank on the sprocket their marker just moved to.
     pub(crate) cranking: Option<PlayerId>,
+    /// The turn whose end step already asked about reassembling a Contraption.
+    pub(crate) reassembled: Option<u32>,
 }
 
 impl Contraptions {
@@ -229,6 +234,98 @@ pub(crate) fn crank_answer(
             player: state.active_or_next(),
         },
     ]))
+}
+
+/// The moves a reassembly offers the active player as their end step begins: each Contraption they control on a sprocket
+/// to each of their other sprockets, in battlefield order; empty once this turn's end step asked, or while they control
+/// none.
+fn reassemblies(state: &GameState) -> Vec<(ObjectId, u8, u8)> {
+    let Some(player) = state.active_player() else {
+        return Vec::new();
+    };
+    if state.turn().step() != crate::turn::Step::End
+        || state.p170b.reassembled == Some(state.turn().number())
+    {
+        return Vec::new();
+    }
+    controlled(state, player)
+        .filter_map(|object| Some((object.id(), state.sprocket(object.id())?)))
+        .flat_map(|(id, from)| {
+            (1..=SPROCKETS)
+                .filter(move |to| *to != from)
+                .map(move |to| (id, from, to))
+        })
+        .collect()
+}
+
+/// The question of the reassembly: keep every Contraption where it is, or move one of them to another sprocket. `None`
+/// while it has nothing to offer.
+pub(crate) fn reassembly_question(state: &GameState) -> Option<Decision> {
+    let moves = reassemblies(state);
+    let (source, _, _) = *moves.first()?;
+    let player = state.active_player()?;
+    let name = |id: ObjectId| {
+        state
+            .object(id)
+            .map_or_else(String::new, |object| object.card().name.clone())
+    };
+    let options = std::iter::once(ChoiceOption::Label(
+        "Move none".to_owned(),
+    ))
+    .chain(moves.iter().map(|(id, from, to)| {
+        ChoiceOption::Label(format!(
+            "Sprocket {from} \u{2192} {to}: {}",
+            name(*id)
+        ))
+    }))
+    .collect();
+    Some(Decision {
+        player,
+        kind: DecisionKind::ChooseOption(OptionOptions {
+            source,
+            options,
+            text: "You may reassemble one of your Contraptions onto another sprocket.".to_owned(),
+            can_cancel: false,
+        }),
+    })
+}
+
+/// Whether a choice among options outside any resolution is the question of the reassembly.
+pub(crate) fn asks_reassembly(state: &GameState) -> bool {
+    state.priority().is_none() && state.resolving().is_none() && !reassemblies(state).is_empty()
+}
+
+/// The answer to the reassembly: the first option keeps every Contraption where it is, each other moves one.
+pub(crate) fn reassembly_answer(
+    state: &GameState,
+    player: PlayerId,
+    choice: OptionChoice,
+) -> Result<Vec<Event>, EngineError> {
+    if state.active_player() != Some(player) {
+        return Err(IllegalAnswer::NotOffered("reassembly").into());
+    }
+    let moved = match choice.0.checked_sub(1) {
+        None => None,
+        Some(at) => {
+            let (id, _, to) = *reassemblies(state)
+                .get(at)
+                .ok_or(IllegalAnswer::NotOffered("reassembly"))?;
+            Some((id, to))
+        }
+    };
+    Ok(vec![Event::P170bReassembled { player, moved }])
+}
+
+/// Folds a reassembly: the end step asked this turn, and a Contraption moved goes on its new sprocket.
+pub(crate) fn fold_reassembled(
+    state: &mut GameState,
+    moved: Option<(ObjectId, u8)>,
+) -> Result<(), EngineError> {
+    state.p170b.reassembled = Some(state.turn().number());
+    match moved {
+        Some((contraption, sprocket)) => fold_assembled(state, contraption, sprocket),
+        None => Ok(()),
+    }
 }
 
 /// Folds a shuffle of a Contraption deck: the same cards in a new order.

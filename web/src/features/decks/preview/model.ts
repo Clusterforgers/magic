@@ -243,6 +243,7 @@ const ZONE_BOARD: Readonly<Record<DeckZone, 'commanders' | 'cards' | 'sideboard'
   main: 'cards',
   companion: 'cards',
   attractions: 'sideboard',
+  contraptions: 'sideboard',
   stickers: 'sideboard',
   sideboard: 'sideboard',
 }

@@ -110,6 +110,10 @@ pub enum DeckRef {
         /// before Attractions reads.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         attractions: Vec<AttractionRef>,
+        /// The oracle ids of the seat's Contraption deck (Unstable), top card first; left out of the stored form for a deck
+        /// without one, which is also how a recipe stored before Contraptions reads.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        contraptions: Vec<String>,
         /// The oracle ids of the seat's sticker sheets (CR 123); left out of the stored form for a deck without any,
         /// which is also how a recipe stored before stickers reads.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -167,6 +171,7 @@ impl DeckRef {
             printings: Vec::new(),
             by_hand: Vec::new(),
             attractions: Vec::new(),
+            contraptions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
             note: None,
@@ -325,6 +330,7 @@ pub(crate) struct SeatCards {
     pub(crate) commanders: Vec<Arc<CardDefinition>>,
     pub(crate) companion: Option<Arc<CardDefinition>>,
     pub(crate) attractions: Vec<AttractionCard>,
+    pub(crate) contraptions: Vec<Arc<CardDefinition>>,
     pub(crate) stickers: Vec<Arc<CardDefinition>>,
     pub(crate) satchel: Vec<Arc<CardDefinition>>,
 }
@@ -337,6 +343,7 @@ impl SeatCards {
             &self.commanders,
             self.companion.as_ref(),
             &self.attractions,
+            &self.contraptions,
             &self.stickers,
             &self.satchel,
         )
@@ -565,6 +572,7 @@ impl GameRecipe {
                     commanders,
                     companion,
                     attractions,
+                    contraptions,
                     stickers,
                     satchel,
                     ..
@@ -574,6 +582,7 @@ impl GameRecipe {
                         .chain(commanders)
                         .chain(companion)
                         .chain(attractions.iter().map(|card| &card.oracle_id))
+                        .chain(contraptions)
                         .chain(stickers)
                         .chain(satchel),
                 ),
@@ -649,6 +658,7 @@ impl GameRecipe {
         let mut commanders = Vec::with_capacity(seats.len());
         let mut companions = Vec::with_capacity(seats.len());
         let mut attractions = Vec::with_capacity(seats.len());
+        let mut contraptions = Vec::with_capacity(seats.len());
         let mut stickers = Vec::with_capacity(seats.len());
         let mut satchels = Vec::with_capacity(seats.len());
         for seat in seats {
@@ -656,6 +666,7 @@ impl GameRecipe {
             commanders.push(seat.commanders);
             companions.push(seat.companion);
             attractions.push(seat.attractions);
+            contraptions.push(seat.contraptions);
             stickers.push(seat.stickers);
             satchels.push(seat.satchel);
         }
@@ -663,6 +674,7 @@ impl GameRecipe {
             .with_commanders(commanders)
             .with_companions(companions)
             .with_attractions(attractions)
+            .with_contraptions(contraptions)
             .with_stickers(stickers)
             .with_satchels(satchels)
             .with_house_rules(self.house_rules.clone())
@@ -723,6 +735,7 @@ impl GameRecipe {
                         commanders: vec![commander],
                         companion: None,
                         attractions: Vec::new(),
+                        contraptions: Vec::new(),
                         stickers: Vec::new(),
                         satchel: Vec::new(),
                     }
@@ -737,6 +750,7 @@ impl GameRecipe {
                     commanders: Vec::new(),
                     companion: None,
                     attractions: Vec::new(),
+                    contraptions: Vec::new(),
                     stickers: Vec::new(),
                     satchel: Vec::new(),
                 },
@@ -747,6 +761,7 @@ impl GameRecipe {
                     printings,
                     by_hand,
                     attractions,
+                    contraptions,
                     stickers,
                     satchel,
                     note: _,
@@ -772,6 +787,9 @@ impl GameRecipe {
                         commanders: rest,
                         companion,
                         attractions: attraction_cards(catalog, seat, attractions, by_hand)?,
+                        contraptions: catalog
+                            .deck_by_hand(contraptions, by_hand)
+                            .map_err(|ids| RecipeError::UnknownCards { seat, ids })?,
                         stickers: catalog
                             .deck_by_hand(stickers, by_hand)
                             .map_err(|ids| RecipeError::UnknownCards { seat, ids })?,
@@ -1198,6 +1216,7 @@ mod tests {
             printings: Vec::new(),
             by_hand: by_hand.iter().map(|id| (*id).to_owned()).collect(),
             attractions: Vec::new(),
+            contraptions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
             note: None,
@@ -1495,6 +1514,7 @@ mod tests {
             printings: Vec::new(),
             by_hand: Vec::new(),
             attractions: Vec::new(),
+            contraptions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
             note: None,
@@ -1623,6 +1643,7 @@ mod tests {
             printings: printings.iter().map(|id| id.map(str::to_owned)).collect(),
             by_hand: Vec::new(),
             attractions: Vec::new(),
+            contraptions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
             note: None,
@@ -1640,6 +1661,7 @@ mod tests {
             printings: printings.iter().map(|id| id.map(str::to_owned)).collect(),
             by_hand: Vec::new(),
             attractions: Vec::new(),
+            contraptions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
             note: None,

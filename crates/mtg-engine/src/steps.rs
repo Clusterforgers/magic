@@ -74,6 +74,10 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
         Step::CombatDamage => combat_damage(state, DamagePass::Regular),
         Step::Cleanup => cleanup(state),
         Step::End => {
+            // The active player may reassemble a Contraption first; its answer begins the step again.
+            if let Some(decision) = crate::p170b_contraptions::reassembly_question(state) {
+                return Progress::Decide(decision);
+            }
             let mut events = crate::monarch::end_step_draw(state);
             events.push(grant(state));
             Progress::Events(events)

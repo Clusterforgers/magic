@@ -1,4 +1,4 @@
-//! Goal: Contraptions play at tables of two and four seats: the deck lies face down in its owner's command zone; assembling puts its top cards onto the battlefield face up, each on the sprocket its controller chooses, as many as asked and no more than the deck holds, and nothing for an empty deck; Steamflogger Boss doubles the Contraptions a Rigger its controller controls assembles and gives the other Riggers +1/+0 and haste; the sprocket marker moves 1, 2, 3, 1 as its player's precombat main phase begins only while they control a Contraption, and the Contraptions they choose on that sprocket are cranked, each crank ability triggering once; a destroyed Contraption goes to the scrapheap in the command zone face up; and the log replays to the same state.
+//! Goal: Contraptions play at tables of two and four seats: the deck lies face down in its owner's command zone; assembling puts its top cards onto the battlefield face up, each on the sprocket its controller chooses, as many as asked and no more than the deck holds, and nothing for an empty deck; Steamflogger Boss doubles the Contraptions a Rigger its controller controls assembles and gives the other Riggers +1/+0 and haste; the sprocket marker moves 1, 2, 3, 1 as its player's precombat main phase begins only while they control a Contraption, and the Contraptions they choose on that sprocket are cranked, each crank ability triggering once; a destroyed Contraption goes to the scrapheap in the command zone face up; as each end step of its controller's turn begins, and on no other seat's turn, they may reassemble one Contraption onto another sprocket, which the next crank follows; and the log replays to the same state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -264,5 +264,92 @@ fn a_destroyed_contraption_goes_to_the_scrapheap() -> Result<(), ScriptError> {
     assert_eq!(card.face_down(), None);
     assert!(!driver.state().in_contraption_deck(gizmo));
     assert_eq!(driver.state().contraption_deck(pid(0)).len(), 2);
+    Ok(())
+}
+
+/// Answers passively up to seat 0's reassembly question, answers it with `choice` and returns the options it offered.
+fn reassemble(driver: &mut Driver, choice: usize) -> Result<Vec<String>, ScriptError> {
+    loop {
+        let decision = driver.decision()?.clone();
+        match &decision.kind {
+            DecisionKind::ChooseOption(options) if options.text.contains("reassemble") => {
+                assert_eq!(decision.player, pid(0));
+                assert_eq!(driver.state().turn().step(), Step::End);
+                let labels = options
+                    .options
+                    .iter()
+                    .map(|option| match option {
+                        mtg_engine::choose::ChoiceOption::Label(label) => label.clone(),
+                        other => panic!("{other:?}"),
+                    })
+                    .collect();
+                driver.answer(Answer::ChooseOption(OptionChoice(choice)))?;
+                return Ok(labels);
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+}
+
+#[rstest]
+#[case::keep(&[1, 2, 3], 0, &[1, 2, 3], (2, 1))]
+#[case::the_first_to_two(&[1, 1, 1], 1, &[2, 1, 1], (2, 1))]
+#[case::the_second_to_two(&[1, 1, 1], 3, &[1, 2, 1], (2, 1))]
+#[case::onto_a_taken_sprocket(&[2, 1, 1], 3, &[2, 2, 1], (2, 2))]
+#[case::the_first_to_three(&[2, 2, 2], 2, &[3, 2, 2], (2, 2))]
+fn the_end_step_reassembles_one_contraption_the_next_crank_follows(
+    #[values(2, 4)] seats: usize,
+    #[case] sprockets: &[u8],
+    #[case] choice: usize,
+    #[case] after: &[u8],
+    #[case] next_crank: (u8, usize),
+) -> Result<(), ScriptError> {
+    let scenario = table(seats, 3, 3, false);
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Tinker")?;
+    settle(&mut driver, sprockets)?;
+    let labels = reassemble(&mut driver, choice)?;
+    // Keeping, then each Contraption to each of the two other sprockets.
+    assert_eq!(labels.len(), 1 + 3 * 2, "{labels:?}");
+    assert_eq!(labels[0], "Move none");
+    assert!(labels[1].starts_with("Sprocket "), "{labels:?}");
+    let now: Vec<u8> = assembled(&driver)
+        .iter()
+        .map(|(_, sprocket)| sprocket.unwrap())
+        .collect();
+    assert_eq!(now, after);
+    let turn = u32::try_from(seats).unwrap() + 1;
+    driver.idle_until(turn, Step::Upkeep)?;
+    let asked: Vec<_> = driver
+        .engine()
+        .events()
+        .iter()
+        .filter_map(|event| match event {
+            Event::P170bReassembled { player, moved } => Some((*player, moved.is_some())),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(asked, vec![(pid(0), choice > 0)], "once, on seat 0's turn only");
+    let seen = cranks(&mut driver, 1, false)?;
+    assert_eq!(seen, vec![next_crank]);
+    let replayed = replay(&setup, driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.engine().state_hash());
+    Ok(())
+}
+
+#[test]
+fn no_contraption_no_reassembly() -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(2, 3, 1, false))?;
+    driver.idle_until(2, Step::Upkeep)?;
+    assert!(
+        !driver
+            .engine()
+            .events()
+            .iter()
+            .any(|event| matches!(event, Event::P170bReassembled { .. }))
+    );
     Ok(())
 }
