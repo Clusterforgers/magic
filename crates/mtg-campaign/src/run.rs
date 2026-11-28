@@ -1820,18 +1820,7 @@ impl Run {
                             .satchel
                             .last()
                             .map_or(Pick::Skip, |card| Pick::Duplicate(card.clone())),
-                        Some(Offer::Campfire { upgrades }) => {
-                            let commanders = h.commanders();
-                            if h.life < h.max_life(content) - 10 {
-                                Pick::Rest
-                            } else {
-                                // The best upgrade, the first of equals, when it beats a card pick.
-                                best(upgrades.iter().map(|u| Some(u.worth(commanders))))
-                                    .filter(|(_, worth)| *worth >= CARD_PICK_WORTH)
-                                    .and_then(|(at, _)| u8::try_from(at).ok())
-                                    .map_or(Pick::Reforge, Pick::Take)
-                            }
-                        }
+                        Some(Offer::Campfire { upgrades }) => bot_campfire(content, h, upgrades),
                         Some(Offer::Event { event }) => self.bot_event_pick(content, h, event),
                         Some(Offer::Discard) => h
                             .satchel
@@ -1846,31 +1835,7 @@ impl Run {
                             })
                             .and_then(|(at, _)| u8::try_from(at).ok())
                             .map_or(Pick::Skip, Pick::Take),
-                        // The ware worth most of the relics and the upgrade it can afford, the first of equals.
-                        Some(Offer::Shop { items }) => best(items.iter().map(|item| {
-                            match item {
-                                ShopItem::Relic {
-                                    id,
-                                    price,
-                                    sold: false,
-                                } if h.gold >= *price => Some(
-                                    content
-                                        .cards
-                                        .get(id.as_str())
-                                        .map_or(relic_worth(Rarity::Common), |c| {
-                                            relic_worth(c.rarity)
-                                        }),
-                                ),
-                                ShopItem::Upgrade {
-                                    upgrade,
-                                    sold: false,
-                                } if h.gold >= UPGRADE_PRICE => Some(upgrade.worth(h.commanders())),
-                                _ => None,
-                            }
-                        }))
-                        .filter(|(_, worth)| *worth > 0)
-                        .and_then(|(at, _)| u8::try_from(at).ok())
-                        .map_or(Pick::Skip, Pick::Take),
+                        Some(Offer::Shop { items }) => bot_shop(content, h, items),
                         Some(_) => Pick::Skip,
                         None => continue,
                     };
@@ -1881,6 +1846,45 @@ impl Run {
         }
         out
     }
+}
+
+/// A bot hero's answer at a campfire: a rest when hurt, else the upgrade worth most (the first of equals) when it is
+/// worth a card pick or more, else a reforge.
+fn bot_campfire(content: &Content, h: &Hero, upgrades: &[Upgrade]) -> Pick {
+    if h.life < h.max_life(content) - 10 {
+        return Pick::Rest;
+    }
+    best(upgrades.iter().map(|u| Some(u.worth(h.commanders()))))
+        .filter(|(_, worth)| *worth >= CARD_PICK_WORTH)
+        .and_then(|(at, _)| u8::try_from(at).ok())
+        .map_or(Pick::Reforge, Pick::Take)
+}
+
+/// A bot hero's answer at a shop: the relic or upgrade worth most that their gold buys (the first of equals), else
+/// leaving.
+fn bot_shop(content: &Content, h: &Hero, items: &[ShopItem]) -> Pick {
+    best(items.iter().map(|item| {
+        match item {
+            ShopItem::Relic {
+                id,
+                price,
+                sold: false,
+            } if h.gold >= *price => Some(
+                content
+                    .cards
+                    .get(id.as_str())
+                    .map_or(relic_worth(Rarity::Common), |c| relic_worth(c.rarity)),
+            ),
+            ShopItem::Upgrade {
+                upgrade,
+                sold: false,
+            } if h.gold >= UPGRADE_PRICE => Some(upgrade.worth(h.commanders())),
+            _ => None,
+        }
+    }))
+    .filter(|(_, worth)| *worth > 0)
+    .and_then(|(at, _)| u8::try_from(at).ok())
+    .map_or(Pick::Skip, Pick::Take)
 }
 
 /// What a card pick is worth to a bot hero, in points.
