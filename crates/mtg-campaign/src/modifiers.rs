@@ -37,3 +37,7 @@ pub fn draw<'a>(
     let mut rng = Stream::new(seed, "modifier", u64::from(floor), u64::from(room));
     fits.get(rng.below(fits.len())).copied()
 }
+
+/// The ids of modifiers removed from the pool. Their cards stay in `content/encounters.json`, so a stored game whose
+/// fight plan names one still plays it; no new fight or retry draws it.
+pub const RETIRED: [&str; 1] = ["waking_earth"];
