@@ -913,6 +913,34 @@ mod tests {
         assert_eq!(older.bots[0].seat, PlayerId(1));
     }
 
+    #[rstest]
+    #[case::retired("waking_earth")]
+    #[case::in_the_pool("bloodlust")]
+    fn a_stored_delve_fight_keeps_the_modifier_it_rolled(#[case] stored_id: &str) {
+        let mut stored = serde_json::to_value(GameRecipe::normal(
+            3,
+            demo_decks(&["mono-green", "mono-red"]),
+        ))
+        .unwrap();
+        stored["campaign"] = json!({
+            "node": 0,
+            "heroes": [],
+            "boss": {
+                "boss": "b", "name": "B", "life": 40, "hand": 7, "brain": "Hard",
+                "deck": [], "modifier": stored_id
+            }
+        });
+        let recipe = serde_json::from_value::<GameRecipe>(stored).unwrap();
+        let boss = recipe.campaign.unwrap().boss;
+        assert_eq!(boss.modifier.as_deref(), Some(stored_id));
+        assert!(
+            mtg_campaign::content()
+                .unwrap()
+                .card(stored_id)
+                .is_ok_and(|card| card.kind == mtg_campaign::content::CardKind::Encounter)
+        );
+    }
+
     #[test]
     fn the_stored_shape_is_stable() {
         let recipe = GameRecipe::normal(5, demo_decks(&["mono-green", "mono-red"]));
