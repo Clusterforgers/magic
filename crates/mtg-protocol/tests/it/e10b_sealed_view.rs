@@ -1,4 +1,4 @@
-//! Goal: a card exiled face down that no player may look at (CR 406.3) lies in exile for every seat to see that it is there and no seat learns which card it is, its owner and the player whose effect exiled it included: the move is told hidden, the batches and the resumed views never name it, the replay agrees; a rule that grants a look ("you may look at the cards exiled with ~") shows it to the seats it names alone, and only while it is in force; at two, three and four seats.
+//! Goal: a card exiled face down that no player may look at (CR 406.3) lies in exile for every seat to see that it is there and no seat learns which card it is, its owner and the player whose effect exiled it included: the move is told hidden, the batches and the resumed views never name it, the replay agrees; a rule that grants a look ("you may look at the cards exiled with ~") shows it to the seats it names alone, and those seats keep the look while the card stays exiled; at two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -163,7 +163,7 @@ fn no_seat_learns_which_cards_were_sealed(#[values(2, 3, 4)] seats: usize) {
 #[rstest]
 #[case::you("You", &[0])]
 #[case::opponents("Opponents", &[1, 2, 3])]
-fn a_grant_shows_the_sealed_cards_to_the_seats_it_names_while_it_is_in_force(
+fn a_grant_shows_the_sealed_cards_to_the_seats_it_names_and_the_look_outlives_it(
     #[values(2, 3, 4)] seats: usize,
     #[case] who: &str,
     #[case] lookers: &[usize],
@@ -178,7 +178,7 @@ fn a_grant_shows_the_sealed_cards_to_the_seats_it_names_while_it_is_in_force(
         assert_eq!(looks(&after, viewer), named, "{viewer:?}");
         assert_eq!(after.may_look_at(viewer, sealed[0]), named);
     }
-    // The Courier leaving ends the grant: the cards are sealed for every seat again.
+    // The Courier leaving ends the grant, but a seat once allowed to look keeps the look while the cards stay exiled (Grimoire Thief and Bane Alley Broker rulings); the other seats still see nothing.
     let courier = after.zone(Zone::Battlefield)[0];
     let leave = Event::ZoneChanged {
         object: courier,
@@ -188,6 +188,7 @@ fn a_grant_shows_the_sealed_cards_to_the_seats_it_names_while_it_is_in_force(
     };
     mtg_engine::fold::apply_event(&mut after, &leave).unwrap();
     for viewer in viewers(seats) {
-        assert!(!looks(&after, viewer), "{viewer:?}");
+        let named = lookers.iter().any(|n| *n < seats && seat(*n) == viewer);
+        assert_eq!(looks(&after, viewer), named, "{viewer:?}");
     }
 }
