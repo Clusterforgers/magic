@@ -1,7 +1,7 @@
 {
   "oracle_id": "4f452ce7-1166-4810-afed-ea5e156a6f52",
   "name": "Aurelia's Vindicator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aurelia's Vindicator",
@@ -12,15 +12,33 @@
         { "Keyword": { "Ward": "{2}" } },
         { "Keyword": { "Disguise": "{X}{3}{W}" } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 46, "end": 180 }
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }, "Other"] },
+                    { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": "X" }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 181, "end": 271 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
           }
         }
       ]
