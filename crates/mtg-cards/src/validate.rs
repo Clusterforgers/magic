@@ -695,7 +695,7 @@ impl<'a> Walker<'a> {
         if *r == Ref::R115Causer {
             self.uses("Ref", "R115Causer");
         }
-        if matches!(r, Ref::R111Object(_)) {
+        if matches!(r, Ref::R111Object(_) | Ref::R6072Source { .. }) {
             self.problem("an object is fixed by the engine and never named in a card file");
         }
         if matches!(r, Ref::R110Seat(_)) {
@@ -737,7 +737,12 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked | Ref::R111Object(_) => {
+            Ref::This
+            | Ref::Attached
+            | Ref::Granter
+            | Ref::Convoked
+            | Ref::R111Object(_)
+            | Ref::R6072Source { .. } => {
                 self.expect(Kind::Object, want);
             }
             Ref::PlayersWhere { who, test } => {
@@ -4362,6 +4367,7 @@ impl Walker<'_> {
             | Ref::Departed(_)
             | Ref::SourceOf(_)
             | Ref::R111Object(_)
+            | Ref::R6072Source { .. }
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope

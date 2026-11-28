@@ -136,6 +136,15 @@ pub enum Ref {
     /// The object with this id, in whatever zone it is now: written by the engine as a rule a resolution begins fixes the
     /// object a name holds (`SameCard`, CR 611.2c), never by a card file.
     R111Object(mtg_core::ids::ObjectId),
+    /// The object with this id as the incarnation with this zone-change counter (CR 400.7), whether or not it still is:
+    /// written by the engine into an emblem as it is made, so `ExiledWith` keeps naming the permanent that made it after
+    /// it left (CR 607.2a), never by a card file.
+    R6072Source {
+        /// The object.
+        id: mtg_core::ids::ObjectId,
+        /// Its zone-change counter.
+        counter: u32,
+    },
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
