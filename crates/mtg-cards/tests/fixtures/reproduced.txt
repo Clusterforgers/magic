@@ -101,6 +101,7 @@ Anthropological Mission
 Apex Altisaur
 Aquastrand Spider
 Aradesh, the Founder
+Arashin Sunshield
 Arasta of the Endless Web
 Araña, Heart of the Spider
 Arbor Colossus
@@ -435,6 +436,7 @@ Caravan Escort
 Carmen, Cruel Skymarcher
 Carnage Tyrant
 Carnival Carnivore
+Carrion Beetles
 Carrion Feeder
 Carrion Grub
 Cascade Bluffs
@@ -700,6 +702,7 @@ Deathmist Raptor
 Debris Field Crusher
 Debtors' Transport
 Deceit
+Decompose
 Decorum Dissertation
 Decree of Justice
 Decree of Pain
@@ -867,6 +870,7 @@ Earthen Arms
 Earthshaker Dreadmaw
 Easterling Vanguard
 Eater of Hope
+Ebony Charm
 Eccentric Pestfinder // Turn Stones
 Echo Inspector
 Echo Mage
@@ -1021,6 +1025,7 @@ False Floor
 False Orders
 Familiar Ground
 Famine
+Famished Ghoul
 Fanatic of Rhonas
 Fang, Fearless l'Cie
 Far Wanderings
@@ -1296,6 +1301,7 @@ Grenzo's Cutthroat
 Greymond, Avacyn's Stalwart
 Grief
 Griffin Aerie
+Griffnaut Tracker
 Grifter's Blade
 Grilka, Widowed Warrior
 Grim Backwoods
@@ -1781,6 +1787,7 @@ MACH-1, Swooping Scoundrel
 Mabel, Bitter Recluse
 Mace of the Valiant
 Machine God's Effigy
+Maelstrom Pulse
 Maestros Theater
 Magar of the Magic Strings
 Mage Hunter
@@ -2033,6 +2040,7 @@ Night Clubber
 Night Market Guard
 Night Shift of the Living Dead
 Night Soil
+Night Terrors
 Night's Whisper
 Nighthawk Scavenger
 Nighthowl Pursuer
@@ -2182,6 +2190,7 @@ Perplexing Test
 Persist
 Personal Sanctuary
 Pestermite
+Pestilent Cauldron // Restorative Burst
 Pestilent Syphoner
 Peter Parker // Amazing Spider-Man
 Peter Parker's Camera
@@ -2327,6 +2336,7 @@ Radiate
 Radical Idea
 Raffine's Informant
 Rafter Demon
+Rag Dealer
 Rage-Scarred Berserker
 Raging Goblinoids
 Raging Regisaur
@@ -2354,9 +2364,11 @@ Ranger Class
 Ranging Raptors
 Ransom Note
 Raphael, Tag Team Tough
+Rapid Decay
 Rapid Hybridization
 Rasputin Dreamweaver
 Ratadrabik of Urborg
+Rats' Feast
 Ravenform
 Ravening Warg
 Ravenous Chupacabra
@@ -2477,6 +2489,7 @@ Rogue Refiner
 Rogue's Passage
 Roku's Mastery
 Romulan Bird-of-Prey
+Rooftop Percher
 Root Sliver
 Rootborn Defenses
 Rootcast Apprenticeship
@@ -2547,6 +2560,7 @@ Savage Ventmaw
 Savor the Moment
 Saw It Coming
 Sawtusk Demolisher
+Scarab Feast
 Scared Stiff
 Scaretiller
 Scarring Memories
@@ -2613,6 +2627,7 @@ Servant of the Conduit
 Setessan Champion
 Seven of Nine
 Seven of Nine, Unassimilated
+Sever the Bloodline
 Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
@@ -2642,6 +2657,7 @@ Shinka, the Bloodsoaked Keep
 Shiny Impetus
 Shipbreaker Kraken
 Shipwreck Patrol
+Shred Memory
 Shrieking Specter
 Shriekmaw
 Shrine of the Forsaken Gods
@@ -3284,6 +3300,7 @@ Uthros Scanship
 Utopia Sprawl
 Utter End
 Valiant Rescuer
+Valki, God of Lies // Tibalt, Cosmic Impostor
 Valko Indorian
 Valkyrie Harbinger
 Valley Rannet
