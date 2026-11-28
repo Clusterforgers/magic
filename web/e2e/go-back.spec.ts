@@ -102,7 +102,9 @@ for (const viewport of [
     if (first === undefined || second === undefined) throw new Error('two seats')
     const errors: string[] = []
     for (const page of [first, second]) page.on('pageerror', (error) => errors.push(error.message))
-    await expect(yourTurn(first).or(yourTurn(second))).toBeVisible({ timeout: 20_000 })
+    const turns = async (): Promise<number> =>
+      (await yourTurn(first).count()) + (await yourTurn(second).count())
+    await expect.poll(turns, { timeout: 20_000 }).toBe(1)
     const [asker, other] = (await yourTurn(first).count()) > 0 ? [first, second] : [second, first]
     const request = other.getByRole('group', { name: 'Go-back request' })
     const waiting = asker.locator('[data-slot="go-back-waiting"]')
