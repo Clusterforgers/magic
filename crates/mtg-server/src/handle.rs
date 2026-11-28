@@ -216,7 +216,7 @@ impl GameHandle {
     }
 
     /// Notes that a server bot plays `seat`: its passes never stop another seat going back a step.
-    pub(crate) async fn mark_bot(&self, seat: PlayerId) {
+    pub async fn mark_bot(&self, seat: PlayerId) {
         // A closed game has no going back left to judge.
         let _ = self.commands.send(Command::Bot { seat }).await;
     }

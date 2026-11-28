@@ -362,7 +362,7 @@ With "Always pay for me" (`AutoChoices.auto_pay`, `pace::auto_paid`) a seat out 
 
 ### Going back
 
-- `go_backs.rs` notes each pass a seat sends itself (`Answer` with a pass, its log position) and the seats server bots play (`GameHandle::mark_bot`, sent by a bot as it joins). A seat's offer is the engine's `go_back_offer` restricted to its own sent passes, refused as `OtherPlayerActed` when another person sent a pass since; the table's passes for any seat and a bot's passes never refuse it.
+- `go_backs.rs` notes each pass a seat sends itself (`Answer` with a pass, its log position) and the seats server bots play (`GameHandle::mark_bot`, sent by a bot as it joins). A seat's offer is the engine's `go_back_offer` restricted to its own sent passes, refused as `OtherPlayerActed` when another person passed since (`Engine::passed_since`), whether that person sent the pass or the table gave it: the table asks a seat only where it can act, so an offer that told the two apart would show the asker what that seat holds. Only a bot's passes never refuse it, so a seat goes back against bots and the table's passes for itself.
 - `GoBack` ends the seat's yield, runs `Running::go_back` as a step that cuts the log (saved with `EventStore::rewind`, announced with a `rewound` snapshot) and puts the seat in `NextWindow` when it was `Off`, so it is asked at its pass again whatever the windows would do. Cuts drop the sent passes after them.
 - After every step each connected seat is sent `GoBackOffer` when its offer changed, and on join or resync when it has one.
 

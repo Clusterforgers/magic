@@ -480,6 +480,19 @@ impl Engine {
         Ok(point.offer())
     }
 
+    /// The players other than `player` who passed after log position `at`, whoever gave the pass, as far as the passes
+    /// kept for going back reach.
+    pub fn passed_since(&self, player: PlayerId, at: u64) -> Vec<PlayerId> {
+        let mut passed: Vec<PlayerId> = Vec::new();
+        for point in &self.passes {
+            let after = u64::try_from(point.from).is_ok_and(|from| from > at);
+            if after && point.pass && point.player != player && !passed.contains(&point.player) {
+                passed.push(point.player);
+            }
+        }
+        passed
+    }
+
     /// Takes `player` back to their pass at log position `at` ([`go_back_offer`](Engine::go_back_offer) must offer
     /// it): the game is rebuilt from the log before it and `WentBack` is logged. The passes before it stay within reach,
     /// and so does a take-back of an action before it. Returns the events after the cut, which

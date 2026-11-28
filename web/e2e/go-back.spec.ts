@@ -1,51 +1,52 @@
-// Goal: a seat that passed its precombat main phase while the table passed for the other seat gets "Back to Precombat main" at its next prompt, and pressing it returns it to that main phase, the control gone and the other seat's log saying so.
+// Goal: against a bot, a seat that passed its precombat main phase gets "Back to Precombat main" at its next prompt, at desktop size and on a phone, and pressing it returns it to that main phase with the control gone and the log saying so.
 import { expect, test } from './test'
 import type { Page } from '@playwright/test'
-import { createAndJoin, everyoneReady } from './lobby'
 import { logOf } from './manual'
 
-const passTurn = (page: Page) => page.getByRole('switch', { name: 'Pass until my turn' })
 const yourTurn = (page: Page) => page.locator('[data-slot="banner"][data-your-turn]')
 const primary = (page: Page) => page.locator('[data-slot="primary-action"]')
 const back = (page: Page) => page.getByRole('button', { name: 'Back to Precombat main' })
 
-test('a seat goes back to its main phase and the table reads it in the log', async ({ browser }) => {
-  test.setTimeout(3 * 60_000)
-  const players = await createAndJoin(browser, [
-    { name: 'Ada', deck: 'mono-green' },
-    { name: 'Bo', deck: 'mono-red' },
-  ])
-  try {
-    const [ada, bo] = players
-    if (ada === undefined || bo === undefined) throw new Error('two players expected')
-    await everyoneReady(players)
-    await Promise.all(
-      players.map(({ page }) => page.getByRole('button', { name: 'Keep', exact: true }).click()),
-    )
-    await expect
-      .poll(async () => (await yourTurn(ada.page).count()) + (await yourTurn(bo.page).count()), {
-        timeout: 30_000,
-      })
-      .toBe(1)
-    const activeFirst = (await yourTurn(ada.page).count()) > 0
-    const [active, waiting] = activeFirst ? [ada, bo] : [bo, ada]
+for (const viewport of [
+  { width: 1400, height: 900 },
+  { width: 390, height: 844 },
+]) {
+  test(`a seat goes back to its main phase against a bot at ${viewport.width} px`, async ({ browser }) => {
+    test.setTimeout(3 * 60_000)
+    const context = await browser.newContext({ viewport })
+    const page = await context.newPage()
+    const errors: string[] = []
+    page.on('pageerror', (error) => errors.push(error.message))
+    try {
+      await page.goto('/new')
+      await page.getByRole('radio', { name: /^Normal/ }).check()
+      await page.getByLabel('Bots').selectOption('1')
+      await page.getByRole('button', { name: 'Create game' }).click()
+      await expect(page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
+      await page.getByRole('button', { name: 'Ready', exact: true }).click()
+      await page.getByRole('button', { name: 'Keep', exact: true }).click()
 
-    // The table passes for the waiting seat, so its passes never stand in the way.
-    await passTurn(waiting.page).click()
-    await expect(passTurn(waiting.page)).toBeChecked()
+      // The bot may begin: the seat plays through its turn until its own begins.
+      for (let press = 0; press < 60 && (await yourTurn(page).count()) === 0; press++) {
+        const end = page.getByRole('button', { name: 'End turn', exact: true })
+        if (await end.isVisible()) await end.click()
+        else if (await primary(page).isVisible()) await primary(page).click()
+        await page.waitForTimeout(300)
+      }
+      await expect(yourTurn(page)).toBeVisible()
+      await expect(primary(page)).toContainText('Next', { timeout: 20_000 })
+      await expect(back(page)).toHaveCount(0)
 
-    // The active seat passes its first main phase by hand and is asked again later in the turn.
-    await expect(primary(active.page)).toContainText('Next')
-    await expect(back(active.page)).toHaveCount(0)
-    await primary(active.page).click()
-    await expect(back(active.page)).toBeVisible({ timeout: 20_000 })
-
-    await back(active.page).click()
-    await expect(back(active.page)).toHaveCount(0)
-    await expect(active.page.locator('[data-slot="banner"]')).toContainText(/precombat main/i)
-    await logOf(waiting.page, [/went back to the precombat main phase/])
-    for (const player of players) expect(player.errors, `${player.name}'s page errors`).toEqual([])
-  } finally {
-    await Promise.all(players.map(({ context }) => context.close()))
-  }
-})
+      // It passes its main phase by hand and is asked again later in the turn, where it may go back.
+      await primary(page).click()
+      await expect(back(page)).toBeVisible({ timeout: 20_000 })
+      await expect(back(page)).toBeInViewport()
+      await back(page).click()
+      await expect(back(page)).toHaveCount(0)
+      await logOf(page, [/went back to the precombat main phase/])
+      expect(errors, 'page errors').toEqual([])
+    } finally {
+      await context.close()
+    }
+  })
+}

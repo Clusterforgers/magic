@@ -42,8 +42,10 @@ impl GoBacks {
         self.sent.retain(|(_, at)| *at < from);
     }
 
-    /// The step `seat` may go back to: its latest own pass in an earlier step the engine allows, with no pass another
-    /// person sent since (a bot's is fine).
+    /// The step `seat` may go back to: its latest own pass in an earlier step the engine allows, with no pass of
+    /// another person since. A person's pass counts whether they sent it or the table gave it for them: the table asks
+    /// a seat only where it can act, so telling the two apart would show the asker what that seat holds. A bot's pass
+    /// never counts.
     pub(crate) fn offer(
         &self,
         engine: &Engine,
@@ -55,11 +57,11 @@ impl GoBacks {
         let len = u64::try_from(engine.events().len()).unwrap_or(u64::MAX);
         let own = |at: u64| at < len && self.sent.contains(&(seat, at));
         let offer = engine.go_back_offer(seat, own)?;
-        let other = self
-            .sent
+        let person = engine
+            .passed_since(seat, offer.at)
             .iter()
-            .any(|(by, at)| *by != seat && !self.bots.contains(by) && *at > offer.at && *at < len);
-        if other {
+            .any(|by| !self.bots.contains(by));
+        if person {
             return Err(GoBackRefusal::OtherPlayerActed);
         }
         Ok(offer)
@@ -142,7 +144,7 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat goes back only to a pass it sent itself, and a pass another person sent since refuses it while a bot's does not.
+    //! Goal: a seat goes back only to a pass it sent itself, and any pass of another person since refuses it, sent or given by the table, so the offer never shows where a seat was asked; a bot's pass never does.
     use super::*;
     use mtg_engine::Answer;
     use mtg_engine::decision::PriorityAction;
@@ -170,10 +172,11 @@ mod tests {
     }
 
     #[rstest]
-    #[case::own_pass_only([true, false], false, Ok(Step::Main1))]
+    #[case::a_person_the_table_passed_for([true, false], false, Err(GoBackRefusal::OtherPlayerActed))]
     #[case::a_person_passed_by_hand([true, true], false, Err(GoBackRefusal::OtherPlayerActed))]
     #[case::a_bot_passed([true, true], true, Ok(Step::Main1))]
-    #[case::the_table_passed_for_the_seat([false, false], false, Err(GoBackRefusal::Nothing))]
+    #[case::the_table_passed_for_a_bot([true, false], true, Ok(Step::Main1))]
+    #[case::the_table_passed_for_the_seat([false, false], true, Err(GoBackRefusal::Nothing))]
     fn only_the_seats_own_pass_with_no_person_passing_since_is_offered(
         #[case] sent: [bool; 2],
         #[case] bot: bool,

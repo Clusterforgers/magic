@@ -1,4 +1,4 @@
-//! Goal: a seat that passed its main phase by hand while the table passed for the other seat is offered that step, and `GoBack` cuts the stored log back to its pass with `WentBack` last, sends every seat a `rewound` snapshot whose log names it, and asks the seat at its main phase again; a pass the other person sent by hand, a table without take-backs or nothing to go back to is refused to the asker alone and changes nothing.
+//! Goal: a seat that passed its main phase by hand while the table passed for a bot is offered that step, and `GoBack` cuts the stored log back to its pass with `WentBack` last, sends every seat a `rewound` snapshot whose log names it, and asks the seat at its main phase again; any pass of another person since (sent by hand or given by the table, which would otherwise show where that seat was asked), a table without take-backs or nothing to go back to is refused to the asker alone and changes nothing.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -15,8 +15,12 @@ use mtg_testkit::Scenario;
 use mtg_testkit::cards::forest;
 use rstest::rstest;
 
-/// Seat 0 holds a Forest on turn 1; both seats are joined and ready.
-async fn table(config: GameConfig, rules: HouseRules) -> (GameHandle, MemoryStore, Vec<Client>) {
+/// Seat 0 holds a Forest on turn 1; both seats are joined and ready, seat 1 marked as a bot's when `bot`.
+async fn table(
+    config: GameConfig,
+    rules: HouseRules,
+    bot: bool,
+) -> (GameHandle, MemoryStore, Vec<Client>) {
     let setup = Scenario::new(2)
         .hand(0, [forest()])
         .house_rules(rules)
@@ -28,6 +32,9 @@ async fn table(config: GameConfig, rules: HouseRules) -> (GameHandle, MemoryStor
         Client::join(&handle, 0).await,
         Client::join(&handle, 1).await,
     ];
+    if bot {
+        handle.mark_bot(seat(1)).await;
+    }
     for client in &clients {
         client.say(&handle, ClientMessage::Ready).await;
     }
@@ -64,7 +71,7 @@ fn pass(id: DecisionId) -> ClientMessage {
 
 #[tokio::test]
 async fn a_seat_goes_back_to_its_main_phase_for_every_seat() {
-    let (handle, store, mut clients) = table(windowed(), HouseRules::default()).await;
+    let (handle, store, mut clients) = table(windowed(), HouseRules::default(), true).await;
     let first = clients[0].drain();
     clients[1].drain();
     let (id, _) = decision_of(&first).expect("seat 0 is asked in its main phase");
@@ -119,16 +126,24 @@ async fn a_seat_goes_back_to_its_main_phase_for_every_seat() {
 #[case::the_other_person_passed_by_hand(
     roomy(),
     HouseRules::default(),
+    false,
     GoBackRefusal::OtherPlayerActed
 )]
-#[case::without_take_backs(windowed(), HouseRules { take_backs: Some(false), ..HouseRules::default() }, GoBackRefusal::Off)]
+#[case::the_table_passed_for_the_other_person(
+    windowed(),
+    HouseRules::default(),
+    false,
+    GoBackRefusal::OtherPlayerActed
+)]
+#[case::without_take_backs(windowed(), HouseRules { take_backs: Some(false), ..HouseRules::default() }, true, GoBackRefusal::Off)]
 #[tokio::test]
 async fn a_go_back_the_table_does_not_allow_is_refused_to_the_asker(
     #[case] config: GameConfig,
     #[case] rules: HouseRules,
+    #[case] bot: bool,
     #[case] refusal: GoBackRefusal,
 ) {
-    let (handle, store, mut clients) = table(config, rules).await;
+    let (handle, store, mut clients) = table(config, rules, bot).await;
     let first = clients[0].drain();
     clients[1].drain();
     let (id, _) = decision_of(&first).expect("seat 0 is asked in its main phase");
@@ -152,7 +167,7 @@ async fn a_go_back_the_table_does_not_allow_is_refused_to_the_asker(
 
 #[tokio::test]
 async fn nothing_to_go_back_to_is_refused() {
-    let (handle, _store, mut clients) = table(windowed(), HouseRules::default()).await;
+    let (handle, _store, mut clients) = table(windowed(), HouseRules::default(), true).await;
     let refused = poke(&handle, &mut clients, 0, ClientMessage::GoBack).await;
     assert!(refused[0].iter().any(|m| matches!(
         m,
