@@ -247,6 +247,8 @@ pub struct Designations {
     pub(crate) devoured: u32,
     /// Whether it has dealt damage, then combat damage, since it entered the battlefield, as this object.
     pub(crate) dealt: [bool; 2],
+    /// The sector of space sculptor it is in (`p170a_sectors`); not copiable, and kept when its control changes.
+    pub(crate) sector: Option<crate::p170a_sectors::Sector>,
 }
 
 /// How a permanent is phased out (CR 702.26): who controlled it when it phased out, which is who it phases in for, and
@@ -461,6 +463,12 @@ impl PermanentState {
     /// Whether the permanent is suspected (CR 701.60); a permanent that leaves the battlefield is a new object and is not.
     pub const fn suspected(&self) -> bool {
         self.designations.suspected
+    }
+
+    /// The sector of space sculptor the permanent is in (`p170a_sectors`); a permanent that leaves the battlefield is a
+    /// new object and is in none.
+    pub const fn sector(&self) -> Option<crate::p170a_sectors::Sector> {
+        self.designations.sector
     }
 
     /// Whether the permanent is a solved Case (CR 719.3); a permanent that leaves the battlefield is a new object and is

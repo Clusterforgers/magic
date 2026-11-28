@@ -894,6 +894,16 @@ impl RandomBot {
                 let chosen = self.subset(&creatures, count);
                 Answer::R509BlockPiles(options.spread(&chosen))
             }
+            DecisionKind::P170aAssignSectors(options) => Answer::P170aAssignSectors(
+                options
+                    .creatures
+                    .iter()
+                    .map(|creature| {
+                        let all = mtg_engine::p170a_sectors::Sector::ALL;
+                        (*creature, all[self.rng.index(all.len())])
+                    })
+                    .collect(),
+            ),
         }
     }
 

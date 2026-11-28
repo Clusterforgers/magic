@@ -440,6 +440,9 @@ pub enum Keyword {
     Banding,
     /// "Bands with other [quality]" (CR 702.22b): banding among creatures of the quality only.
     BandsWithOther(Selector),
+    /// Space sculptor (Space Beleren): while a permanent with it is on the battlefield, every creature is in the alpha,
+    /// beta or gamma sector, assigned by its controller.
+    SpaceSculptor,
     /// Splice onto a kind of spell with its cost (CR 702.47): as such a spell is cast, its caster may reveal this card from
     /// their hand and pay the cost to add the card's effects to that spell.
     Splice {
@@ -705,6 +708,7 @@ impl Keyword {
         "Epic",
         "Banding",
         "Bands with other",
+        "Space sculptor",
         "Splice",
         "Cleave",
         "Macro",
@@ -943,6 +947,7 @@ impl Keyword {
             Keyword::Epic => "Epic",
             Keyword::Banding => "Banding",
             Keyword::BandsWithOther(_) => "Bands with other",
+            Keyword::SpaceSculptor => "Space sculptor",
             Keyword::Splice { .. } => "Splice",
             Keyword::Cleave { .. } => "Cleave",
             Keyword::Macro { .. } => "Macro",
@@ -1271,6 +1276,7 @@ mod tests {
             Keyword::Epic,
             Keyword::Banding,
             Keyword::BandsWithOther(Selector::default()),
+            Keyword::SpaceSculptor,
             Keyword::Splice {
                 onto: SpliceOnto::Arcane,
                 cost: Cost::default(),

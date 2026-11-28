@@ -66,6 +66,10 @@ fn next_in_turns(state: &GameState) -> Progress {
     if !released.is_empty() {
         return Progress::Events(released);
     }
+    // Sectors are lost the moment no permanent with space sculptor is left, so no block restriction outlives them.
+    if let Some(lost) = crate::p170a_sectors::p170a_lost(state) {
+        return Progress::Events(vec![lost]);
+    }
     let actions = sba::check(state);
     if !actions.is_empty() {
         return Progress::Events(actions);
@@ -80,6 +84,10 @@ fn next_in_turns(state: &GameState) -> Progress {
     }
     // So is the owner's choice to put a commander from a graveyard or exile into the command zone (CR 903.9a).
     if let Some(decision) = commanders::decision(state) {
+        return Progress::Decide(decision);
+    }
+    // And the assignment of creatures in no sector to sectors of space sculptor (its release notes).
+    if let Some(decision) = crate::p170a_sectors::p170a_question(state) {
         return Progress::Decide(decision);
     }
     // A state is true where a player would receive priority, after state-based actions (CR 603.8).

@@ -72,6 +72,9 @@ export const KINDS: Record<DecisionName, DecisionKind> = {
   R509BlockPiles: {
     R509BlockPiles: { attackers: [], creatures: [], text: 'Divide your creatures into piles.' },
   },
+  P170aAssignSectors: {
+    P170aAssignSectors: { creatures: [], text: 'Assign each of your creatures to the alpha, beta or gamma sector.' },
+  },
 }
 
 /** A decision of the named kind for `player`. */

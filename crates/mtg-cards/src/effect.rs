@@ -559,6 +559,8 @@ pub enum ValueKind {
     OptionsNotNoted(Vec<String>),
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
+    /// A sector of space sculptor: alpha, beta or gamma ("the sector of your choice"), remembered as its word.
+    P170aSector,
     /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
     /// spells"), remembered as the damage it dealt this turn after prevention.
     R111SpellDamage {

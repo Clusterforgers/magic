@@ -462,6 +462,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
             reads_of_stat(*stat).or(reads_of_selector(group))
         }
         Pred::Modified | Pred::RingBearer => Traits::CONTROL,
+        Pred::P170aInSector(_) => Traits::NONE,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
         | Pred::BlockedBy(who)

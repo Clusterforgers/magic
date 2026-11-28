@@ -2654,6 +2654,12 @@ impl<'a> Scope<'a> {
                 seen.zone == Zone::Battlefield
                     && self.state.r5522.r6500_untapped.contains(&reference)
             }
+            Pred::P170aInSector(name) => {
+                seen.zone == Zone::Battlefield
+                    && matches!(self.chosen_value(name), Some(Chosen::Word(word))
+                        if crate::p170a_sectors::p170a_sector_of(state, reference.id)
+                            .is_some_and(|sector| sector.word() == word))
+            }
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown

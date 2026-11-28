@@ -144,6 +144,7 @@ mod shadow;
 mod shroud;
 mod skulk;
 mod soulbond;
+pub(crate) mod space_sculptor;
 mod spectacle;
 pub(crate) mod splice;
 mod split_second;
@@ -613,6 +614,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Epic => &epic::Epic,
         Keyword::Banding => &banding::Banding,
         Keyword::BandsWithOther(_) => &banding::BandsWithOther,
+        Keyword::SpaceSculptor => &space_sculptor::SpaceSculptor,
         Keyword::Splice { .. } => &splice::Splice,
         Keyword::Cleave { .. } => &cleave::Cleave,
         Keyword::Macro { .. } | Keyword::MacroX { .. } => &macro_keyword::MacroKeyword,
@@ -1095,6 +1097,7 @@ mod tests {
             Keyword::Epic,
             Keyword::Banding,
             Keyword::BandsWithOther(Selector::default()),
+            Keyword::SpaceSculptor,
             Keyword::Splice {
                 onto: mtg_cards::keyword::SpliceOnto::Arcane,
                 cost: cost(),
@@ -1239,6 +1242,7 @@ mod tests {
         "Keyword.Epic",
         "Keyword.Banding",
         "Keyword.BandsWithOther",
+        "Keyword.SpaceSculptor",
         "Keyword.Splice",
         "Keyword.Cleave",
         "Keyword.Macro",
@@ -1456,6 +1460,7 @@ mod tests {
     #[case::ripple(Keyword::Ripple(4), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::epic(Keyword::Epic, Hooks::none())]
     #[case::banding(Keyword::Banding, Hooks::none())]
+    #[case::space_sculptor(Keyword::SpaceSculptor, Hooks::none())]
     #[case::splice(Keyword::Splice { onto: mtg_cards::keyword::SpliceOnto::Arcane, cost: Cost::mana("{1}{R}".parse().unwrap()) }, Hooks::none())]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]

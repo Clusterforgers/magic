@@ -331,6 +331,9 @@ pub(crate) fn handle(
         (DecisionKind::R509BlockPiles(options), Answer::R509BlockPiles(piles)) => {
             crate::r509_piles::r509_answer(state, player, options, &piles)
         }
+        (DecisionKind::P170aAssignSectors(options), Answer::P170aAssignSectors(sectors)) => {
+            crate::p170a_sectors::p170a_answer(player, options, &sectors)
+        }
         (kind, Answer::Undo) => undo(pending.is_some(), kind),
         (kind, answer) => Err(IllegalAnswer::WrongKind {
             expected: kind.name(),

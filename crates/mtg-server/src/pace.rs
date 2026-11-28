@@ -156,7 +156,8 @@ impl Class {
             | DecisionKind::ChooseCards(_)
             | DecisionKind::OrderCards(_)
             | DecisionKind::Scry(_)
-            | DecisionKind::R706ChooseDice(_) => Class::Response,
+            | DecisionKind::R706ChooseDice(_)
+            | DecisionKind::P170aAssignSectors(_) => Class::Response,
             DecisionKind::DeclareBlockers(_) | DecisionKind::R509BlockPiles(_) => Class::Blocks,
             DecisionKind::PayMana(_)
             | DecisionKind::AssignDamage(_)
@@ -392,6 +393,10 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::R706ChooseDice(options) => Some(Answer::R706ChooseDice(options.passive())),
         DecisionKind::R509BlockPiles(options) => {
             Some(Answer::R509BlockPiles(options.empty_piles()))
+        }
+        // The creatures spread over the sectors in turn.
+        DecisionKind::P170aAssignSectors(options) => {
+            Some(Answer::P170aAssignSectors(options.spread()))
         }
     }
 }

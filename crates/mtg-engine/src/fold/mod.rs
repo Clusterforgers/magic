@@ -716,6 +716,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::rules::fold_expired(state, *effect)?;
         }
         Event::R509PilesAssigned { .. } => state.rng_index += 1,
+        Event::P170aSectorsAssigned { sectors, .. } => {
+            crate::p170a_sectors::p170a_fold_assigned(state, sectors)?;
+        }
+        Event::P170aSectorsLost => crate::p170a_sectors::p170a_fold_lost(state),
         Event::R706VisitAsks { .. } => state.un33.r706_visit = Some(Vec::new()),
         Event::DieRolled { player, result, .. } => {
             crate::r6401_history::r6401_note_roll(state, *result);

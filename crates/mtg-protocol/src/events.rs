@@ -534,6 +534,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Unprepared { .. }
         | Event::Suspected { .. }
         | Event::Unsuspected { .. }
+        | Event::P170aSectorsAssigned { .. }
+        | Event::P170aSectorsLost
         | Event::Solved { .. }
         | Event::Harnessed { .. }
         | Event::DayNightChanged { .. }

@@ -1108,6 +1108,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
         return quiet('Combat ends')
       case 'DamageCleared':
         return quiet('Damage wears off')
+      case 'P170aSectorsLost':
+        return line('The sectors are lost: no space sculptor is left')
     }
   }
   if ('FirstPlayerChosen' in event) return line(`${n.seat(event.FirstPlayerChosen.player)} goes first`)
@@ -1324,6 +1326,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, piles } = event.R509PilesAssigned
     const filled = piles.filter(([, pile]) => pile.length > 0).length
     return line(`${n.seat(player)}'s piles go to the attackers at random: ${filled} with creatures`)
+  }
+  if ('P170aSectorsAssigned' in event) {
+    const { player, sectors } = event.P170aSectorsAssigned
+    const placed = sectors.map(([object, sector]) => `${n.card(object)} to ${sector.toLowerCase()}`)
+    return line(`${n.seat(player)} assigns sectors: ${placed.join(', ')}`)
   }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit

@@ -307,6 +307,19 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   CompanionRevealed: [{ CompanionRevealed: { player: 1 } }, 'Bo reveals a companion'],
   CompanionBrought: [{ CompanionBrought: { player: 1, object: 3 } }, 'Bo puts a companion into their hand'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
+  P170aSectorsLost: ['P170aSectorsLost', 'The sectors are lost: no space sculptor is left'],
+  P170aSectorsAssigned: [
+    {
+      P170aSectorsAssigned: {
+        player: 1,
+        sectors: [
+          [3, 'Alpha'],
+          [3, 'Gamma'],
+        ],
+      },
+    },
+    'Bo assigns sectors: Forest to alpha, Forest to gamma',
+  ],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   ExtraTurnAdded: [{ ExtraTurnAdded: { player: 1 } }, 'Bo takes an extra turn after this one'],
   ExtraTurnSkipped: [{ ExtraTurnSkipped: { player: 1 } }, 'Bo skips an extra turn'],
