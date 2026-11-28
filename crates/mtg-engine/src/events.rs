@@ -308,6 +308,16 @@ pub enum Event {
         /// The card cast or played, or the source of the ability.
         name: String,
     },
+    /// A player went back to an earlier step, taking back their passes since (`go_back.rs`): the log before their pass
+    /// is the game, and this note follows it. Nothing else changed.
+    WentBack {
+        /// Who went back.
+        player: PlayerId,
+        /// The step they returned to.
+        step: Step,
+        /// Whose turn that step is in.
+        active: PlayerId,
+    },
     /// A player undid a mana ability they had just activated at priority, its mana unspent (`mana_undo.rs`): a note
     /// after the log was cut back to before it; the state is as if it never happened.
     ManaUndone {
@@ -2006,6 +2016,7 @@ impl Event {
             | Event::NothingToDo { .. }
             | Event::AnnouncementRewound { .. }
             | Event::TookBack { .. }
+            | Event::WentBack { .. }
             | Event::ManaUndone { .. }
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }

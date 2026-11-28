@@ -112,6 +112,12 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - `TakeBack` asks the table to undo the seat's last cast, activation or land play; `TakeBackOffer {offer}` says what that would be (a `TakeBackOffer`: kind, card name, log position `at`; `None` while nothing can be). `TakeBackAsked {offer, waiting, deadline_ms}` goes to every viewer while the request is open; each waiting seat answers `TakeBackVote {approve}`. `TakeBackEnded {offer, outcome}` closes it: `Approved`, `Declined {by}`, `TimedOut {by}` or `Withdrawn`. `TakeBackRefused {reason}` is a `TakeBackRefusal` ([engine.md](engine.md), Take-backs).
 - An approved take-back cuts the log: every viewer gets a `Snapshot` with `rewound`, whose log replaces what the client holds from its first position on, then `TookBack {player, kind, name}` is the log line. `TookBack` is public and names the card, never an object id, so a card back in a hand stays unidentified.
 
+### Going back
+
+- `GoBack` takes back the seat's passes to the earlier step `GoBackOffer {offer}` names (a `GoBackOffer`: player, step, active player, log position `at`; `None` while there is none). `GoBackRefused {reason}` is a `GoBackRefusal` ([engine.md](engine.md), Going back), sent to the asker alone.
+- When other people passed since, they are asked first, as for a take-back: `GoBackAsked {offer, waiting, deadline_ms}` to every viewer, `GoBackVote {approve}` from each waiting seat, `CancelGoBack` from the asker, and `GoBackEnded {offer, outcome}` (a `TakeBackOutcome`) closes it. The offer never depends on who passed since.
+- It cuts the log like a take-back: every viewer gets a `Snapshot` with `rewound`, and `WentBack {player, step, active}` is the public log line ("Ana went back to her main phase").
+
 ### Payments
 
 - Announcing asks a cost's picks before the targets (an X counted from the targets after them), so either question can name what the other took: `TargetOptions.paid` lists the legal objects the picks so far move (a sacrifice, an exile, a return, not a tap), `CardsOptions.targeted` the offered cards already chosen as targets, when the pick moves them. Both are absent while empty and only inform; the engine accepts either answer.

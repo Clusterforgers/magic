@@ -120,5 +120,7 @@ export function lessonSession(inner: Session, now: () => number = Date.now): Les
     ),
     takeBack: held(() => inner.takeBack()),
     voteTakeBack: held((approve: boolean) => inner.voteTakeBack(approve)),
+    goBack: held(() => inner.goBack()),
+    voteGoBack: held((approve: boolean) => inner.voteGoBack(approve)),
   }
 }

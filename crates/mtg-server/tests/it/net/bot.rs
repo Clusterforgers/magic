@@ -204,6 +204,10 @@ impl WsBot {
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }
             | ServerMessage::TakeBackRefused { .. }
+            | ServerMessage::GoBackOffer { .. }
+            | ServerMessage::GoBackRefused { .. }
+            | ServerMessage::GoBackAsked { .. }
+            | ServerMessage::GoBackEnded { .. }
             | ServerMessage::EndedByAdmin { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {

@@ -1,22 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { useGame, usePlay } from '@/features/game/gameContext'
+import { cn } from '@/lib/utils'
 import type { TakeBackNotice } from '@/play/store'
+import { useDockForm } from './dockLayout'
 import { useSeatNamer } from './names'
 import { outcomeWords, REFUSAL_WORDS, secondsLeft, TAKE_BACK_NOTICE_MS, takeBackAction } from './takeBackText'
+import { useNow } from './useNow'
 import type { SeatNamer } from './names'
-
-/** The time now, read again every second while `running`. */
-function useNow(running: boolean): number {
-  const [now, setNow] = useState(() => Date.now())
-  useEffect(() => {
-    if (!running) return
-    const timer = window.setInterval(() => setNow(Date.now()), 1000)
-    return () => window.clearInterval(timer)
-  }, [running])
-  return now
-}
 
 const noticeText = (notice: TakeBackNotice, seat: SeatNamer): string =>
   'refused' in notice ? REFUSAL_WORDS[notice.refused] : outcomeWords(notice.offer, notice.outcome, seat)
@@ -40,6 +32,8 @@ export function TakeBackControls() {
     })),
   )
   const now = useNow(request !== null)
+  // A phone's line holds a request alone: it stays one line there, its sentence cut short.
+  const compact = useDockForm() === 'compact'
   useEffect(() => {
     if (notice === null) return
     const timer = window.setTimeout(() => session.dismissTakeBackNotice(), TAKE_BACK_NOTICE_MS)
@@ -59,21 +53,31 @@ export function TakeBackControls() {
 
   if (request !== null) {
     const action = takeBackAction(request.offer.kind, request.offer.name)
-    const left = `${secondsLeft(request, now)} s left`
+    const left = `${secondsLeft(request, now)} s${compact ? '' : ' left'}`
     const asked = me !== null && request.waiting.includes(me)
     return (
-      <div data-slot="take-back" className="flex flex-col items-end gap-1 text-sm">
+      <div data-slot="take-back" className="flex max-w-full min-w-0 flex-col items-end gap-1 text-sm">
         {noticeLine}
         {asked ? (
           <div
             role="group"
+            data-request
             aria-label="Take-back request"
-            className="flex flex-wrap items-center justify-end gap-2"
+            className={cn(
+              'flex max-w-full min-w-0 items-center justify-end gap-2',
+              compact ? 'flex-nowrap' : 'flex-wrap',
+            )}
           >
-            <p>
+            <p
+              className={compact ? 'min-w-0 truncate' : undefined}
+              title={`${seat(request.offer.player)} wants to take back ${action}`}
+            >
               {seat(request.offer.player)} wants to take back {action}
             </p>
-            <span data-slot="take-back-clock" className="text-muted-foreground tabular-nums">
+            <span
+              data-slot="take-back-clock"
+              className="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums"
+            >
               {left}
             </span>
             <Button size="sm" disabled={!online} onClick={() => session.voteTakeBack(true)}>
@@ -89,7 +93,10 @@ export function TakeBackControls() {
             </Button>
           </div>
         ) : (
-          <p data-slot="take-back-waiting" className="text-muted-foreground">
+          <p
+            data-slot="take-back-waiting"
+            className={cn('max-w-full text-muted-foreground', compact && 'truncate')}
+          >
             {me === request.offer.player
               ? `Taking back ${action}. Waiting for the table…`
               : `${seat(request.offer.player)} wants to take back ${action}. Waiting for the table…`}{' '}

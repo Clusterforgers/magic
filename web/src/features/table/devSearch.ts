@@ -97,6 +97,8 @@ export interface DevSearch {
   alone?: true
   /** `1` offers the viewer "Take back" for a spell, as the server does after a cast, to look at the fullest controls dock. */
   takeback?: true
+  /** A go-back request over the table's passes: `ask` has the viewer asked by the next seat, `wait` has the viewer wait on the others. */
+  goback?: 'ask' | 'wait'
   /** The deck lists the server tells (`dev/deckListScene.ts`): every opponent's `public` whole, or `hidden` to its commander. */
   decks?: 'public' | 'hidden'
   /** `1` gives the viewer and the rivals a permanent for every state a card shows (`dev/states.ts`), to look at them all at once. */
@@ -230,6 +232,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     bare: search.bare === true || search.bare === 1 || search.bare === '1' ? true : undefined,
     alone: search.alone === true || search.alone === 1 || search.alone === '1' ? true : undefined,
     takeback: search.takeback === true || search.takeback === 1 || search.takeback === '1' ? true : undefined,
+    goback: search.goback === 'ask' || search.goback === 'wait' ? search.goback : undefined,
     decks: search.decks === 'public' || search.decks === 'hidden' ? search.decks : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
     moments: search.moments === true || search.moments === 1 || search.moments === '1' ? true : undefined,

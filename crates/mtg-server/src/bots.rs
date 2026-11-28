@@ -435,6 +435,7 @@ async fn run_seat(handle: GameHandle, seat: PlayerId, mut brain: BotBrain, pace:
         let Ok(mut inbox) = handle.join(seat).await else {
             return;
         };
+        handle.mark_bot(seat).await;
         // In a lobby this readies the seat; in a running game the table refuses it, which changes nothing.
         if handle.send(seat, ClientMessage::Ready).await.is_err() {
             return;
@@ -531,6 +532,13 @@ async fn play(
             // A friendly table: a bot agrees to every take-back at once.
             ServerMessage::TakeBackAsked { waiting, .. } if waiting.contains(&seat) => {
                 let vote = ClientMessage::TakeBackVote { approve: true };
+                if handle.send(seat, vote).await.is_err() {
+                    return Ended::Over;
+                }
+            }
+            // A bot's passes are never asked about; one asked all the same agrees.
+            ServerMessage::GoBackAsked { waiting, .. } if waiting.contains(&seat) => {
+                let vote = ClientMessage::GoBackVote { approve: true };
                 if handle.send(seat, vote).await.is_err() {
                     return Ended::Over;
                 }

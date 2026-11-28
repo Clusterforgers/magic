@@ -13,6 +13,7 @@ import { HomeSlotsContext, useDecisionHome } from './prompt/useDecisionHome'
 import { DockFormContext, DockWideContext, useDockForm } from './dockLayout'
 import type { DockForm } from './dockLayout'
 import { StopsDock } from './stops/StopsDock'
+import { GoBackControl } from './GoBackControl'
 import { TakeBackControls } from './TakeBackControls'
 import { useEdgeFade } from './useEdgeFade'
 import { YieldIndicator } from './YieldIndicator'
@@ -81,6 +82,11 @@ function Dock({ stopsRow }: { stopsRow: boolean }) {
   const { tight, least: upperLeast } = useDockFit(dock, upper)
   const { home } = useDecisionHome()
   const form = useDockForm()
+  // A request to the table takes a phone's line alone while it lasts: the stops and the Stack chip give way.
+  const requested = usePlay((state) =>
+    state.goBackRequest !== null ? 'goBack' : state.takeBackRequest !== null ? 'takeBack' : null,
+  )
+  const lineTaken = phone ? requested : null
   // A question other than priority answered here takes the stops' row: they fold into their button meanwhile.
   const asking = usePlay((state) => {
     const own = ownDecision(state)
@@ -107,9 +113,24 @@ function Dock({ stopsRow }: { stopsRow: boolean }) {
       {/* On a phone the take-backs give way on their line, so the stops and the Stack chip stand beside them. */}
       <div
         data-slot="take-back-slot"
-        className={cn('max-w-full empty:hidden', phone && 'min-w-0 flex-[1_1_8rem] [&_button]:max-w-full')}
+        className={cn(
+          'max-w-full empty:hidden',
+          phone && 'min-w-0 flex-[1_1_8rem] [&_button]:max-w-full',
+          lineTaken === 'goBack' && 'hidden',
+        )}
       >
         <TakeBackControls />
+      </div>
+      <div
+        data-slot="go-back-slot"
+        className={cn(
+          'max-w-full empty:hidden',
+          phone && 'min-w-0 flex-[0_1_auto] [&_button]:max-w-full',
+          lineTaken === 'goBack' && 'flex-[1_1_auto]',
+          lineTaken === 'takeBack' && 'hidden',
+        )}
+      >
+        <GoBackControl />
       </div>
       <div data-slot="yield-slot" className="max-w-full empty:hidden">
         <YieldIndicator />
@@ -117,13 +138,22 @@ function Dock({ stopsRow }: { stopsRow: boolean }) {
       {/* A question answered here takes the stops' row: its home holds their folded button meanwhile. */}
       <div
         data-slot="stops-slot"
-        className="flex max-w-full flex-wrap items-center justify-end gap-x-1.5 empty:hidden"
+        className={cn(
+          'flex max-w-full flex-wrap items-center justify-end gap-x-1.5 empty:hidden',
+          lineTaken !== null && 'hidden',
+        )}
       >
         {folded ? null : (
           <StopsDock row={stopsRow && !tight} tuck={tight && form === 'short' ? 'skip' : undefined} />
         )}
       </div>
-      {phone ? <div ref={homes?.setBarLine} data-slot="bar-stack-slot" className="contents" /> : null}
+      {phone ? (
+        <div
+          ref={homes?.setBarLine}
+          data-slot="bar-stack-slot"
+          className={lineTaken === null ? 'contents' : 'hidden'}
+        />
+      ) : null}
     </div>
   )
   const lower = (
@@ -234,7 +264,9 @@ function useDockFit(
         if (held !== null) return box.clientHeight > held + 1 ? null : held
         return zone.scrollHeight > zone.clientHeight + 1 ? box.clientHeight : null
       })
-      setLeast(Math.min(zone.scrollHeight, UPPER_MOST_PX))
+      // A request to the table is a question to answer: it holds the room it needs, never scrolled away.
+      const asked = zone.querySelector('[data-request]') !== null
+      setLeast(asked ? zone.scrollHeight : Math.min(zone.scrollHeight, UPPER_MOST_PX))
     }
     measure()
     const sizes = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null
@@ -243,8 +275,8 @@ function useDockFit(
     // A take-back or yield line that comes or goes changes what the full form needs: try it again.
     const content =
       typeof MutationObserver === 'function' ? new MutationObserver(() => setTightAt(null)) : null
-    for (const slot of zone.querySelectorAll('[data-slot="take-back-slot"], [data-slot="yield-slot"]'))
-      content?.observe(slot, { childList: true })
+    const slots = '[data-slot="take-back-slot"], [data-slot="yield-slot"]'
+    for (const slot of zone.querySelectorAll(slots)) content?.observe(slot, { childList: true })
     return () => {
       sizes?.disconnect()
       content?.disconnect()

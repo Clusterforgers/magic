@@ -246,7 +246,7 @@ fn hidden_from(from: Zone, player: PlayerId) -> bool {
 /// The refusal one event since an action of `player` makes, if any. Every variant is named, so a new event needs a
 /// decision here.
 #[allow(clippy::too_many_lines)]
-fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
+pub(crate) fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
     use TakeBackRefusal as R;
     match event {
         Event::CardDrawn { .. } | Event::DrewFromEmptyLibrary { .. } | Event::Cycled { .. } => {
@@ -319,7 +319,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::MulliganKept { .. }
         | Event::MulliganPhaseEnded
         | Event::OpeningCardsPlayed { .. }
-        | Event::TookBack { .. } => Some(R::MovedOn),
+        | Event::TookBack { .. }
+        | Event::WentBack { .. } => Some(R::MovedOn),
         Event::ZoneChanged { .. }
         | Event::R111GraveyardOrdered { .. }
         | Event::ExtraTurnAdded { .. }

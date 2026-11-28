@@ -16,6 +16,7 @@ use crate::events::Event;
 use crate::flow::{Progress, next};
 use crate::fold::apply_event;
 use crate::forecast::CombatForecast;
+use crate::go_back::{GoBackOffer, GoBackRefusal};
 use crate::mulligan;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::LossReason;
@@ -43,6 +44,7 @@ pub struct Checkpoint {
     held: Option<Held>,
     last: Option<LastAction>,
     mana_run: Option<ManaRun>,
+    passes: Vec<crate::go_back::PassPoint>,
     rewinds: usize,
 }
 
@@ -101,6 +103,8 @@ pub struct Engine {
     last: Option<LastAction>,
     /// The mana abilities the player with priority activated just now, undone with a cast they back out of.
     mana_run: Option<ManaRun>,
+    /// The passes given at priority that a player may go back to (`go_back.rs`).
+    passes: Vec<crate::go_back::PassPoint>,
     /// Each rewind of the log: where it cut and the events it cut, so a checkpoint from before it can be restored.
     dropped: Vec<(usize, Vec<Event>)>,
     /// Whether backing out of a cast also undoes the mana tapped for it, cutting the log ([`Engine::set_rewind_on_cancel`]).
@@ -132,6 +136,7 @@ impl Engine {
             batch: None,
             last: None,
             mana_run: None,
+            passes: Vec::new(),
             dropped: Vec::new(),
             rewind_on_cancel: false,
             watch: crate::loops::Watch::default(),
@@ -285,6 +290,11 @@ impl Engine {
         }
         let checkpoint = self.checkpoint();
         let (mark, rng) = (checkpoint.mark, self.state.rng_index());
+        let place = crate::go_back::Place {
+            turn: self.state.turn().number(),
+            step: self.state.turn().step(),
+            active: self.state.turn().active(),
+        };
         let result = self.run(outcome, player).and_then(|()| {
             if announced && let Some(pending) = self.pending.as_mut() {
                 pending.note(given);
@@ -303,6 +313,7 @@ impl Engine {
         self.last =
             take_back::next_last(self.last.take(), &self.state, self.mana_run.as_ref(), &step);
         self.mana_run = take_back::next_run(self.mana_run.take(), &step);
+        self.passes = crate::go_back::next_passes(std::mem::take(&mut self.passes), &step, place);
         if let Some((how, kind, answer)) = watched {
             let taken = crate::loops::Taken {
                 player,
@@ -429,6 +440,84 @@ impl Engine {
         self.rewind(from, Some(note))
     }
 
+    /// The step `player` may go back to now, or why they cannot: their latest pass in an earlier step whose log
+    /// position `chosen` accepts (the server accepts only passes the seat sent itself), with nothing irreversible since.
+    pub fn go_back_offer(
+        &self,
+        player: PlayerId,
+        chosen: impl Fn(u64) -> bool,
+    ) -> Result<GoBackOffer, GoBackRefusal> {
+        if !self.state.ruleset().take_backs() {
+            return Err(GoBackRefusal::Off);
+        }
+        if self.decision.is_none() || self.state.result().is_some() {
+            return Err(GoBackRefusal::MovedOn);
+        }
+        if self.pending.is_some() || self.held.is_some() || self.paused.is_some() {
+            return Err(GoBackRefusal::Busy);
+        }
+        let turn = self.state.turn();
+        let now = (turn.number(), turn.step());
+        let index = self
+            .passes
+            .iter()
+            .rposition(|point| {
+                point.pass
+                    && point.player == player
+                    && (point.turn, point.step) != now
+                    && chosen(point.offer().at)
+            })
+            .ok_or(GoBackRefusal::Nothing)?;
+        let point = &self.passes[index];
+        let since = self.events.get(point.from..).unwrap_or_default();
+        let after = &self.passes[index + 1..];
+        if let Some(refusal) = crate::go_back::refusal_in(since, after, player) {
+            return Err(refusal);
+        }
+        if self.state.rng_index() != point.rng {
+            return Err(GoBackRefusal::Random);
+        }
+        Ok(point.offer())
+    }
+
+    /// The players other than `player` who passed after log position `at`, whoever gave the pass, as far as the passes
+    /// kept for going back reach.
+    pub fn passed_since(&self, player: PlayerId, at: u64) -> Vec<PlayerId> {
+        let mut passed: Vec<PlayerId> = Vec::new();
+        for point in &self.passes {
+            let after = u64::try_from(point.from).is_ok_and(|from| from > at);
+            if after && point.pass && point.player != player && !passed.contains(&point.player) {
+                passed.push(point.player);
+            }
+        }
+        passed
+    }
+
+    /// Takes `player` back to their pass at log position `at` ([`go_back_offer`](Engine::go_back_offer) must offer
+    /// it): the game is rebuilt from the log before it and `WentBack` is logged. The passes before it stay within reach,
+    /// and so does a take-back of an action before it. Returns the events after the cut, which
+    /// [`cut_since`](Engine::cut_since) places.
+    pub fn go_back(&mut self, player: PlayerId, at: u64) -> Result<Vec<Event>, EngineError> {
+        let offer = self.go_back_offer(player, |point| point == at)?;
+        let from = usize::try_from(offer.at).unwrap_or(usize::MAX);
+        let passes: Vec<_> = self
+            .passes
+            .iter()
+            .copied()
+            .filter(|point| point.from < from)
+            .collect();
+        let last = self.last.clone().filter(|last| last.from < from);
+        let note = Event::WentBack {
+            player,
+            step: offer.step,
+            active: offer.active,
+        };
+        let events = self.rewind(from, Some(note))?;
+        self.passes = passes;
+        self.last = last;
+        Ok(events)
+    }
+
     /// Rebuilds the game from the log up to `from`, logs `note` if any, and keeps the cut events for a restore.
     fn rewind(&mut self, from: usize, note: Option<Event>) -> Result<Vec<Event>, EngineError> {
         let from = from.min(self.events.len());
@@ -500,6 +589,7 @@ impl Engine {
         self.watch.clear();
         self.last = take_back::acted_aside(self.last.take(), player);
         self.mana_run = None;
+        self.passes.clear();
     }
 
     /// Applies `player`'s manual action out of band, whoever the pending decision belongs to (`manual.rs`).
@@ -552,6 +642,7 @@ impl Engine {
             held: self.held.clone(),
             last: self.last.clone(),
             mana_run: self.mana_run.clone(),
+            passes: self.passes.clone(),
             rewinds: self.dropped.len(),
         }
     }
@@ -583,6 +674,7 @@ impl Engine {
         self.held = checkpoint.held;
         self.last = checkpoint.last;
         self.mana_run = checkpoint.mana_run;
+        self.passes = checkpoint.passes;
         self.batch = None;
         self.watch.clear();
         Ok(())

@@ -6,7 +6,7 @@
 //! The depth is the bosses defeated before the fight; the modifier is `rolled`, `none` or a modifier's id. Each boss
 //! gets one `key=value` line: wins, the round each fight ended in, the share that reached each phase, turns, minutes.
 //! A run plays the newest content generation (`DELVE_SIM_CONTENT` sets another); `DELVE_SIM_THEME` picks the theme
-//! (`warrens` by default) and `DELVE_SIM_BOSSES` the bosses.
+//! (`warrens` by default), `DELVE_SIM_BOSSES` the bosses and `DELVE_SIM_NO_UPGRADES` leaves the heroes without upgrades.
 #![allow(
     clippy::unwrap_used,
     clippy::expect_used,
@@ -21,7 +21,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 
 use mtg_campaign::sim::{FightLength, Lengths};
-use mtg_campaign::{Brain, FightPlan, HeroDeck, Run, RunEvent, Status, content};
+use mtg_campaign::{Brain, CommanderFacts, FightPlan, HeroDeck, Run, RunEvent, Status, content};
 use mtg_cards::CardDefinition;
 use mtg_core::ids::PlayerId;
 use mtg_engine::format::Commander;
@@ -598,7 +598,16 @@ fn lobby(theme: &str, seed: u64, heroes: usize, heat: u8) -> (Run, Vec<RunEvent>
                 id: deck.name.clone(),
                 name: deck.name,
                 colors: colors.into(),
-                commanders: Vec::new(),
+                // The commander facts the server reads, so the heroes are offered and take upgrades; none under
+                // `DELVE_SIM_NO_UPGRADES`, to measure what the upgrades are worth.
+                commanders: if std::env::var_os("DELVE_SIM_NO_UPGRADES").is_some() {
+                    Vec::new()
+                } else {
+                    deck.commanders
+                        .iter()
+                        .map(|c| CommanderFacts::of(c))
+                        .collect()
+                },
                 makeup: None,
             },
         });

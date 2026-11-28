@@ -238,6 +238,38 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       return true
     },
     dismissTakeBackNotice: () => store.setState({ takeBackNotice: null }),
+    goBack() {
+      // The dev table goes back at once: the offer is spent and the step is the one it named.
+      store.setState({ goBackOffer: null, goBackRefused: null })
+      return true
+    },
+    dismissGoBackRefusal: () => store.setState({ goBackRefused: null }),
+    voteGoBack(approve) {
+      store.setState((state) =>
+        state.goBackRequest === null
+          ? {}
+          : {
+              goBackRequest: null,
+              goBackNotice: {
+                offer: state.goBackRequest.offer,
+                outcome: approve ? { type: 'Approved' } : { type: 'Declined', by: state.seat ?? 0 },
+              },
+            },
+      )
+      return true
+    },
+    cancelGoBack() {
+      store.setState((state) =>
+        state.goBackRequest === null
+          ? {}
+          : {
+              goBackRequest: null,
+              goBackNotice: { offer: state.goBackRequest.offer, outcome: { type: 'Withdrawn' } },
+            },
+      )
+      return true
+    },
+    dismissGoBackNotice: () => store.setState({ goBackNotice: null }),
     chat(text) {
       const line = text.trim()
       if (line === '') return false

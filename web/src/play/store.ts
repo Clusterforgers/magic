@@ -17,6 +17,8 @@ import type {
   LobbySeat,
   LogHost,
   ObjectId,
+  GoBackOffer,
+  GoBackRefusal,
   ObjectView,
   PictureCard,
   PlayerId,
@@ -226,16 +228,39 @@ export interface PlayState {
   takeBackRequest: TakeBackRequest | null
   /** The last ending or refusal of a take-back, until it is dismissed or a new request opens. */
   takeBackNotice: TakeBackNotice | null
+  /** The earlier step this seat may go back to (`GoBackOffer`), or null while none. */
+  goBackOffer: GoBackOffer | null
+  /** Why the seat's last `GoBack` was refused, until it is dismissed or the seat goes back. */
+  goBackRefused: GoBackRefusal | null
+  /** The go-back request the table is asked about (`GoBackAsked`), or null while none is open. */
+  goBackRequest: GoBackRequest | null
+  /** How the last go-back request ended (`GoBackEnded`), until it is dismissed or a new request opens. */
+  goBackNotice: GoBackNotice | null
 }
 
-/** An open take-back request (`TakeBackAsked`): what it undoes, the seats still to answer, and its clock. */
-export interface TakeBackRequest {
-  offer: TakeBackOffer
+/** A request to the table: the seats still to answer and its clock. */
+export interface TableRequest {
   waiting: readonly PlayerId[]
   /** Milliseconds left at `at` before silence counts as a decline. */
   deadlineMs: number
   /** When the request arrived (`Date.now()`). */
   at: number
+}
+
+/** An open take-back request (`TakeBackAsked`): what it undoes, the seats still to answer, and its clock. */
+export interface TakeBackRequest extends TableRequest {
+  offer: TakeBackOffer
+}
+
+/** An open go-back request (`GoBackAsked`): the step, who asks, the seats still to answer, and its clock. */
+export interface GoBackRequest extends TableRequest {
+  offer: GoBackOffer
+}
+
+/** How a go-back request ended (`GoBackEnded`). */
+export interface GoBackNotice {
+  offer: GoBackOffer
+  outcome: TakeBackOutcome
 }
 
 /** The last word on a take-back: how a request ended (`TakeBackEnded`) or why the seat's own was refused. */
@@ -285,6 +310,10 @@ export function initialPlayState(): PlayState {
     takeBackOffer: null,
     takeBackRequest: null,
     takeBackNotice: null,
+    goBackOffer: null,
+    goBackRefused: null,
+    goBackRequest: null,
+    goBackNotice: null,
   }
 }
 

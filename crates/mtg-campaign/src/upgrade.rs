@@ -31,6 +31,31 @@ pub struct CommanderFacts {
     pub keywords: Vec<String>,
 }
 
+impl CommanderFacts {
+    /// The facts of a commander card.
+    pub fn of(card: &CardDefinition) -> CommanderFacts {
+        use mtg_core::card::CardType;
+        CommanderFacts {
+            name: card.name.clone(),
+            creature: card.types.contains(&CardType::Creature),
+            planeswalker: card.types.contains(&CardType::Planeswalker),
+            power: card.power,
+            generic: card
+                .mana_cost
+                .as_ref()
+                .map_or(0, mtg_core::mana::ManaCost::generic),
+            keywords: card
+                .rules
+                .iter()
+                .filter_map(|rule| match rule.as_ref() {
+                    Ability::Keyword(keyword) => Some(keyword.shown_name()),
+                    _ => None,
+                })
+                .collect(),
+        }
+    }
+}
+
 /// A keyword an upgrade may give a creature commander.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -167,6 +192,35 @@ impl Upgrade {
             Boon::Loyalty => format!("{name} enters with an additional loyalty counter"),
             Boon::Tax(n) => Bane::Tax(*n).words(name),
             Boon::Shrink(n) => Bane::Shrink(*n).words(name),
+        }
+    }
+
+    /// What it is worth to a bot ally, in points (a Common relic is 8, a card pick 6): a bigger or cheaper commander
+    /// counts most, evasion and lifelink more for a commander with more power; a bane counts against it.
+    pub fn worth(&self, commanders: &[CommanderFacts]) -> i32 {
+        let power = commanders
+            .iter()
+            .find(|c| c.name == self.commander)
+            .and_then(|c| c.power)
+            .unwrap_or(0)
+            .clamp(0, 8);
+        let n = |n: u32| i32::try_from(n).unwrap_or(i32::MAX / 8);
+        match &self.boon {
+            Boon::Cheaper(k) => 5 * n(*k),
+            Boon::Pump(k) => 5 * k,
+            Boon::Counter => 4,
+            Boon::Loyalty => 6,
+            Boon::Keyword(gift) => match gift {
+                Gift::Flying => 5 + power,
+                Gift::Lifelink => 4 + power,
+                Gift::Trample | Gift::Menace => 2 + power,
+                Gift::Deathtouch | Gift::FirstStrike => 6,
+                Gift::Hexproof => 7,
+                Gift::Haste => 4,
+                Gift::Vigilance => 3,
+            },
+            Boon::Tax(k) => -8 * n(*k),
+            Boon::Shrink(k) => -10 * k,
         }
     }
 
