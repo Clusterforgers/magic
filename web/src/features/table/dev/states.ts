@@ -1,7 +1,8 @@
 /**
  * `/dev/table?states=1`: the four-seat Commander fixture with one permanent for every state a card can show — counters,
- * loyalty, changed power and toughness, damage, attachments, other faces, face-down cards, copies, merges, prepared and
- * level — spread over the seats, and the printed cards that make the changed numbers read as buffed or debuffed.
+ * loyalty, changed power and toughness, damage, attachments, other faces, face-down cards, copies, merges, prepared,
+ * level and a Contraption on its sprocket — spread over the seats, and the printed cards that make the changed numbers
+ * read as buffed or debuffed.
  */
 import type { CardDetail, ManualClause, ObjectView } from '@/protocol/generated'
 import type { Fixture } from './fixture'
@@ -271,6 +272,16 @@ function mine(first: number, seat: number, rival: number): ObjectView[] {
     // Two 6/6 Soldiers granted vigilance and lifelink in opposite orders look alike, so they share a box.
     base(id(32), seat, soldier({ power: 6, toughness: 6, keywords: ['Vigilance', 'Lifelink'] })),
     base(id(33), seat, soldier({ power: 6, toughness: 6, keywords: ['Lifelink', 'Vigilance'] })),
+    // An assembled Contraption on its sprocket.
+    base(id(34), seat, {
+      name: 'Genome Project',
+      types: ['Artifact'],
+      subtypes: ['Contraption'],
+      colors: [],
+      power: null,
+      toughness: null,
+      permanent: { tapped: false, damage: 0, summoning_sick: false, sprocket: 2 },
+    }),
   ]
   return list
 }

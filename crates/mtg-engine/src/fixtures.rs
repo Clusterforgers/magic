@@ -42,6 +42,7 @@ pub(crate) fn setup(
             commanders: Vec::new(),
             companion: None,
             attractions: Vec::new(),
+            contraptions: Vec::new(),
             stickers: Vec::new(),
             emblems: Vec::new(),
             satchel: Vec::new(),

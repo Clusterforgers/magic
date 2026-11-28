@@ -69,6 +69,8 @@ mod tests {
     #[case("\"PlayedLand\"", "\"Discarded\"")]
     #[case("\"midway\"", "\"time\"")]
     #[case("\"Vehicle\"", "\"Aura\"")]
+    #[case("\"Rigger\"", "\"Goblin\"")]
+    #[case("\"Multiply\":2", "\"Multiply\":3")]
     fn p170_a_changed_part_is_not_written_whole(#[case] from: &str, #[case] to: &str) {
         for (shape, text) in P170_SHAPES.iter() {
             let json = serde_json::to_string(shape).unwrap();
@@ -97,6 +99,8 @@ mod tests {
     #[case("plays a card exiled", "casts a card exiled")]
     #[case("doesn't have a midway counter", "has a midway counter")]
     #[case("whenever you visit it", "whenever you visit an Attraction")]
+    #[case("assembles two Contraptions", "assembles three Contraptions")]
+    #[case("a Rigger you control", "a Rigger an opponent controls")]
     fn p170_a_near_miss_reads_as_nothing(#[case] from: &str, #[case] to: &str) {
         for (_, text) in P170_SHAPES.iter() {
             if text.contains(from) {

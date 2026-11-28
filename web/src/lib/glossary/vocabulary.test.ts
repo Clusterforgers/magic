@@ -61,6 +61,7 @@ const FACE_DOWN: Record<FaceDownKind, string> = {
   R6008Listed: 'Face down',
   R6008Masked: 'Face down',
   Attraction: 'Attraction',
+  Contraption: 'Contraption',
 }
 
 const DAY_NIGHT: Record<DayNight, string> = { Day: 'Day', Night: 'Night' }

@@ -83,6 +83,11 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub sector: Option<mtg_engine::p170a_sectors::Sector>,
+    /// The sprocket, 1 to 3, an assembled Contraption is on; left out for any other permanent. A public fact of the
+    /// permanent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub sprocket: Option<u8>,
 }
 
 /// That a permanent is a copy of another object (CR 707): its name, types and abilities shown are the copiable values of
@@ -784,6 +789,14 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "is_no_card")]
     #[ts(as = "Option<u32>", optional)]
     pub attraction_deck: u32,
+    /// The cards left in the seat's Contraption deck, face down in its command zone; left out while there are none.
+    #[serde(default, skip_serializing_if = "is_no_card")]
+    #[ts(as = "Option<u32>", optional)]
+    pub contraption_deck: u32,
+    /// The sprocket, 1 to 3, the seat's sprocket marker is on; left out before it first moves.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub sprocket_marker: Option<u8>,
     /// The sticker sheets the seat plays with (CR 123), public; left out while it has none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<StickerSheetView>>", optional)]

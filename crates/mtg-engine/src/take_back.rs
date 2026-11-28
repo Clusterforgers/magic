@@ -279,6 +279,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         Event::CardsFound(_) | Event::Sought { .. } => Some(R::LibrarySearched),
         Event::LibraryShuffled { .. }
         | Event::LibraryRefilled { .. }
+        | Event::P170bContraptionDeckShuffled { .. }
         | Event::AttractionDeckShuffled { .. } => Some(R::LibraryShuffled),
         Event::DieRolled { .. }
         | Event::R6402DieChanged { .. }
@@ -408,6 +409,9 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Suspected { .. }
         | Event::Unsuspected { .. }
         | Event::P170aSectorsAssigned { .. }
+        | Event::P170bAssembled { .. }
+        | Event::P170bSprocketMoved { .. }
+        | Event::P170bCranked { .. }
         | Event::P170aSectorsLost
         | Event::Solved { .. }
         | Event::Harnessed { .. }

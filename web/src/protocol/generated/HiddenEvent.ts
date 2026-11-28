@@ -37,6 +37,10 @@ count: number, } } | { "AttractionDeckShuffled": {
 /**
  * Owner of the deck.
  */
+player: PlayerId, } } | { "P170bContraptionDeckShuffled": { 
+/**
+ * Owner of the deck.
+ */
 player: PlayerId, } } | { "LibraryShuffled": { 
 /**
  * Owner of the library.

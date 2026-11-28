@@ -3539,6 +3539,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::PutOnStack { what } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DayNightChanges { .. }
             | TriggerPattern::DoorUnlocked { .. }
+            | TriggerPattern::P170bCranked {}
             | TriggerPattern::Visit {}
             | TriggerPattern::Prize {}
             | TriggerPattern::R115ChoosesTargets { .. }
@@ -3779,6 +3780,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
+                | TriggerPattern::P170bCranked {}
                 | TriggerPattern::Visit {}
                 | TriggerPattern::RolledToVisit { .. }
                 | TriggerPattern::VisitedAttraction { .. }
@@ -5213,7 +5215,9 @@ impl Walker<'_> {
                     w.problem("one sticker is `up_to` 0");
                 }
             }
-            Effect::Incubate { who, count } | Effect::OpenAttraction { who, count } => {
+            Effect::Incubate { who, count }
+            | Effect::OpenAttraction { who, count }
+            | Effect::P170bAssemble { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
@@ -7850,6 +7854,7 @@ impl Walker<'_> {
             | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
+            | ReplaceWhen::P170bAssembles { what }
             | ReplaceWhen::Enters { what }
             | ReplaceWhen::R6105Uncycled { what }
             | ReplaceWhen::R115UntapStep { what }
@@ -7928,6 +7933,11 @@ impl Walker<'_> {
         }
         if matches!(when, ReplaceWhen::LifeLoss { .. }) != matches!(by, ReplaceBy::LossTimes(_)) {
             self.problem("a loss of life is replaced only by a multiple of it, and only it is");
+        }
+        if matches!(when, ReplaceWhen::P170bAssembles { .. })
+            && !matches!(by, ReplaceBy::Multiply(_))
+        {
+            self.problem("an assembly is replaced only by a multiple of it");
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
         crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));

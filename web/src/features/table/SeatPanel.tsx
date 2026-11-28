@@ -403,6 +403,9 @@ export const SeatPanel = memo(function SeatPanel({
               {counts.attractions > 0 ? (
                 <CountChip zone="attractions" count={counts.attractions} density="line" />
               ) : null}
+              {counts.contraptions > 0 ? (
+                <CountChip zone="contraptions" count={counts.contraptions} density="line" />
+              ) : null}
               {oneRow ? null : <LandSummary seat={seat} owner={owner} density="line" />}
               <ZoneButton
                 zone="graveyard"
@@ -471,6 +474,9 @@ export const SeatPanel = memo(function SeatPanel({
       <StickerSheetsChip player={player} />
       {counts.attractions > 0 ? (
         <CountChip zone="attractions" count={counts.attractions} density="line" />
+      ) : null}
+      {counts.contraptions > 0 ? (
+        <CountChip zone="contraptions" count={counts.contraptions} density="line" />
       ) : null}
       {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
       <DamageChips

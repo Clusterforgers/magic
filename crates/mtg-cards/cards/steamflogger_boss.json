@@ -1,7 +1,7 @@
 {
   "oracle_id": "4d614c79-7934-4662-9ce1-22b57d5137f7",
   "name": "Steamflogger Boss",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Steamflogger Boss",
@@ -14,9 +14,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 144 }
+          "Replacement": {
+            "when": {
+              "P170bAssembles": { "what": [{ "Subtype": "Rigger" }, { "ControlledBy": "You" }] }
+            },
+            "by": { "Multiply": 2 }
           }
         }
       ]

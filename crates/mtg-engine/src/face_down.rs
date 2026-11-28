@@ -67,6 +67,7 @@ impl FaceDown {
             | FaceDown::Held { .. }
             | FaceDown::Sealed { .. }
             | FaceDown::Attraction
+            | FaceDown::Contraption
             // The object holds what the effect listed (`GameObject::r6008_listed`).
             | FaceDown::R6008Listed => None,
             FaceDown::Morph | FaceDown::Manifest | FaceDown::R6008Masked => Some(&MORPH),

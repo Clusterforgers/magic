@@ -26,4 +26,4 @@ looker: PlayerId, } } | { "Sealed": {
 /**
  * The source of the effect.
  */
-by: ObjectRef, } } | "Attraction" | "R6008Listed" | "R6008Masked";
+by: ObjectRef, } } | "Attraction" | "Contraption" | "R6008Listed" | "R6008Masked";

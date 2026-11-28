@@ -2840,6 +2840,7 @@ Stasis Cocoon
 Stasis Field
 Steady Progress
 Steam Vents
+Steamflogger Boss
 Steampath Charger
 Steel Leaf Champion
 Steel Overseer

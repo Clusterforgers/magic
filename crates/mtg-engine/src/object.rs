@@ -150,6 +150,9 @@ pub enum FaceDown {
     /// A card of an Attraction deck (CR 717.2), face down in its owner's command zone: it keeps its own characteristics
     /// and no player may look at it until it is opened.
     Attraction,
+    /// A card of a Contraption deck, face down in its owner's command zone: it keeps its own characteristics and no
+    /// player may look at it until it is assembled.
+    Contraption,
     /// A card an effect put onto the battlefield face down with the characteristics it lists (CR 708.2,
     /// `GameObject::r6008_listed`): only its controller may look at it.
     R6008Listed,
@@ -210,7 +213,7 @@ impl FaceDown {
         match self {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
             FaceDown::Held { looker, .. } => looker == viewer,
-            FaceDown::Sealed { .. } | FaceDown::Attraction => false,
+            FaceDown::Sealed { .. } | FaceDown::Attraction | FaceDown::Contraption => false,
             FaceDown::Morph
             | FaceDown::Disguise
             | FaceDown::Manifest
@@ -249,6 +252,8 @@ pub struct Designations {
     pub(crate) dealt: [bool; 2],
     /// The sector of space sculptor it is in (`p170a_sectors`); not copiable, and kept when its control changes.
     pub(crate) sector: Option<crate::p170a_sectors::Sector>,
+    /// The sprocket an assembled Contraption is on, 1 to 3 (`p170b_contraptions`); kept when its control changes.
+    pub(crate) sprocket: Option<u8>,
 }
 
 /// How a permanent is phased out (CR 702.26): who controlled it when it phased out, which is who it phases in for, and
@@ -469,6 +474,12 @@ impl PermanentState {
     /// new object and is in none.
     pub const fn sector(&self) -> Option<crate::p170a_sectors::Sector> {
         self.designations.sector
+    }
+
+    /// The sprocket the permanent is on (`p170b_contraptions`); a permanent that leaves the battlefield is a new object
+    /// and is on none.
+    pub const fn sprocket(&self) -> Option<u8> {
+        self.designations.sprocket
     }
 
     /// Whether the permanent is a solved Case (CR 719.3); a permanent that leaves the battlefield is a new object and is

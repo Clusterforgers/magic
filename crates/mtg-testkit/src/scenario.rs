@@ -263,6 +263,19 @@ impl Scenario {
         self
     }
 
+    /// Gives a player a Contraption deck (Unstable), top card first.
+    #[must_use]
+    pub fn contraptions(
+        mut self,
+        player: usize,
+        cards: impl IntoIterator<Item = Arc<CardDefinition>>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.contraptions = cards.into_iter().collect();
+        }
+        self
+    }
+
     /// The corpus cards called `names`; one that is not there is recorded and the rest are returned.
     fn corpus_cards<N: AsRef<str>>(
         &mut self,

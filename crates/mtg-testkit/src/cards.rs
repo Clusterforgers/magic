@@ -555,6 +555,47 @@ pub fn un33_opener(name: &str, count: Option<i32>) -> Arc<CardDefinition> {
     )
 }
 
+/// A Contraption with "Whenever you crank this Contraption, draw a card."
+pub fn p170b_contraption(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_subtype("Contraption")
+            .with_rules(Ability::Triggered {
+                when: mtg_cards::trigger::TriggerPattern::P170bCranked {},
+                intervening_if: None,
+                limit: None,
+                from: ZoneKind::Battlefield,
+                targets: Vec::new(),
+                effects: vec![Effect::Draw {
+                    who: Ref::You,
+                    count: Amount::one(),
+                    bind: None,
+                }],
+            }),
+    )
+}
+
+/// A 1/1 Goblin Rigger for {0} with "{T}: Assemble `count` Contraptions."
+pub fn p170b_rigger(name: &str, count: i32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_subtype("Goblin")
+            .with_subtype("Rigger")
+            .with_mana_cost(cost(0, &[]))
+            .with_power_toughness(1, 1)
+            .with_rules(tap_ability(
+                Timing::Instant,
+                Vec::new(),
+                vec![Effect::P170bAssemble {
+                    who: Ref::You,
+                    count: Amount::Fixed(count),
+                }],
+            )),
+    )
+}
+
 /// A sticker sheet (CR 123) with these stickers, in order.
 pub fn un34_sheet(name: &str, stickers: Vec<mtg_cards::ability::Sticker>) -> Arc<CardDefinition> {
     let mut sheet = CardDefinition::new(name);

@@ -1358,7 +1358,47 @@ player: PlayerId,
 /**
  * The cards, top card last.
  */
-order: Array<ObjectId>, } } | { "RolledToVisit": { 
+order: Array<ObjectId>, } } | { "P170bContraptionDeckShuffled": { 
+/**
+ * Whose deck.
+ */
+player: PlayerId, 
+/**
+ * The cards, top card last.
+ */
+order: Array<ObjectId>, } } | { "P170bAssembled": { 
+/**
+ * Who assembled it.
+ */
+player: PlayerId, 
+/**
+ * The Contraption.
+ */
+contraption: ObjectId, 
+/**
+ * Its sprocket, 1 to 3.
+ */
+sprocket: number, } } | { "P170bSprocketMoved": { 
+/**
+ * Whose marker.
+ */
+player: PlayerId, 
+/**
+ * The sprocket it is on now, 1 to 3.
+ */
+sprocket: number, } } | { "P170bCranked": { 
+/**
+ * Who cranked.
+ */
+player: PlayerId, 
+/**
+ * The sprocket.
+ */
+sprocket: number, 
+/**
+ * The Contraptions cranked; none when the player chose none.
+ */
+contraptions: Array<ObjectId>, } } | { "RolledToVisit": { 
 /**
  * Who rolled.
  */

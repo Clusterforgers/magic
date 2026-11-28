@@ -103,6 +103,7 @@ function faceOf(permanent: Groupable): string {
     state?.prepared === true,
     state?.suspected === true,
     state?.sector ?? null,
+    state?.sprocket ?? null,
     state?.solved === true,
     state?.level ?? null,
     state?.phased_out === true,
