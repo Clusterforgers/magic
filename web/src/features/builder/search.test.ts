@@ -115,11 +115,22 @@ describe('zonesFor', () => {
     ['Artifact — Contraption', ['commander', 'main', 'sideboard', 'companion', 'contraptions']],
     ['Stickers', ['commander', 'main', 'sideboard', 'companion', 'stickers']],
     ['Legendary Creature — Elf', ['commander', 'main', 'sideboard', 'companion']],
-  ])('offers the Attraction and Contraption decks and the sticker sheets only to their cards: %s', (typeLine, zones) => {
-    expect(zonesFor('commander', typeLine)).toEqual(zones)
-  })
+  ])(
+    'offers the Attraction and Contraption decks and the sticker sheets only to their cards: %s',
+    (typeLine, zones) => {
+      expect(zonesFor('commander', typeLine)).toEqual(zones)
+    },
+  )
 
   it('keeps the order of ZONES', () => {
-    expect(ZONES).toEqual(['commander', 'main', 'sideboard', 'companion', 'attractions', 'contraptions', 'stickers'])
+    expect(ZONES).toEqual([
+      'commander',
+      'main',
+      'sideboard',
+      'companion',
+      'attractions',
+      'contraptions',
+      'stickers',
+    ])
   })
 })
