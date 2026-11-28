@@ -97,6 +97,8 @@ pub(crate) struct Possible {
     pub(crate) linked_exile: bool,
     /// Two creatures have been paired (soulbond), so the pairs are watched.
     pub(crate) pairs: bool,
+    /// Some card has space sculptor, so the sectors are watched (`p170a_sectors`).
+    pub(crate) sectors: bool,
 }
 
 /// A kind of event the game counts in a turn: for each player ("your second card each turn") or for each object

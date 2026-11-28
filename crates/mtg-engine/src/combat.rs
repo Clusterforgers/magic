@@ -801,10 +801,15 @@ fn block_pairs(
             let can_block: Vec<usize> = attackers
                 .iter()
                 .enumerate()
-                .filter(|(_, (attacker, attacker_side))| {
+                .filter(|(index, (attacker, attacker_side))| {
                     !keywords::stops_block_between(state, attacker, &fighter)
                         && !cant_be_blocked_between(state, attacker_side, &side)
                         && !cant_block_between(state, &side, attacker_side)
+                        && !crate::p170a_sectors::p170a_blocks_apart(
+                            state,
+                            blockable[*index],
+                            object,
+                        )
                 })
                 .map(|(index, _)| index)
                 .collect();

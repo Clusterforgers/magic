@@ -921,6 +921,8 @@ impl GameState {
         self.possible.ascend = self.any_face(crate::ability_reader::definition_has_ascend);
         self.possible.storied = self.any_face(crate::ability_reader::definition_has_storied);
         self.possible.engines = self.any_face(crate::ability_reader::definition_has_engines);
+        self.possible.sectors =
+            self.any_face(crate::ability_reader::p170a_definition_has_space_sculptor);
     }
 
     /// Whether some face of a card of the game satisfies `test`.

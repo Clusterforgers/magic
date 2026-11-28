@@ -823,6 +823,8 @@ pub enum DecisionName {
     R706ChooseDice,
     /// Divide creatures into piles instead of declaring blockers.
     R509BlockPiles,
+    /// Assign creatures in no sector to sectors of space sculptor.
+    P170aAssignSectors,
 }
 
 impl DecisionName {
@@ -854,6 +856,7 @@ impl DecisionName {
             DecisionKind::Loop(_) => DecisionName::Loop,
             DecisionKind::R706ChooseDice(_) => DecisionName::R706ChooseDice,
             DecisionKind::R509BlockPiles(_) => DecisionName::R509BlockPiles,
+            DecisionKind::P170aAssignSectors(_) => DecisionName::P170aAssignSectors,
         }
     }
 }

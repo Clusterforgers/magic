@@ -65,6 +65,10 @@ export const COMBAT: readonly Entry[] = [
     'Bands with other',
     'Banding among creatures of the named kind: they attack in a band together, and their controller divides the damage dealt to them.',
   ],
+  [
+    'Space sculptor',
+    'The battlefield is divided into alpha, beta and gamma sectors. Each creature is in one, chosen by its controller, opponents first.',
+  ],
   ['Bushido', 'Whenever this creature blocks or becomes blocked, it gets +N/+N until end of turn.'],
   [
     'Rampage',

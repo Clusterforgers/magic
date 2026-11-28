@@ -79,6 +79,10 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub doors: Option<[bool; 2]>,
+    /// The sector of space sculptor the permanent is in; left out while it is in none. A public fact of the permanent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub sector: Option<mtg_engine::p170a_sectors::Sector>,
 }
 
 /// That a permanent is a copy of another object (CR 707): its name, types and abilities shown are the copiable values of

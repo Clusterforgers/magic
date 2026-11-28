@@ -574,6 +574,7 @@ const RUNS: &[&str] = &[
     "ValueKind.R111SpellDamage",
     "ValueKind.R113CreatureTypeOfNotNoted",
     "ValueKind.OptionsNotNoted",
+    "ValueKind.P170aSector",
     "Rule.Cant.R111AttackPlayer",
     "Rule.Cant.R111CastOrPlay",
     "Rule.Cant.R118Attack",
@@ -692,6 +693,7 @@ const RUNS: &[&str] = &[
     "Rule.R706Reroll",
     "Rule.R706IgnoreChosen",
     "Rule.R509BlockPiles",
+    "Rule.P170aSectorBlocks",
     "Rule.R113NoteExiledManaValue",
     "Rule.ExtraDie",
     "Rule.ExtraPlanarDie",
@@ -1363,6 +1365,7 @@ const RUNS: &[&str] = &[
     "Keyword.Ripple",
     "Keyword.Epic",
     "Keyword.Banding",
+    "Keyword.SpaceSculptor",
     "Keyword.BandsWithOther",
     "Keyword.Splice",
     "Keyword.Cleave",
@@ -1417,6 +1420,7 @@ const RUNS: &[&str] = &[
     "Pred.R702185Warped",
     "Pred.Drafted",
     "Pred.R6600OnlyControllersColor",
+    "Pred.P170aInSector",
     "Pred.Apart",
     "Pred.TotalAtMost",
     "Pred.FaceDown",
@@ -2285,6 +2289,7 @@ mod tests {
     #[case::ripple("Keyword.Ripple", true)]
     #[case::epic("Keyword.Epic", true)]
     #[case::banding("Keyword.Banding", true)]
+    #[case::space_sculptor("Keyword.SpaceSculptor", true)]
     #[case::bands_with_other("Keyword.BandsWithOther", true)]
     #[case::splice("Keyword.Splice", true)]
     #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]

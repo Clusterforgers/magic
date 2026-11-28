@@ -231,6 +231,14 @@ const piles: DevPrompt = ({ view }) => {
   return { id: 1, decision: { player: viewer, kind: { R509BlockPiles: { attackers, creatures, text } } } }
 }
 
+/** Space Beleren: the viewer assigns its untapped creatures, in no sector yet, to sectors. */
+const sectors: DevPrompt = ({ view }) => {
+  const viewer = view.viewer
+  const creatures = untappedCreatures(view, viewer).map((object) => object.id)
+  const text = 'Assign each of your creatures to the alpha, beta or gamma sector.'
+  return { id: 1, decision: { player: viewer, kind: { P170aAssignSectors: { creatures, text } } } }
+}
+
 /** Monitor Monitor: the viewer may pay {1} to reroll dice of a roll of three six-sided dice. */
 const reroll: DevPrompt = ({ view }) => ({
   id: 1,
@@ -564,6 +572,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   // The same decisions on a response clock (`devGame` starts the countdown; nothing ticks it in the dev route).
   'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
   piles,
+  sectors,
   reroll,
   'ignore-roll': ignoreRoll,
   // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.

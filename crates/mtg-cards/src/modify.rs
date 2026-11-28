@@ -1307,6 +1307,9 @@ pub enum GameRule {
     /// creature that can block additional creatures into as many more), the piles go to the attackers at random, and each
     /// creature in a pile that can block that pile's attacker does so.
     R509BlockPiles,
+    /// "Creatures in each sector can be blocked this turn only by creatures in the same sector." (Space Beleren): a
+    /// creature in a sector of space sculptor can be blocked only by creatures in that sector.
+    P170aSectorBlocks,
     /// "Creature spells you cast have sticker kicker {1}." (CR 123, the Wicker Picker rulings): as a player in the group
     /// casts a spell of `spells`, they may pay `cost` in addition, once for each such rule; for each payment they get a
     /// ticket and may put a sticker on the spell just before it becomes cast. A spell paid for it counts as kicked for

@@ -58,6 +58,7 @@ const KINDS: Record<DecisionName, { card: boolean; panel: string; dock: string }
   Loop: { card: true, panel: 'inline', dock: 'inline' },
   R706ChooseDice: { card: true, panel: 'inline', dock: 'inline' },
   R509BlockPiles: { card: false, panel: 'inline', dock: 'inline' },
+  P170aAssignSectors: { card: false, panel: 'inline', dock: 'inline' },
 }
 
 describe('decision homes', () => {

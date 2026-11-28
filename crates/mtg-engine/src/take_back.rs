@@ -407,6 +407,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Unprepared { .. }
         | Event::Suspected { .. }
         | Event::Unsuspected { .. }
+        | Event::P170aSectorsAssigned { .. }
+        | Event::P170aSectorsLost
         | Event::Solved { .. }
         | Event::Harnessed { .. }
         | Event::BecameCopy(_)
