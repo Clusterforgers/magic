@@ -319,6 +319,50 @@ fn grimoire_thief_exiles_three_face_down_for_its_controller_alone(#[values(2, 3,
     replays(&driver);
 }
 
+/// Returns the target creature to its owner's hand.
+const BOUNCE: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}"#;
+/// The target player gains control of the target creature.
+const DONATE: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}},{"what":"Opponent"}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetController":{"Target":1}}],"duration":"Forever"}}]}}"#;
+
+#[rstest]
+fn a_look_at_grimoire_thiefs_cards_outlasts_its_leaving_and_its_control(
+    #[values(2, 4)] seats: usize,
+    #[values(BOUNCE, DONATE)] then: &str,
+) {
+    let mut driver = thief_table(
+        seats,
+        vec![
+            spell("Tapper", CardType::Sorcery, TAP),
+            spell("Then", CardType::Instant, then),
+        ],
+    );
+    tap_the_thief(&mut driver);
+    let exiled = exiled(&driver);
+    let thief = driver.target_named("Grimoire Thief").unwrap();
+    driver.begin_cast("Then").unwrap();
+    driver.choose_targets(&[thief]).unwrap();
+    if then == DONATE {
+        let foe = driver.target_player(1);
+        driver.choose_targets(&[foe]).unwrap();
+    }
+    driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+    settle(&mut driver, true, &none);
+    let stolen = then == DONATE;
+    assert_eq!(driver.id_of("Grimoire Thief").is_ok(), stolen);
+    for id in exiled {
+        assert!(driver.state().may_look_at(pid(0), id), "the look is kept");
+        assert_eq!(
+            driver.state().may_look_at(pid(1), id),
+            stolen,
+            "the new controller looks"
+        );
+        for seat in 2..seats {
+            assert!(!driver.state().may_look_at(pid(seat), id), "seat {seat}");
+        }
+    }
+    replays(&driver);
+}
+
 #[rstest]
 fn grimoire_thief_turns_its_cards_up_and_counters_spells_with_their_names(
     #[values(2, 3, 4)] seats: usize,

@@ -148,7 +148,7 @@ fn cx8a_valki_exiles_a_creature_card_from_each_opponent_until_it_leaves(
         assert_eq!(hand, 2, "only the creature card leaves seat {seat}'s hand");
     }
     cx8a_destroy(&mut driver, valki);
-    assert!(cx8a_named(&driver, Zone::Exile, "Hand Bear").is_empty());
+    assert_eq!(cx8a_named(&driver, Zone::Exile, "Hand Bear").len(), 0);
     for seat in 1..seats {
         let back = cx8a_named(&driver, Zone::Hand(pid(seat)), "Hand Bear").len();
         assert_eq!(back, 1, "seat {seat}'s card returns as Valki leaves");
@@ -185,7 +185,7 @@ fn cx8a_valki_leaving_before_its_trigger_exiles_nothing(#[values(2, 3, 4)] seats
     let valki = driver.id_of(VALKI).unwrap();
     assert_eq!(driver.state().stack().len(), 1, "the enters trigger waits");
     cx8a_destroy(&mut driver, valki);
-    assert!(cx8a_named(&driver, Zone::Exile, "Hand Bear").is_empty());
+    assert_eq!(cx8a_named(&driver, Zone::Exile, "Hand Bear").len(), 0);
     for seat in 1..seats {
         assert_eq!(
             cx8a_named(&driver, Zone::Hand(pid(seat)), "Hand Bear").len(),
@@ -219,7 +219,7 @@ fn cx8a_valki_becomes_a_copy_of_an_exiled_card_with_mana_value_x(
         cx8a_named(&driver, Zone::Hand(pid(seats - 1)), "Hand Ogre").len(),
         1
     );
-    assert!(cx8a_named(&driver, Zone::Exile, "Hand Bear").is_empty());
+    assert_eq!(cx8a_named(&driver, Zone::Exile, "Hand Bear").len(), 0);
     cx8a_replays(&scenario, &driver);
 }
 
@@ -262,7 +262,7 @@ fn cx8a_tibalts_emblem_plays_the_cards_it_exiled(
     assert_eq!(cx8a_named(&driver, Zone::Exile, "Island").len(), 1);
     if leaves {
         cx8a_destroy(&mut driver, tibalt);
-        assert!(cx8a_named(&driver, Zone::Battlefield, TIBALT).is_empty());
+        assert_eq!(cx8a_named(&driver, Zone::Battlefield, TIBALT).len(), 0);
     }
     // The land exiled from seat 0's library is played with the land play; a blue Sprite is cast with other colors.
     let land = cx8a_named(&driver, Zone::Exile, "Island")[0];

@@ -1400,7 +1400,19 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     {
         each
     } else {
-        object(r)?
+        let what = match object(r) {
+            Some(what) => what,
+            None if verb == "exile" => super::lx1a_exiles::lx1a_grouped_target(r)?,
+            None => return None,
+        };
+        // "Destroy target nonland permanent and all other permanents with the same name as that permanent."
+        let single = r.targets.first().is_some_and(|spec| spec.bounds.is_one());
+        match (verb, &what) {
+            ("destroy" | "exile", Ref::Target(0)) if single => {
+                super::lx1a_exiles::lx1a_namesakes(r).unwrap_or(what)
+            }
+            _ => what,
+        }
     };
     let spell = r.targets.first().is_some_and(|spec| {
         matches!(&spec.what, Targetable::Object(selector) if selector.0.first() == Some(&Pred::Spell)

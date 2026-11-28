@@ -88,7 +88,7 @@ function Shade({ lit, passThrough }: { lit: Box; passThrough: boolean }) {
 }
 
 /** Arrow keys move through the tour and Escape ends it; `forward` absent leaves the right arrow alone. */
-function useTourKeys(
+export function useTourKeys(
   on: boolean,
   forward: (() => void) | undefined,
   back: (() => void) | undefined,

@@ -655,7 +655,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if let Some(pred) = others_control(r, form) {
         return Some(pred);
     }
-    if let Some(pred) = this_turn_suffix(r) {
+    if let Some(pred) = this_turn_suffix(r).or_else(|| super::lx1a_exiles::lx1a_suffix(r)) {
         return Some(pred);
     }
     if r.words("enchanted player controls") {
@@ -773,6 +773,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         .or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
         .or_else(|| super::vp20_atoms::vp20_suffix_text(pred, form))
         .or_else(|| super::r4707_printed::r4707_suffix_text(pred))
+        .or_else(|| super::lx1a_exiles::lx1a_suffix_text(pred))
 }
 
 #[allow(clippy::too_many_lines)]
@@ -1137,6 +1138,10 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     }
     if let Some(milled) = r.attempt(super::w13b_mill_rad::w13b_in_a_graveyard) {
         return Some(milled);
+    }
+    // Several targets may come from different graveyards: "up to three target cards from graveyards".
+    if form == Form::Targets && r.words("from graveyards") {
+        return Some(vec![Pred::In(ZoneKind::Graveyard)]);
     }
     // The graveyard of any player, or of the one the phrase names.
     OTHER_GRAVEYARDS
@@ -1828,7 +1833,7 @@ fn player_or_objects(head: &Targetable, objects: &[Targetable]) -> Option<String
 
 /// "another target artifact card from your graveyard": the phrase with "other" after its adjectives, before the zone and
 /// who controls it, where the files put it.
-fn another(mut selector: Selector) -> Selector {
+pub(super) fn another(mut selector: Selector) -> Selector {
     let zoned = |pred: &Pred| match pred {
         Pred::Not(inner) => matches!(**inner, Pred::ControlledBy(_)),
         other => matches!(
@@ -1851,6 +1856,12 @@ fn another(mut selector: Selector) -> Selector {
 
 /// A target specification; a total over the targets ("with total mana value 3 or less") is a rule of the set chosen.
 pub(super) fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
+    if let Some(either) = r.attempt(super::lx1a_exiles::lx1a_either_spec) {
+        return Some(either);
+    }
+    if let Some(together) = r.attempt(super::lx1a_exiles::lx1a_single_graveyard) {
+        return Some(together);
+    }
     spec_main(r).map(super::r6003_total::r6003_targets_together)
 }
 
@@ -2101,6 +2112,9 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
         return total_text(spec);
     }
     if let Some(text) = super::wf25_writers::wf25_single_graveyard(spec, spec_text) {
+        return Some(text);
+    }
+    if let Some(text) = super::lx1a_exiles::lx1a_either_text(spec) {
         return Some(text);
     }
     let Targetable::Object(selector) = &spec.what else {

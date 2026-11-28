@@ -94,6 +94,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     if changes_layers {
         state.layers.reset();
         state.rules_cache.reset();
+        sight::r406_keep_looks(state);
     }
     w2c_note_destroyed(state, event);
     w14b_note_exiled(state, event);

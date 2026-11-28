@@ -1,12 +1,14 @@
-import { useContext, useEffect, useRef } from 'react'
+import { Suspense, lazy, useContext, useEffect, useRef } from 'react'
 import { useStore } from 'zustand'
-import { TourCard } from '@/components/tour/TourCard'
 import { usePlay } from '@/features/game/gameContext'
 import { useSide } from '../sideContext'
 import { TableOptionsContext, TOUR_BY_DEFAULT } from '../tableOptions'
-import { endTour, moveTour, startTour, tourSeen, tourStore } from './tourStore'
+import { startTour, tourSeen, tourStore } from './tourStore'
 import { TOUR } from './tourSteps'
 import type { TourStep } from './tourSteps'
+
+// The coach's light and card load with the tour's first step, so a table that never tours never loads them.
+const TourCoach = lazy(() => import('./TourCoach').then((module) => ({ default: module.TourCoach })))
 
 /** Brings up the side tab a step points at, and closes a rail or sheet panel the tour opened when it ends. */
 function useStepTab(step: TourStep | undefined): void {
@@ -27,13 +29,10 @@ function useStepTab(step: TourStep | undefined): void {
   }, [step, kind, setOpen])
 }
 
-const forward = (): void => moveTour(1)
-const back = (): void => moveTour(-1)
-
 /**
- * The table tour for a new player: one part of the table lit at a time with a card that says what it is for, Back, Next
- * and Skip (`TourCard`). It starts by itself the first time a seat sits at a table in this browser (`tourSeen`) and
- * again from the help menu (`TableOptions.tour`). While it is up the table under it takes no presses.
+ * The table tour for a new player, on the Learn coach's light (`TourCoach`): one anchor of the table lit at a time with
+ * a card that says what it is for. It starts by itself the first time a seat sits at a table in this browser
+ * (`tourSeen`) and again from the help menu (`TableOptions.tour`).
  */
 export function TableTour() {
   const index = useStore(tourStore, (state) => state.step)
@@ -50,16 +49,8 @@ export function TableTour() {
 
   if (step === undefined || index === null) return null
   return (
-    <TourCard
-      stop={step}
-      index={index}
-      count={TOUR.length}
-      onBack={back}
-      onNext={forward}
-      nextLabel={index === TOUR.length - 1 ? 'Done' : 'Next'}
-      onSkip={endTour}
-      skipLabel="Skip tour"
-      slot="table-tour"
-    />
+    <Suspense fallback={null}>
+      <TourCoach step={step} index={index} />
+    </Suspense>
   )
 }

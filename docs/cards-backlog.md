@@ -17,7 +17,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (r378d) Turn history: damage by sources of a name (Blazing Effigy); `turn_log.rs`, `turn_summary.rs`
 - [ ] (p158b) Engine pieces of pack158-other still open: "unattach an Equipment from ~" as a cost whose mana value is the divided damage (Captain America, First Avenger), a play of a card exiled with the source as a trigger (Prowl), beam me up (Scotty, Miracle Worker)
 - [ ] (cx8b) Myra the Magnificent: a midway counter on a chosen Attraction and a visit of that Attraction copying the exiled card while it stays; `memory.rs`, `un33_attractions.rs`
-- [ ] (p162a) A look at face-down exiled cards that a player keeps once granted, after the source leaves or changes control (Grimoire Thief rulings): `LookAtExiled` grants it only to the current controller
 
 ## Forge coverage
 
@@ -116,7 +115,6 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Compiler wordings
 
-- [ ] (lx1a) The enter exiles linked to "return the exiled card" still left by hand: a pick from a revealed hand (Tidehollow Sculler, Mesmeric Fiend), cards from a single graveyard (Gravegouger), the same-name exile (Detention Sphere), permanents and graveyard cards together (Angel of Serenity) and the name rule of Ashiok's Erasure; `compile/linked.rs`
 - [ ] (dl1) The four Delves boss deck cards on the content test's pending list play automatically: Leonin Relic-Warder (its compiled linked triggers read back as printed: a corpus card), Wayta, Trainer Prodigy (an activation's reduction counts its own targets), Ripples of Potential (proliferate binds the permanents it put counters on), Plumb the Forbidden (its draft lacks "copy this spell for each creature sacrificed this way", and the checker files that sentence under the additional cost).
 - [ ] (dl2) The 146 boss deck cards that play from Forge or read drafts reach the test corpus, so the simulator plays them: a corpus that loads approved drafts, or drafts the checker accepts.
 - [ ] (t16c) The follow-up of a destroy read and written by the compiler ("If an artifact is destroyed this way, its controller draws a card" as an `If` of `Performed`; the checker writes it, the compiler does not read it); frees Acolyte Hybrid

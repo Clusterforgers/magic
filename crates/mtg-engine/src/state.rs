@@ -468,8 +468,8 @@ pub struct GameState {
     /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
     /// still the object it looked at and the library has not been shuffled.
     pub(crate) looked_by_hand: Vec<(PlayerId, crate::object::ObjectRef)>,
-    /// The face-down permanents a seat looked at by an effect (`Effect::LookAtFaceDown`), known to that seat while each
-    /// is still the object it looked at.
+    /// The face-down permanents a seat looked at by an effect (`Effect::LookAtFaceDown`) and the face-down cards in exile
+    /// a rule let it look at (`sight::r406_keep_looks`), known to that seat while each is still the object it looked at.
     pub(crate) looked_face_down: Vec<(PlayerId, crate::object::ObjectRef)>,
     /// The colors chosen before the game began for commanders that are the chosen color, by card id
     /// (`r404_commander_color`).
