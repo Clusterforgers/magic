@@ -361,8 +361,7 @@ impl Pool {
                     .as_ref()
                     .and_then(|script| script.faces.get(line.face))
                     .and_then(|face| forge_lines(face, &line.tag, &line.text))
-                    .map(|(shown, _)| Shape::of(&shown))
-                    .unwrap_or_default();
+                    .map_or_default(|(shown, _)| Shape::of(&shown));
                 entries.push(Entry {
                     slug: stem.to_owned(),
                     face: line.face,

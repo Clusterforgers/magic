@@ -590,8 +590,7 @@ fn paid_by(state: &GameState, source: ObjectRef) -> Vec<usize> {
     state
         .object(source.id)
         .filter(|object| object.counter() == source.counter)
-        .map(|object| object.paid_costs().to_vec())
-        .unwrap_or_default()
+        .map_or_default(|object| object.paid_costs().to_vec())
 }
 
 /// The parts the paid optional costs of a spell pay, in the order of the costs.

@@ -2362,7 +2362,7 @@ fn static_texts(
     condition: Option<&Condition>,
 ) -> Vec<String> {
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
-    let helds: Vec<String> = condition.map(as_long_as::texts).unwrap_or_default();
+    let helds: Vec<String> = condition.map_or_default(as_long_as::texts);
     let mut tails: Vec<String> = if condition.is_some() {
         helds
             .iter()

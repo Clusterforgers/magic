@@ -230,8 +230,7 @@ fn lowered(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_lowercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_lowercase().chain(chars).collect())
 }
 
 /// The basic land types of an enchanted land: "Enchanted land is an Island.", "Enchanted land is a Mountain, Forest,
@@ -300,30 +299,27 @@ fn untap_texts(value: &Value) -> Vec<String> {
     };
     match preds.as_slice() {
         [this, rest @ ..] if this == "This" => counter_on(rest)
-            .map(|counter| {
+            .map_or_default(|counter| {
                 vec![format!(
                     "~ doesn't untap during your untap step if it has {counter} on it"
                 )]
-            })
-            .unwrap_or_default(),
+            }),
         [creature, attached, rest @ ..]
             if creature == &json!({ "Type": "Creature" }) && attached == &json!({ "Is": "Attached" }) =>
         {
             counter_on(rest)
-                .map(|counter| {
+                .map_or_default(|counter| {
                     vec![format!(
                         "Enchanted creature doesn't untap during its controller's untap step if it has {counter} on it"
                     )]
                 })
-                .unwrap_or_default()
         }
         [held] if held.get("HasCounter").is_some() => counter_on(preds)
-            .map(|counter| {
+            .map_or_default(|counter| {
                 vec![format!(
                     "Each permanent with {counter} on it doesn't untap during its controller's untap step"
                 )]
-            })
-            .unwrap_or_default(),
+            }),
         _ => {
             let Ok(selector) = serde_json::from_value::<crate::refs::Selector>(json!(preds)) else {
                 return Vec::new();
@@ -337,13 +333,12 @@ fn untap_texts(value: &Value) -> Vec<String> {
                 return Vec::new();
             }
             super::selectors::phrase_text(&selector, super::selectors::Form::All)
-                .map(|group| {
+                .map_or_default(|group| {
                     let group = upper_first(&group);
                     vec![format!(
                         "{group} don't untap during their controllers' untap steps"
                     )]
                 })
-                .unwrap_or_default()
         }
     }
 }
@@ -409,8 +404,7 @@ fn upper_first(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_uppercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_uppercase().chain(chars).collect())
 }
 
 /// The wordings of a condition after "if", as the other writers say it.
@@ -936,8 +930,7 @@ fn cast_texts(value: &Value) -> Vec<String> {
         }
         let held = cast_condition_texts(condition).unwrap_or_else(|| {
             serde_json::from_value::<Condition>(unwrapped(condition))
-                .map(|held| condition_texts(&held))
-                .unwrap_or_default()
+                .map_or_default(|held| condition_texts(&held))
         });
         return held
             .into_iter()

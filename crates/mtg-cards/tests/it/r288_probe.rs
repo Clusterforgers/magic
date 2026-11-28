@@ -48,8 +48,7 @@ fn probe_prints_the_compiled_rules_of_named_cards() {
         let compiled = mtg_cards::compile::compile(card);
         let text = compiled
             .card
-            .map(|rules| mtg_cards::pretty::pretty(&mtg_cards::load::canonical(&rules)))
-            .unwrap_or_default();
+            .map_or_default(|rules| mtg_cards::pretty::pretty(&mtg_cards::load::canonical(&rules)));
         println!("== {name}\n{text}");
     }
 }

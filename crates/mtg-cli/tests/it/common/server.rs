@@ -203,7 +203,7 @@ impl Server {
 
     /// Every request so far, in arrival order.
     pub fn log(&self) -> Vec<Request> {
-        self.log.lock().map(|log| log.clone()).unwrap_or_default()
+        self.log.lock().map_or_default(|log| log.clone())
     }
 
     /// The most requests the server held at the same moment, from reading one to finishing its answer.

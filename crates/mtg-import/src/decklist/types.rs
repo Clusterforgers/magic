@@ -22,6 +22,8 @@ pub enum Section {
     Companion,
     /// The Attraction deck.
     Attractions,
+    /// The Contraption deck.
+    Contraptions,
     /// The sticker sheets.
     Stickers,
     /// Cards considered but not in the deck.

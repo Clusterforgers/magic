@@ -39,13 +39,12 @@ fn r6102_counters(driver: &Driver, name: &str) -> BTreeMap<String, u32> {
     state
         .object(id)
         .and_then(|object| object.permanent())
-        .map(|permanent| {
+        .map_or_default(|permanent| {
             permanent
                 .counters()
                 .map(|(kind, n)| (kind.name().to_owned(), n))
                 .collect()
         })
-        .unwrap_or_default()
 }
 
 fn r6102_kind(name: &str) -> CounterKind {

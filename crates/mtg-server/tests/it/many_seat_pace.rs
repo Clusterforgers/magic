@@ -319,8 +319,8 @@ async fn a_seat_is_told_its_own_hand_and_never_another_seats(#[values(13, 32, 64
         table.clients[owner].say(&table.handle, draw).await;
     }
     table.settle().await;
-    for viewer in 0..seats {
-        let text: String = table.seen[viewer]
+    for (viewer, seen) in table.seen.iter().enumerate().take(seats) {
+        let text: String = seen
             .iter()
             .map(|m| serde_json::to_string(m).unwrap())
             .collect();

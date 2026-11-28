@@ -73,7 +73,7 @@ impl FloorMap {
                 .filter(|n| n.row == 0)
                 .map(|n| n.id)
                 .collect(),
-            Some(id) => self.node(id).map(|n| n.next.clone()).unwrap_or_default(),
+            Some(id) => self.node(id).map_or_default(|n| n.next.clone()),
         }
     }
 

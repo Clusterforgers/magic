@@ -541,8 +541,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             let printed = scope
                 .state
                 .object(donor.id)
-                .map(|object| object.card().subtypes.clone())
-                .unwrap_or_default();
+                .map_or_default(|object| object.card().subtypes.clone());
             let mut types: Vec<mtg_core::card::Subtype> = Vec::new();
             let held = if chars.creature_types_set {
                 chars.subtypes.clone()

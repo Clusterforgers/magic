@@ -73,8 +73,7 @@ fn each_revealed_artifact_adds_two_mana(
         driver
             .state()
             .object(id)
-            .map(|object| object.card().name.clone())
-            .unwrap_or_default()
+            .map_or_default(|object| object.card().name.clone())
     };
     let mut offered: Vec<String> = options.from.iter().map(|id| name(*id)).collect();
     offered.sort_unstable();

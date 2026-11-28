@@ -118,8 +118,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     .object(object.id)
                     .filter(|found| found.face_down().is_none())
                     .and_then(GameObject::mana_cost)
-                    .map(|cost| cost.symbols().to_vec())
-                    .unwrap_or_default(),
+                    .map_or_default(|cost| cost.symbols().to_vec()),
                 _ => Vec::new(),
             };
             let Some(lists) = r5511_cost_lists(&symbols) else {
@@ -246,8 +245,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         // The colors circled for the source, or for what it copies; none when none were.
         Produce::Circled => (
             source
-                .map(|id| crate::circled::circled(state, id))
-                .unwrap_or_default()
+                .map_or_default(|id| crate::circled::circled(state, id))
                 .into_iter()
                 .map(mana_of)
                 .collect(),

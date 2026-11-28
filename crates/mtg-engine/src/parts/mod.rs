@@ -1061,8 +1061,7 @@ impl Part {
             Part::R110RevealChosen => r110_reveal_chosen::events(state, source),
             Part::R110ControllerDraws(count) => state
                 .object(source)
-                .map(|object| draw::events(state, object.controller(), *count))
-                .unwrap_or_default(),
+                .map_or_default(|object| draw::events(state, object.controller(), *count)),
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_events(
                 &r303c_sacrifice_all::r303c_payer(state, player, source),
                 filter,

@@ -61,7 +61,5 @@ fn restyled(ability: &Ability, from: &str, to: &str) -> Option<Ability> {
 
 /// The wordings of the plain twin of the ability (see [`restyled`]); none when there is no twin.
 fn twin_variants(ability: &Ability, from: &str, to: &str) -> Vec<String> {
-    restyled(ability, from, to)
-        .map(|plain| super::super::variants(&plain))
-        .unwrap_or_default()
+    restyled(ability, from, to).map_or_default(|plain| super::super::variants(&plain))
 }

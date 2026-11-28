@@ -99,13 +99,11 @@ fn kinds_held(cx: &Cx<'_>, holder: Target) -> Vec<mtg_cards::value::CounterKind>
     match holder {
         Target::Player(id) => state
             .player(id)
-            .map(|p| p.counters().map(|(kind, _)| kind.clone()).collect())
-            .unwrap_or_default(),
+            .map_or_default(|p| p.counters().map(|(kind, _)| kind.clone()).collect()),
         Target::Object(named) => state
             .object(named.id)
             .and_then(|object| object.permanent())
-            .map(|p| p.counters().map(|(kind, _)| kind.clone()).collect())
-            .unwrap_or_default(),
+            .map_or_default(|p| p.counters().map(|(kind, _)| kind.clone()).collect()),
     }
 }
 

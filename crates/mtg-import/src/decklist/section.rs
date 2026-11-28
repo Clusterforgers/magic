@@ -11,6 +11,7 @@ fn section_from_word(word: &str) -> Option<Section> {
         "commander" | "commanders" | "command zone" => Some(Section::Commander),
         "companion" => Some(Section::Companion),
         "attractions" | "attraction" | "attraction deck" => Some(Section::Attractions),
+        "contraptions" | "contraption" | "contraption deck" => Some(Section::Contraptions),
         "stickers" | "sticker sheets" => Some(Section::Stickers),
         "maybeboard" | "maybe" | "maybe board" => Some(Section::Maybeboard),
         _ => None,
@@ -25,6 +26,7 @@ pub fn header_word(section: Section) -> &'static str {
         Section::Commander => "Commander",
         Section::Companion => "Companion",
         Section::Attractions => "Attractions",
+        Section::Contraptions => "Contraptions",
         Section::Stickers => "Stickers",
         Section::Maybeboard => "Maybeboard",
     }
@@ -146,6 +148,8 @@ mod tests {
     #[case::any_case("Stickers", Some(Header::Section(Section::Stickers)))]
     #[case::with_count("Stickers (10)", Some(Header::Section(Section::Stickers)))]
     #[case::attractions("ATTRACTIONS:", Some(Header::Section(Section::Attractions)))]
+    #[case::contraptions("CONTRAPTIONS:", Some(Header::Section(Section::Contraptions)))]
+    #[case::contraption_deck("Contraption Deck (3)", Some(Header::Section(Section::Contraptions)))]
     #[case::a_deck_section("SIDEBOARD:", Some(Header::Section(Section::Sideboard)))]
     #[case::a_card_named_so("Stickers of Doom", None)]
     #[case::unknown_shouting_header("LANDS:", None)]
@@ -205,6 +209,7 @@ mod tests {
         "1v1 Sideboard{noDeck}{noPrice}",
         Some(Section::Maybeboard)
     )]
+    #[case::contraption_category("Contraptions{noDeck}", Some(Section::Contraptions))]
     #[case::ordinary_category("Ramp", None)]
     #[case::price_flag_alone("Ramp{noPrice}", None)]
     #[case::deck_word("Deck", None)]
@@ -217,6 +222,7 @@ mod tests {
     #[case("SIDEBOARD:", true)]
     #[case("COMMANDER:", true)]
     #[case("STICKERS:", true)]
+    #[case("CONTRAPTIONS:", true)]
     #[case("STICKERS", false)]
     #[case("Sideboard:", false)]
     #[case("SIDEBOARD", false)]

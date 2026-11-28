@@ -179,8 +179,7 @@ impl Scope<'_> {
         let name = self
             .state
             .source_object(self.source.id)
-            .map(|source| source.card().name.clone())
-            .unwrap_or_default();
+            .map_or_default(|source| source.card().name.clone());
         let total: u32 = self
             .players(who)?
             .into_iter()

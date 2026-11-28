@@ -2498,8 +2498,7 @@ impl Pass<'_> {
         let written = |found: Option<&Source>| {
             found
                 .and_then(|s| render_ability(&s.ability))
-                .map(|text| self.named(&text, candidate.object.id))
-                .unwrap_or_default()
+                .map_or_default(|text| self.named(&text, candidate.object.id))
         };
         let fixed = match candidate.origin {
             Origin::Ability(address) | Origin::Dredge(address) => {
@@ -3628,8 +3627,7 @@ impl Pass<'_> {
         let mut gone: Vec<ObjectId> = self
             .state
             .object(object)
-            .map(crate::merged::cards_apart)
-            .unwrap_or_default()
+            .map_or_default(crate::merged::cards_apart)
             .into_iter()
             .filter(|card| self.parted_in_batch(object, *card).is_none())
             .collect();
@@ -4412,13 +4410,12 @@ impl Pass<'_> {
             .object(copied.id)
             .filter(|found| found.counter() == copied.counter)
             .and_then(|found| found.permanent())
-            .map(|permanent| {
+            .map_or_default(|permanent| {
                 permanent
                     .counters()
                     .map(|(kind, count)| (kind.clone(), count))
                     .collect()
-            })
-            .unwrap_or_default();
+            });
         for (kind, count) in held {
             let count = mtg_cards::value::Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX));
             self.enter_with_counters(at, candidate, object, &kind, &count, applied)?;

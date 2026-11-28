@@ -173,8 +173,7 @@ pub(super) fn l293_won_wordings(
                 value
             })
             .and_then(|value| serde_json::from_value::<Ability>(value).ok())
-            .map(|ability| written(&ability))
-            .unwrap_or_default()
+            .map_or_default(|ability| written(&ability))
     };
     let (whole, heads) = (twin(true), twin(false));
     for head in heads {

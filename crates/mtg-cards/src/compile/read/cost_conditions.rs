@@ -138,8 +138,7 @@ fn counted_texts(held: &Condition) -> Vec<String> {
             " total in all graveyards",
         ),
         (Cmp::Ge, preds) if allowed_on_the_battlefield(preds) => phrase_text(selector, Form::All)
-            .map(|group| kind(&group, " on the battlefield"))
-            .unwrap_or_default(),
+            .map_or_default(|group| kind(&group, " on the battlefield")),
         (Cmp::Eq, preds) if number == 0 => {
             let rest: Vec<Pred> = preds
                 .iter()
@@ -150,8 +149,7 @@ fn counted_texts(held: &Condition) -> Vec<String> {
                 return Vec::new();
             }
             phrase_text(&Selector(rest), Form::All)
-                .map(|group| vec![format!("an opponent controls no {group}")])
-                .unwrap_or_default()
+                .map_or_default(|group| vec![format!("an opponent controls no {group}")])
         }
         _ => Vec::new(),
     }

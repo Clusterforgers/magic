@@ -67,10 +67,7 @@ fn member(over: &str) -> Option<&'static str> {
 fn for_you(steps: &[Value], bound: &Value) -> Vec<String> {
     let mut steps = Value::Array(steps.to_vec());
     swapped(&mut steps, bound, &json!("You"));
-    steps
-        .as_array()
-        .map(|steps| clauses(steps))
-        .unwrap_or_default()
+    steps.as_array().map_or_default(|steps| clauses(steps))
 }
 
 /// The sentences of the repeated steps, in lower case without the closing period.

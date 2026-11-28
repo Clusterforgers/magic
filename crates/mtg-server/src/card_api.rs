@@ -272,7 +272,7 @@ pub(crate) fn hit(rules: &Rules, card: &Card, images: Option<&PrintingImages>) -
         type_line: card.type_line.clone(),
         colors: card_colors(card.colors),
         color_identity: card_colors(card.color_identity),
-        images: images.map(card_images).unwrap_or_default(),
+        images: images.map_or_default(card_images),
         support: rules.support_of(card).support,
     }
 }

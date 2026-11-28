@@ -45,8 +45,7 @@ pub(super) fn repair(
         let n = index;
         index += 1;
         let types = serde_json::from_value::<Ability>(value.clone())
-            .map(|ability| one_mana_of(&ability))
-            .unwrap_or_default();
+            .map_or_default(|ability| one_mana_of(&ability));
         let implied = !types.is_empty() && types.iter().all(|mana| given.contains(mana));
         if implied {
             repairs.push(Repair {

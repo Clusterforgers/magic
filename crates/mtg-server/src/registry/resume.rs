@@ -109,8 +109,7 @@ impl Registry {
         let delve = decoded.as_ref().ok().and_then(delve_of);
         let reads = decoded
             .as_ref()
-            .map(|recipe| recipe.reads.clone())
-            .unwrap_or_default();
+            .map_or_default(|recipe| recipe.reads.clone());
         let unpacked = match decoded {
             Ok(recipe) => match self.catalog_of(&recipe).await {
                 Ok(catalog) => unpack(&record, &recipe, &catalog),

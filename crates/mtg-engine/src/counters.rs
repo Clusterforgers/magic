@@ -167,12 +167,11 @@ pub(crate) fn kinds_held(state: &GameState, target: Target) -> Vec<(CounterKind,
     match target {
         Target::Player(id) => state
             .player(id)
-            .map(|p| p.counters().map(|(kind, n)| (kind.clone(), n)).collect())
-            .unwrap_or_default(),
+            .map_or_default(|p| p.counters().map(|(kind, n)| (kind.clone(), n)).collect()),
         Target::Object(named) => state
             .object(named.id)
             .filter(|object| object.counter() == named.counter)
-            .map(|object| match object.permanent() {
+            .map_or_default(|object| match object.permanent() {
                 Some(permanent) => permanent
                     .counters()
                     .map(|(kind, n)| (kind.clone(), n))
@@ -182,8 +181,7 @@ pub(crate) fn kinds_held(state: &GameState, target: Target) -> Vec<(CounterKind,
                     .iter()
                     .map(|(kind, n)| (kind.clone(), *n))
                     .collect(),
-            })
-            .unwrap_or_default(),
+            }),
     }
 }
 

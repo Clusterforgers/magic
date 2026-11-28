@@ -38,6 +38,7 @@ pub struct ChosenDeck {
     commanders: Arc<[Arc<CardDefinition>]>,
     companion: Option<Arc<CardDefinition>>,
     attractions: Arc<[AttractionCard]>,
+    contraptions: Arc<[Arc<CardDefinition>]>,
     stickers: Arc<[Arc<CardDefinition>]>,
     satchel: Arc<[Arc<CardDefinition>]>,
     deck: DeckRef,
@@ -62,6 +63,7 @@ impl ChosenDeck {
             commanders: Arc::from([]),
             companion: None,
             attractions: Arc::from([]),
+            contraptions: Arc::from([]),
             stickers: Arc::from([]),
             satchel: Arc::from([]),
             deck: DeckRef::Demo {
@@ -113,6 +115,7 @@ impl ChosenDeck {
             commanders: Arc::from([commander]),
             companion: None,
             attractions: Arc::from([]),
+            contraptions: Arc::from([]),
             stickers: Arc::from([]),
             satchel: Arc::from([]),
             deck: DeckRef::Demo {
@@ -158,6 +161,7 @@ impl ChosenDeck {
             commanders: commanders.into(),
             companion: None,
             attractions: Arc::from([]),
+            contraptions: Arc::from([]),
             stickers: Arc::from([]),
             satchel: Arc::from([]),
             deck: DeckRef::Oracle {
@@ -167,6 +171,7 @@ impl ChosenDeck {
                 printings: Vec::new(),
                 by_hand: Vec::new(),
                 attractions: Vec::new(),
+                contraptions: Vec::new(),
                 stickers: Vec::new(),
                 satchel: Vec::new(),
                 note: None,
@@ -203,6 +208,7 @@ impl ChosenDeck {
                 &self.commanders,
                 self.companion.as_ref(),
                 &self.attractions,
+                &self.contraptions,
                 &self.stickers,
                 &self.satchel,
             )?;
@@ -265,6 +271,7 @@ impl ChosenDeck {
             &self.commanders,
             self.companion.as_ref(),
             &self.attractions,
+            &self.contraptions,
             &self.stickers,
             &self.satchel,
         )?;
@@ -430,6 +437,7 @@ impl ChosenDeck {
             commanders: cards.commanders.into(),
             companion: cards.companion,
             attractions: cards.attractions.into(),
+            contraptions: cards.contraptions.into(),
             stickers: cards.stickers.into(),
             satchel: cards.satchel.into(),
             deck,
@@ -491,6 +499,40 @@ impl ChosenDeck {
                 &self.commanders,
                 self.companion.as_ref(),
                 &self.attractions,
+                &self.contraptions,
+                &self.stickers,
+                &self.satchel,
+            )?;
+        }
+        Ok(self)
+    }
+
+    /// The seat's Contraption deck (Unstable), top card first; empty for a deck without one.
+    pub fn contraptions(&self) -> &[Arc<CardDefinition>] {
+        &self.contraptions
+    }
+
+    /// The deck with this Contraption deck: each card's oracle id and definition. It is part of the deck's
+    /// fingerprint and the recipe keeps it; a built-in deck has no oracle ids to name it by and stays as it is.
+    pub fn with_contraptions(
+        mut self,
+        cards: Vec<(String, Arc<CardDefinition>)>,
+    ) -> Result<ChosenDeck, FingerprintError> {
+        if cards.is_empty() {
+            return Ok(self);
+        }
+        if let DeckRef::Oracle { contraptions, .. } = &mut self.deck {
+            *contraptions = cards
+                .iter()
+                .map(|(oracle_id, _)| oracle_id.clone())
+                .collect();
+            self.contraptions = cards.into_iter().map(|(_, card)| card).collect();
+            self.fingerprint = DeckFingerprint::of_seat_all(
+                &self.cards,
+                &self.commanders,
+                self.companion.as_ref(),
+                &self.attractions,
+                &self.contraptions,
                 &self.stickers,
                 &self.satchel,
             )?;
@@ -523,6 +565,7 @@ impl ChosenDeck {
                 &self.commanders,
                 self.companion.as_ref(),
                 &self.attractions,
+                &self.contraptions,
                 &self.stickers,
                 &self.satchel,
             )?;
@@ -1159,9 +1202,7 @@ mod tests {
         assert_eq!(decks.note(1).map(|n| n.name.as_str()), Some(shown));
         assert_eq!(
             decks.revealed(),
-            revealed
-                .map(|name| vec![(1, name.to_owned())])
-                .unwrap_or_default()
+            revealed.map_or_default(|name| vec![(1, name.to_owned())])
         );
         let back = decks.current[1].as_ref().unwrap();
         assert_eq!(back.fingerprint(), stored.fingerprint());

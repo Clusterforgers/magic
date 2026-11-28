@@ -54,8 +54,7 @@ fn labelled(subset: &[ZoneKind]) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_uppercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_uppercase().chain(chars).collect())
 }
 
 /// Each player the effect names who is still in the game, in turn order, chooses which of the zones to search (a

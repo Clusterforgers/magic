@@ -217,8 +217,7 @@ pub fn same_name_creatures(oracle: &str) -> bool {
         .split(" with the same name")
         .collect::<Vec<_>>()
         .split_last()
-        .map(|(_, heads)| heads.to_vec())
-        .unwrap_or_default();
+        .map_or_default(|(_, heads)| heads.to_vec());
     !phrases.is_empty()
         && phrases.iter().all(|head| {
             matches!(

@@ -124,7 +124,7 @@ fn ep22_had_counters_is_the_intervening_condition(
     #[case] as_if: bool,
 ) {
     let found = triggered(&trigger(line, printed));
-    let when = found.get("when").map(Value::to_string).unwrap_or_default();
+    let when = found.get("when").map_or_default(Value::to_string);
     assert_eq!(when.contains("HasAnyCounter"), in_filter, "{found}");
     let had = json!({"Matches": {"subject": "Triggering", "selector": ["HasAnyCounter"]}});
     assert_eq!(found.get("if") == Some(&had), as_if, "{found}");

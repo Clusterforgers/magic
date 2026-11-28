@@ -23,14 +23,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(what)?
         .into_iter()
         .find_map(|object| object.permanent())
-        .map(|permanent| {
+        .map_or_default(|permanent| {
             permanent
                 .counters()
                 .filter(|(_, count)| *count > 0)
                 .map(|(kind, count)| (kind.clone(), count))
                 .collect()
-        })
-        .unwrap_or_default();
+        });
     let bound = counters
         .iter()
         .enumerate()

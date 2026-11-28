@@ -58,8 +58,7 @@ impl Aliases {
         }
         let flavor = deck
             .try_text("full")
-            .map(|text| parse_as(DeckFormat::Moxfield, &text).entries)
-            .unwrap_or_default()
+            .map_or_default(|text| parse_as(DeckFormat::Moxfield, &text).entries)
             .into_iter()
             .filter_map(|entry| {
                 let printing = (entry.set?.to_lowercase(), entry.collector_number?);

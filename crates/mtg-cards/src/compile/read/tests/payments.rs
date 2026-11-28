@@ -108,8 +108,7 @@ fn lower_first(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| format!("{}{}", first.to_lowercase(), chars.as_str()))
-        .unwrap_or_default()
+        .map_or_default(|first| format!("{}{}", first.to_lowercase(), chars.as_str()))
 }
 
 #[test]

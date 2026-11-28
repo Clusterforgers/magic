@@ -8,6 +8,7 @@ export const ZONES: readonly DeckZone[] = [
   'sideboard',
   'companion',
   'attractions',
+  'contraptions',
   'stickers',
 ]
 
@@ -18,6 +19,7 @@ export const ZONE_TITLE: Readonly<Record<DeckZone, string>> = {
   sideboard: 'Sideboard',
   companion: 'Companion',
   attractions: 'Attraction deck',
+  contraptions: 'Contraption deck',
   stickers: 'Sticker sheets',
 }
 
@@ -28,6 +30,7 @@ export const ZONE_TO: Readonly<Record<DeckZone, string>> = {
   sideboard: 'sideboard',
   companion: 'companion',
   attractions: 'Attraction deck',
+  contraptions: 'Contraption deck',
   stickers: 'sticker sheets',
 }
 
@@ -38,6 +41,7 @@ export const ZONE_THE: Readonly<Record<DeckZone, string>> = {
   sideboard: 'the sideboard',
   companion: 'the companion slot',
   attractions: 'the Attraction deck',
+  contraptions: 'the Contraption deck',
   stickers: 'the sticker sheets',
 }
 
@@ -46,13 +50,15 @@ const WITH_COMMAND_ZONE: ReadonlySet<string> = new Set(['commander', 'freeform']
 
 /**
  * The zones a card of type line `typeLine` can be put in under `format`, in listing order; the check reports a card that
- * does not belong. The Attraction deck is offered only for an Attraction and the sticker sheets only for a sheet.
+ * does not belong. The Attraction deck is offered only for an Attraction, the Contraption deck only for a
+ * Contraption and the sticker sheets only for a sheet.
  */
 export function zonesFor(format: string, typeLine = ''): readonly DeckZone[] {
   return ZONES.filter(
     (zone) =>
       (zone !== 'commander' || WITH_COMMAND_ZONE.has(format)) &&
       (zone !== 'attractions' || /\bAttraction\b/.test(typeLine)) &&
+      (zone !== 'contraptions' || /\bContraption\b/.test(typeLine)) &&
       (zone !== 'stickers' || typeLine.startsWith('Stickers')),
   )
 }

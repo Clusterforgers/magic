@@ -40,7 +40,7 @@ pub(crate) fn r112_noted(
     state
         .memory
         .get(&(source, R112_NOTED_SLOT.to_owned()))
-        .map(|held| {
+        .map_or_default(|held| {
             held.iter()
                 .filter_map(|value| match value {
                     Held::Number(at) => usize::try_from(*at)
@@ -50,5 +50,4 @@ pub(crate) fn r112_noted(
                 })
                 .collect()
         })
-        .unwrap_or_default()
 }

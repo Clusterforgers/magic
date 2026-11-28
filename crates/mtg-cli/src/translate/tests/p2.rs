@@ -160,8 +160,7 @@ fn triggered_attacker_power() {
     let script = "Name:T\nTypes:Enchantment\nT:Mode$ Attacks | ValidCard$ Creature | TriggerZones$ Battlefield | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw | NumCards$ X\nSVar:X:TriggeredAttacker$CardPower\n";
     let text = abilities(script)
         .first()
-        .map(ToString::to_string)
-        .unwrap_or_default();
+        .map_or_default(ToString::to_string);
     assert!(
         text.contains(r#""stat":"Power""#),
         "{text} {:?}",

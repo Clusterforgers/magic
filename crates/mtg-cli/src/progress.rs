@@ -19,8 +19,7 @@ impl Captured {
     pub fn text(&self) -> String {
         self.0
             .lock()
-            .map(|bytes| String::from_utf8_lossy(&bytes).into_owned())
-            .unwrap_or_default()
+            .map_or_default(|bytes| String::from_utf8_lossy(&bytes).into_owned())
     }
 }
 

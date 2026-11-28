@@ -178,6 +178,7 @@ async fn table_with(pool: &PgPool, behavior: Behavior, lines: Lines) -> Table {
             printings: if printed { printings } else { Vec::new() },
             by_hand: Vec::new(),
             attractions: Vec::new(),
+            contraptions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
             note: None,

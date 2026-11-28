@@ -164,8 +164,7 @@ fn w4a_stat(of: &Ref, stat: StatKind, op: Cmp, right: &Amount) -> Vec<String> {
         (Cmp::Ge | Cmp::Le, Amount::Fixed(number)) => {
             let more = if op == Cmp::Ge { "greater" } else { "less" };
             u32::try_from(*number)
-                .map(quantity_texts)
-                .unwrap_or_default()
+                .map_or_default(quantity_texts)
                 .iter()
                 .map(|words| format!("is {words} or {more}"))
                 .collect()

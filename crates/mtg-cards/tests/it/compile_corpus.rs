@@ -479,7 +479,7 @@ fn texts_are_written(
         })
         .map(|clause| without_numerals(without_ability_word(&clause.text)))
         .collect();
-    let names = printed.faces.get(face).map(own_names).unwrap_or_default();
+    let names = printed.faces.get(face).map_or_default(own_names);
     let shown = |variant: &str| {
         names.iter().fold(variant.to_owned(), |text, name| {
             text.replace(name.as_str(), "~")
@@ -732,7 +732,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             .collect();
         wanted.extend(paid);
         // The clause shows the face's own names as `~`, also inside a token name or a type.
-        let names = printed.faces.get(face).map(own_names).unwrap_or_default();
+        let names = printed.faces.get(face).map_or_default(own_names);
         let shown = |variant: &str| {
             names.iter().fold(variant.to_owned(), |text, name| {
                 text.replace(name.as_str(), "~")
