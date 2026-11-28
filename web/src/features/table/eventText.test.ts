@@ -320,6 +320,22 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     },
     'Bo assigns sectors: Forest to alpha, Forest to gamma',
   ],
+  P170bContraptionDeckShuffled: [
+    { P170bContraptionDeckShuffled: { player: 1, order: [3] } },
+    'Bo shuffles their Contraption deck',
+  ],
+  P170bAssembled: [
+    { P170bAssembled: { player: 1, contraption: 3, sprocket: 2 } },
+    'Bo assembles Forest on sprocket 2',
+  ],
+  P170bSprocketMoved: [
+    { P170bSprocketMoved: { player: 1, sprocket: 3 } },
+    'Bo moves their sprocket marker to sprocket 3',
+  ],
+  P170bCranked: [
+    { P170bCranked: { player: 1, sprocket: 1, contraptions: [3] } },
+    'Bo cranks Forest',
+  ],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   ExtraTurnAdded: [{ ExtraTurnAdded: { player: 1 } }, 'Bo takes an extra turn after this one'],
   ExtraTurnSkipped: [{ ExtraTurnSkipped: { player: 1 } }, 'Bo skips an extra turn'],
@@ -837,6 +853,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   ],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
   AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
+  P170bContraptionDeckShuffled: [
+    { P170bContraptionDeckShuffled: { player: 1 } },
+    'Bo shuffles their Contraption deck',
+  ],
   LibraryRefilled: [
     { LibraryRefilled: { player: 1, count: 5 } },
     'Bo shuffles their graveyard into their library',

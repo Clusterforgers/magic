@@ -1537,6 +1537,17 @@ pub enum Effect {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// "Assemble a Contraption" (Unstable): the player puts the top card of their Contraption deck onto the battlefield
+    /// and assigns it to one of their three sprockets, once for each of `count`; a player without a Contraption deck
+    /// assembles nothing.
+    P170bAssemble {
+        /// Who assembles.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many Contraptions.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// "Put a sticker on a nonland permanent you own" (CR 123): the player chooses an object of `on` they own, a sticker
     /// not yet used on one of their sticker sheets and pays its ticket cost; with no such object or no sticker they can
     /// pay for, nothing happens.

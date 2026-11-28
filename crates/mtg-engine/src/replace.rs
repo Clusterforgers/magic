@@ -775,6 +775,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::LoseGame { .. }
         | ReplaceWhen::Explores { .. }
         | ReplaceWhen::Connives { .. }
+        | ReplaceWhen::P170bAssembles { .. }
         | ReplaceWhen::Proliferates { .. }
         | ReplaceWhen::Scries { .. }
         | ReplaceWhen::Surveils { .. }
@@ -4799,6 +4800,7 @@ mod r1193_life;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
+pub(crate) mod p170b_assemble;
 mod r4700_choices;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;

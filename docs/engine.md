@@ -74,6 +74,17 @@ Attractions (CR 717, `un33_attractions.rs`) are implemented once in the engine; 
 - The table sees the deck as a count (`PlayerView.attraction_deck`) and the lights of every visible Attraction (`ObjectView.lights`).
 - A roll triggers `VisitedAttraction` once per Attraction visited, its `what` naming the Attraction ("whenever you visit it", Myra the Magnificent); `Effect::ClaimPrize` is `PrizeClaimed`, which triggers that Attraction's `Prize` abilities and every `ClaimedPrize`.
 
+## Contraptions
+
+Contraptions (Unstable and its release notes; the CR has no rule for them, `p170b_contraptions.rs`) are implemented once in the engine; cards carry `Effect::P170bAssemble`, the trigger `P170bCranked` ("whenever you crank this Contraption") and the replacement `ReplaceWhen::P170bAssembles`.
+
+- Setup: `PlayerSetup::contraptions` is the seat's Contraption deck, top first. Its cards are objects in the owner's command zone, face down as `FaceDown::Contraption`; `GameState::contraption_deck` keeps the order. The opening shuffles each deck after the sticker sheets are chosen (`P170bContraptionDeckShuffled`).
+- Assembling: for each of the top cards, top first, the player chooses one of their three sprockets (`ChooseOption`), then each card moves onto the battlefield face up (`ZoneChanged`) and goes on its sprocket (`P170bAssembled`, a designation of the permanent). A deck runs out quietly; an empty or missing deck assembles nothing.
+- Steamflogger Boss: each `P170bAssembles` replacement whose selector names the object assembling multiplies the count (`replace/p170b_assemble.rs`), once each, so two Bosses make four.
+- The sprocket marker: as its player's precombat main phase begins while they control a Contraption, after the roll to visit, it moves 1, 2, 3, 1 (`P170bSprocketMoved`). With Contraptions of theirs on that sprocket the step asks which to crank (`ChooseCards`, any number); the answer is `P170bCranked` and priority. Each Contraption cranked triggers its crank abilities.
+- The scrapheap: a Contraption card that would go to a hand, a library or a graveyard goes to its owner's command zone face up instead, the rule of the Attraction junkyard (`un33_attractions::junkyard`).
+- The table sees the deck as a count (`PlayerView.contraption_deck`), the marker (`PlayerView.sprocket_marker`) and the sprocket of each assembled Contraption (`PermanentView.sprocket`).
+
 ## Stickers
 
 Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a sheet lists its stickers as `Ability::Sticker`, and cards carry `Effect::PutSticker`.

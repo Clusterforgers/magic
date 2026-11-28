@@ -137,6 +137,14 @@ satchel?: Array<ObjectId>,
  */
 attraction_deck?: number, 
 /**
+ * The cards left in the seat's Contraption deck, face down in its command zone; left out while there are none.
+ */
+contraption_deck?: number, 
+/**
+ * The sprocket, 1 to 3, the seat's sprocket marker is on; left out before it first moves.
+ */
+sprocket_marker?: number, 
+/**
  * The sticker sheets the seat plays with (CR 123), public; left out while it has none.
  */
 sticker_sheets?: Array<StickerSheetView>, 

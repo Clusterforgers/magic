@@ -170,7 +170,7 @@ fn undo(announcing: bool, kind: &DecisionKind) -> Result<Outcome, EngineError> {
 }
 
 /// The answer to a choice of cards the game itself asks outside any resolution: which permanents stay tapped in the untap
-/// step, and else the legend rule.
+/// step, which Contraptions to crank, and else the legend rule.
 fn table_cards(
     state: &GameState,
     options: &choose::CardsOptions,
@@ -178,6 +178,8 @@ fn table_cards(
 ) -> Result<Outcome, EngineError> {
     if crate::steps::asks_untap(state) {
         crate::steps::untap_answer(state, options, choice)
+    } else if crate::p170b_contraptions::asks_crank(state, options) {
+        crate::p170b_contraptions::crank_answer(state, options, choice)
     } else {
         crate::legend::answer(state, options, choice)
     }

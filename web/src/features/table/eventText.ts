@@ -1132,6 +1132,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
     return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
+  if ('P170bContraptionDeckShuffled' in event)
+    return quiet(`${n.seat(event.P170bContraptionDeckShuffled.player)} shuffles their Contraption deck`)
   if ('R111GraveyardOrdered' in event)
     return line(`${n.seat(event.R111GraveyardOrdered.player)} reorders their graveyard`)
   if ('HandDealt' in event) {
@@ -1333,6 +1335,19 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, sectors } = event.P170aSectorsAssigned
     const placed = sectors.map(([object, sector]) => `${n.card(object)} to ${sector.toLowerCase()}`)
     return line(`${n.seat(player)} assigns sectors: ${placed.join(', ')}`)
+  }
+  if ('P170bAssembled' in event) {
+    const { player, contraption, sprocket } = event.P170bAssembled
+    return line(`${n.seat(player)} assembles ${n.card(contraption)} on sprocket ${sprocket}`)
+  }
+  if ('P170bSprocketMoved' in event) {
+    const { player, sprocket } = event.P170bSprocketMoved
+    return quiet(`${n.seat(player)} moves their sprocket marker to sprocket ${sprocket}`)
+  }
+  if ('P170bCranked' in event) {
+    const { player, sprocket, contraptions } = event.P170bCranked
+    if (contraptions.length === 0) return quiet(`${n.seat(player)} cranks nothing on sprocket ${sprocket}`)
+    return line(`${n.seat(player)} cranks ${joinWords(contraptions.map((id) => n.card(id)))}`)
   }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit
@@ -1758,6 +1773,8 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
     return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
+  if ('P170bContraptionDeckShuffled' in event)
+    return quiet(`${n.seat(event.P170bContraptionDeckShuffled.player)} shuffles their Contraption deck`)
   if ('LibraryRefilled' in event) {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
   }

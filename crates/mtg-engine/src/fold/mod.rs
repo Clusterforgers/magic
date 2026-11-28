@@ -1200,6 +1200,23 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             state.rng_index += 1;
             crate::un33_attractions::fold_shuffled(state, *player, order)
         }
+        Event::P170bContraptionDeckShuffled { player, order } => {
+            state.rng_index += 1;
+            crate::p170b_contraptions::fold_shuffled(state, *player, order)
+        }
+        Event::P170bAssembled {
+            contraption,
+            sprocket,
+            ..
+        } => crate::p170b_contraptions::fold_assembled(state, *contraption, *sprocket),
+        Event::P170bSprocketMoved { player, sprocket } => {
+            crate::p170b_contraptions::fold_moved(state, *player, *sprocket);
+            Ok(())
+        }
+        Event::P170bCranked { .. } => {
+            crate::p170b_contraptions::fold_cranked(state);
+            Ok(())
+        }
         Event::RolledToVisit {
             player, visited, ..
         } => {

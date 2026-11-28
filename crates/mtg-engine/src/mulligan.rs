@@ -62,6 +62,11 @@ pub(crate) fn pregame(state: &GameState) -> Vec<Event> {
         .saturating_add(1);
     events.extend(shuffles);
     events.extend(crate::un34_stickers::choices(state, after));
+    // The Contraption decks take the substreams after those of the sheets, at most one for each seat.
+    events.extend(crate::p170b_contraptions::shuffles(
+        state,
+        after.saturating_add(u64::try_from(seats).unwrap_or(u64::MAX)),
+    ));
     events.push(Event::MulliganPhaseBegan);
     events
 }

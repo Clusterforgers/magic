@@ -83,6 +83,21 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
         // A roll to visit that asks pauses the step after the counters and asks its questions one by one.
         Step::Main1 => {
             use crate::un33_attractions::Visit;
+            // The crank asks once the marker moved; its answer grants priority, and so does a crank left with nothing
+            // to choose.
+            if let Some(player) = state.p170b.cranking {
+                return match crate::p170b_contraptions::crank_question(state) {
+                    Some(decision) => Progress::Decide(decision),
+                    None => Progress::Events(vec![
+                        Event::P170bCranked {
+                            player,
+                            sprocket: state.sprocket_marker(player).unwrap_or(1),
+                            contraptions: Vec::new(),
+                        },
+                        grant(state),
+                    ]),
+                };
+            }
             let visiting = crate::un33_attractions::r706_visiting(state);
             let mut events = Vec::new();
             if !visiting {
@@ -98,6 +113,13 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                     if let Some(player) = active {
                         events.push(Event::R706VisitAsks { player });
                     }
+                    return Progress::Events(events);
+                }
+            }
+            // Then the sprocket marker moves while the player controls a Contraption, and a crank asks after it.
+            if let Some((moved, asks)) = crate::p170b_contraptions::precombat(state) {
+                events.push(moved);
+                if asks {
                     return Progress::Events(events);
                 }
             }

@@ -302,6 +302,11 @@ enum Happened {
         player: PlayerId,
         attraction: ObjectId,
     },
+    /// A player cranked a Contraption, once for each cranked.
+    P170bCranked {
+        player: PlayerId,
+        contraption: ObjectId,
+    },
     /// A campaign phase of a player began, its emblem the new object.
     PhaseBegan { player: PlayerId, emblem: ObjectId },
     /// A player claimed the prize of an Attraction.
@@ -1557,6 +1562,14 @@ fn about_players_and_permanents(
             player: *player,
             emblem: *emblem,
         }),
+        Event::P170bCranked {
+            player,
+            contraptions,
+            ..
+        } => found.extend(contraptions.iter().map(|contraption| Happened::P170bCranked {
+            player: *player,
+            contraption: *contraption,
+        })),
         Event::PrizeClaimed { player, attraction } => found.push(Happened::PrizeClaimed {
             player: *player,
             attraction: *attraction,
@@ -2120,6 +2133,12 @@ fn matching_player_action(
                 && state
                     .lights(scope.source.id)
                     .is_some_and(|lights| lights.lit(*result)))
+            .then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
+        // A crank ability triggers for the Contraption its controller cranks.
+        (TriggerPattern::P170bCranked {}, Happened::P170bCranked { player, contraption }) => {
+            (scope.source.id == *contraption
+                && crate::characteristics::controller_of(state, scope.source.id) == Some(*player))
             .then(|| counted(state, vec![Target::Player(*player)], 0))
         }
         // A prize ability triggers for the Attraction whose prize its controller claims.

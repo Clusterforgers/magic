@@ -39,6 +39,7 @@ fn p170_verdict(name: &str, text: &str) -> Verdict {
 #[case("Scotty, Miracle Worker")]
 #[case("Prowl, Stoic Strategist // Prowl, Pursuit Vehicle")]
 #[case("Myra the Magnificent")]
+#[case("Steamflogger Boss")]
 fn p170_reads_back_whole(#[case] name: &str) {
     let report = p170_report(name, &p170_file(name));
     assert_eq!(
@@ -79,6 +80,9 @@ const PROWL: &str = "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle";
     r#""what": []"#
 )]
 #[case::myra_once("Myra the Magnificent", r#""once": false,"#, "")]
+#[case::boss_any_creature("Steamflogger Boss", r#""what": [{ "Subtype": "Rigger" }, "#, r#""what": ["#)]
+#[case::boss_three("Steamflogger Boss", r#"{ "Multiply": 2 }"#, r#"{ "Multiply": 3 }"#)]
+#[case::boss_opponents("Steamflogger Boss", r#"{ "ControlledBy": "You" }] }"#, r#"{ "ControlledBy": "Opponents" }] }"#)]
 fn p170_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = p170_file(name);
     assert!(file.contains(from), "{name}: the file has {from}");

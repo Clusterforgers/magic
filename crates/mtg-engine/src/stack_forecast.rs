@@ -248,6 +248,7 @@ fn hidden(state: &GameState, event: &Event) -> bool {
         | Event::TurnedFaceUp { .. }
         | Event::FaceDownLooked { .. }
         | Event::AttractionDeckShuffled { .. }
+        | Event::P170bContraptionDeckShuffled { .. }
         | Event::RolledToVisit { .. } => true,
         _ => false,
     }
