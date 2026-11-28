@@ -1560,6 +1560,10 @@ impl<'a> Scope<'a> {
             Ref::R111LastDamagedYou(by) => self.r111_last_damaged_you(by)?,
             Ref::R111BlockedController { of, by } => self.r111_blocked_controller(of, by)?,
             Ref::R111Object(id) => crate::r111_triggering::r111_object(state, *id),
+            Ref::R6072Source { id, counter } => vec![Target::Object(ObjectRef {
+                id: *id,
+                counter: *counter,
+            })],
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],

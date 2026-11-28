@@ -26,6 +26,7 @@ mod common;
 mod connive;
 mod countdown_keywords;
 mod counted_amounts;
+mod cx8a_valki_tibalt;
 mod decayed;
 mod delves_modifiers;
 mod demonstrate;

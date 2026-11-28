@@ -300,6 +300,30 @@ fn waiting(state: &GameState, source: ObjectRef, ending: Waiting) -> bool {
             .delayed()
             .iter()
             .any(|delayed| delayed.source == source)
+        || r6072_named_by_emblem(state, source)
+}
+
+/// Whether an emblem names the source as the permanent whose exiled cards it reads (`Ref::R6072Source`: "You may play
+/// cards exiled with Tibalt, Cosmic Impostor"): that memory stays for as long as the emblem does (CR 607.2a).
+fn r6072_named_by_emblem(state: &GameState, source: ObjectRef) -> bool {
+    let named = mtg_cards::refs::Ref::R6072Source {
+        id: source.id,
+        counter: source.counter,
+    };
+    let Ok(named) = serde_json::to_string(&named) else {
+        return false;
+    };
+    state
+        .objects
+        .values()
+        .filter(|object| object.kind == crate::object::ObjectKind::Emblem)
+        .any(|emblem| {
+            crate::ability_reader::abilities_of(state, emblem.id())
+                .iter()
+                .any(|(_, rules)| {
+                    serde_json::to_string(&**rules).is_ok_and(|written| written.contains(&named))
+                })
+        })
 }
 
 /// Drops the memory of a source that has left once no ability waits on it.

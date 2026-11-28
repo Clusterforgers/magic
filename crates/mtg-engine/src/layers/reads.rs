@@ -315,6 +315,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::R111LastDamagedYou(_)
         | Ref::R111BlockedController { .. }
         | Ref::R111Object(_)
+        | Ref::R6072Source { .. }
         | Ref::R115Causer
         | Ref::R4700OtherChosen
         | Ref::Promised
