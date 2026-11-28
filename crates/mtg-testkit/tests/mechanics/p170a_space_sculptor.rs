@@ -66,7 +66,7 @@ fn p170a_sector(driver: &Driver, id: ObjectId) -> Option<Sector> {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .and_then(|permanent| permanent.sector())
+        .and_then(mtg_engine::object::PermanentState::sector)
 }
 
 /// The one card in seat 0's hand.

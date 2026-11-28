@@ -1022,6 +1022,8 @@ pub(crate) struct ManaRule {
 }
 
 /// The rules in force in a state.
+// Independent rules in force, not the states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Default)]
 pub(crate) struct RulesInForce {
     /// The combat permissions and requirements of `combat_quirks`.

@@ -894,17 +894,22 @@ impl RandomBot {
                 let chosen = self.subset(&creatures, count);
                 Answer::R509BlockPiles(options.spread(&chosen))
             }
-            DecisionKind::P170aAssignSectors(options) => Answer::P170aAssignSectors(
-                options
-                    .creatures
-                    .iter()
-                    .map(|creature| {
-                        let all = mtg_engine::p170a_sectors::Sector::ALL;
-                        (*creature, all[self.rng.index(all.len())])
-                    })
-                    .collect(),
-            ),
+            DecisionKind::P170aAssignSectors(options) => {
+                Answer::P170aAssignSectors(self.p170a_sectors(&options.creatures))
+            }
         }
+    }
+
+    /// Each creature in a sector at random.
+    fn p170a_sectors(
+        &mut self,
+        creatures: &[ObjectId],
+    ) -> Vec<(ObjectId, mtg_engine::p170a_sectors::Sector)> {
+        let all = mtg_engine::p170a_sectors::Sector::ALL;
+        creatures
+            .iter()
+            .map(|creature| (*creature, all[self.rng.index(all.len())]))
+            .collect()
     }
 
     fn pick<T: Copy>(&mut self, from: &[T], count: usize) -> Vec<T> {
