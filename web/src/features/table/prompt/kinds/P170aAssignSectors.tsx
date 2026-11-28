@@ -35,7 +35,11 @@ export const P170aAssignSectorsPrompt: PromptComponent<'P170aAssignSectors'> = (
             {sectors.map(([creature, chosen]) => (
               <li key={creature} className="flex flex-wrap items-center gap-2" data-slot="sector-row">
                 <span className="min-w-28 flex-1 truncate text-sm">{name(creature)}</span>
-                <div role="group" aria-label={`Sector for ${name(creature)}`} className="flex flex-wrap gap-1.5">
+                <div
+                  role="group"
+                  aria-label={`Sector for ${name(creature)}`}
+                  className="flex flex-wrap gap-1.5"
+                >
                   {SECTORS.map((sector) => {
                     const on = sector === chosen
                     return (
@@ -67,7 +71,11 @@ export const P170aAssignSectorsPrompt: PromptComponent<'P170aAssignSectors'> = (
         </div>
       }
     >
-      <Button ref={confirm} className="h-10 px-4" onClick={() => void answer({ P170aAssignSectors: sectors })}>
+      <Button
+        ref={confirm}
+        className="h-10 px-4"
+        onClick={() => void answer({ P170aAssignSectors: sectors })}
+      >
         Confirm sectors
       </Button>
     </PromptLayout>

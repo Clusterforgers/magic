@@ -413,6 +413,8 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if (rule === 'ReverseTurnOrder') what = 'Turn order is reversed'
   else if (rule === 'Planar') what = 'A rule about the planar die or planeswalking is in force'
   else if (rule === 'R509BlockPiles') what = 'Blockers are divided into piles this turn'
+  else if (rule === 'P170aSectorBlocks')
+    what = 'Creatures in each sector can be blocked only by creatures in the same sector this turn'
   else if ('AttackAsThoughHasteAt' in rule)
     what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`

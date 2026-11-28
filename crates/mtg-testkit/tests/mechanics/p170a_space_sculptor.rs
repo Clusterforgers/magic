@@ -34,20 +34,27 @@ fn p170a_replays(driver: &Driver) {
 }
 
 /// Seat 0's Space Beleren with `loyalty` counters, a creature named `Seat N` for every seat, and libraries, in seat
-/// `active`'s first main phase of turn 2.
-fn p170a_scenario(seats: usize, active: usize, loyalty: u32) -> Scenario {
-    let beleren = with_counters(
-        ready(card(P170A_CARD).unwrap()),
-        CounterKind::Loyalty,
-        loyalty,
-    );
+/// `active`'s first main phase of turn 2, with `lands` Mountains for seat 0.
+fn p170a_scenario(seats: usize, active: usize, loyalty: u32, lands: usize) -> Scenario {
     (0..seats).fold(
-        Scenario::new(seats)
-            .at(2, active, Step::Main1)
-            .battlefield(0, [beleren]),
+        Scenario::new(seats).at(2, active, Step::Main1),
         |scenario, seat| {
+            let creature = ready(free_creature(&format!("Seat {seat}"), 2, 2));
+            let permanents: Vec<_> = if seat == 0 {
+                let beleren = with_counters(
+                    ready(card(P170A_CARD).unwrap()),
+                    CounterKind::Loyalty,
+                    loyalty,
+                );
+                [beleren, creature]
+                    .into_iter()
+                    .chain((0..lands).map(|_| ready(mountain())))
+                    .collect()
+            } else {
+                vec![creature]
+            };
             scenario
-                .battlefield(seat, [ready(free_creature(&format!("Seat {seat}"), 2, 2))])
+                .battlefield(seat, permanents)
                 .library(seat, vec![island(); 12])
         },
     )
@@ -60,6 +67,16 @@ fn p170a_sector(driver: &Driver, id: ObjectId) -> Option<Sector> {
         .object(id)
         .and_then(|object| object.permanent())
         .and_then(|permanent| permanent.sector())
+}
+
+/// The one card in seat 0's hand.
+fn p170a_in_hand(driver: &Driver) -> ObjectId {
+    driver
+        .state()
+        .zone(Zone::Hand(pid(0)))
+        .first()
+        .copied()
+        .unwrap()
 }
 
 /// Answers each sector question with `sectors` (alpha for a creature not named) and records who was asked about what,
@@ -149,7 +166,7 @@ fn p170a_opponents_assign_first_in_turn_order(
     #[values(2, 3, 4)] seats: usize,
     #[case] active: usize,
 ) {
-    let mut driver = Driver::from_scenario(p170a_scenario(seats, active, 3)).unwrap();
+    let mut driver = Driver::from_scenario(p170a_scenario(seats, active, 3, 0)).unwrap();
     let asked = p170a_assign(&mut driver, &BTreeMap::new());
     let order: Vec<PlayerId> = asked.iter().map(|(player, _)| *player).collect();
     let mut expected: Vec<PlayerId> = (0..seats)
@@ -169,11 +186,11 @@ fn p170a_opponents_assign_first_in_turn_order(
 
 #[rstest]
 fn p170a_a_creature_that_arrives_is_asked_about_alone(#[values(2, 3, 4)] seats: usize) {
-    let scenario = p170a_scenario(seats, 0, 3).hand(0, [free_creature("Late", 1, 1)]);
+    let scenario = p170a_scenario(seats, 0, 3, 0).hand(0, [free_creature("Late", 1, 1)]);
     let mut driver = Driver::from_scenario(scenario).unwrap();
     let first = driver.id_of("Seat 0").unwrap();
     p170a_assign(&mut driver, &BTreeMap::from([(first, Sector::Gamma)]));
-    let late = driver.id_of("Late").unwrap();
+    let late = p170a_in_hand(&driver);
     driver
         .answer(Answer::Priority(PriorityAction::CastSpell(late)))
         .unwrap();
@@ -216,7 +233,7 @@ fn p170a_blocks_stay_within_a_sector_after_the_plus(
     #[case] blocker_sector: Sector,
     #[case] can_block: bool,
 ) {
-    let mut driver = Driver::from_scenario(p170a_scenario(seats, 0, 3)).unwrap();
+    let mut driver = Driver::from_scenario(p170a_scenario(seats, 0, 3, 0)).unwrap();
     let attacker = driver.id_of("Seat 0").unwrap();
     let blocker = driver.id_of("Seat 1").unwrap();
     p170a_assign(
@@ -244,7 +261,8 @@ fn p170a_blocks_stay_within_a_sector_after_the_plus(
         },
         &|driver| driver.state().turn().step() >= Step::CombatDamage,
     );
-    assert_eq!(offered, Some(can_block));
+    // With no creature able to block, the defending player is not asked at all.
+    assert_eq!(offered.unwrap_or(false), can_block);
     p170a_replays(&driver);
 }
 
@@ -257,7 +275,7 @@ fn p170a_minus_one_and_minus_five_reach_only_the_sector_chosen(
     #[case] chosen: Sector,
     #[values(2, 3)] index: usize,
 ) {
-    let mut driver = Driver::from_scenario(p170a_scenario(seats, 0, 6)).unwrap();
+    let mut driver = Driver::from_scenario(p170a_scenario(seats, 0, 6, 0)).unwrap();
     let creatures: Vec<ObjectId> = (0..seats)
         .map(|seat| driver.id_of(&format!("Seat {seat}")).unwrap())
         .collect();
@@ -285,13 +303,11 @@ fn p170a_minus_one_and_minus_five_reach_only_the_sector_chosen(
 
 #[rstest]
 fn p170a_a_creature_keeps_its_sector_when_its_control_changes(#[values(2, 3, 4)] seats: usize) {
-    let scenario = p170a_scenario(seats, 0, 3)
-        .battlefield(0, [ready(mountain()), ready(mountain()), ready(mountain())])
-        .hand(0, [card("Act of Treason").unwrap()]);
+    let scenario = p170a_scenario(seats, 0, 3, 3).hand(0, [card("Act of Treason").unwrap()]);
     let mut driver = Driver::from_scenario(scenario).unwrap();
     let theirs = driver.id_of("Seat 1").unwrap();
     p170a_assign(&mut driver, &BTreeMap::from([(theirs, Sector::Gamma)]));
-    let spell = driver.id_of("Act of Treason").unwrap();
+    let spell = p170a_in_hand(&driver);
     driver
         .answer(Answer::Priority(PriorityAction::CastSpell(spell)))
         .unwrap();
@@ -300,14 +316,15 @@ fn p170a_a_creature_keeps_its_sector_when_its_control_changes(#[values(2, 3, 4)]
         &mut driver,
         30,
         Sector::Alpha,
-        &mut |_, decision| match &decision.kind {
+        &mut |_, decision| {
+            match &decision.kind {
             DecisionKind::ChooseTargets(options) => {
                 Some(Answer::ChooseTargets(TargetChoice::Targets(
                     options
                         .legal
                         .iter()
                         .copied()
-                        .filter(|target| *target == Target::Object(theirs))
+                        .filter(|target| matches!(target, Target::Object(object) if object.id == theirs))
                         .collect(),
                 )))
             }
@@ -316,21 +333,16 @@ fn p170a_a_creature_keeps_its_sector_when_its_control_changes(#[values(2, 3, 4)]
                 None
             }
             _ => None,
+        }
         },
         &|driver| {
             driver.state().zone(Zone::Stack).is_empty()
-                && driver
-                    .state()
-                    .object(theirs)
-                    .map(|object| object.controller())
+                && mtg_engine::characteristics::controller_of(driver.state(), theirs)
                     == Some(pid(0))
         },
     );
     assert_eq!(
-        driver
-            .state()
-            .object(theirs)
-            .map(|object| object.controller()),
+        mtg_engine::characteristics::controller_of(driver.state(), theirs),
         Some(pid(0))
     );
     assert_eq!(asked, 0, "its new controller is not asked");
@@ -341,7 +353,7 @@ fn p170a_a_creature_keeps_its_sector_when_its_control_changes(#[values(2, 3, 4)]
 #[rstest]
 fn p170a_every_sector_is_lost_once_no_sculptor_is_left(#[values(2, 3, 4)] seats: usize) {
     // Five loyalty: the −5 puts Space Beleren into its owner's graveyard as it resolves.
-    let mut driver = Driver::from_scenario(p170a_scenario(seats, 0, 5)).unwrap();
+    let mut driver = Driver::from_scenario(p170a_scenario(seats, 0, 5, 0)).unwrap();
     let creatures: Vec<ObjectId> = (0..seats)
         .map(|seat| driver.id_of(&format!("Seat {seat}")).unwrap())
         .collect();
@@ -350,8 +362,8 @@ fn p170a_every_sector_is_lost_once_no_sculptor_is_left(#[values(2, 3, 4)] seats:
         &creatures.iter().map(|id| (*id, Sector::Beta)).collect(),
     );
     let from = driver.engine().events().len();
-    p170a_activate(&mut driver, 3, Sector::Gamma);
     let beleren = driver.id_of(P170A_CARD).unwrap();
+    p170a_activate(&mut driver, 3, Sector::Gamma);
     assert_ne!(
         driver.state().object(beleren).unwrap().zone(),
         Zone::Battlefield

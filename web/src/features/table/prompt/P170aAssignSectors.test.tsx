@@ -9,7 +9,10 @@ import { moveToSector, sectorWords, spreadSectors } from './sectorsText'
 
 function optionsOf(seats: number): { options: P170aSectorsOptions; mine: ObjectId[] } {
   const mine = creaturesOf(fixtureOf(seats), 0).slice(0, 2)
-  return { mine, options: { creatures: mine, text: 'Assign each of your creatures to the alpha, beta or gamma sector.' } }
+  return {
+    mine,
+    options: { creatures: mine, text: 'Assign each of your creatures to the alpha, beta or gamma sector.' },
+  }
 }
 
 function nameOf(seats: number, id: ObjectId): string {
@@ -17,7 +20,10 @@ function nameOf(seats: number, id: ObjectId): string {
 }
 
 function mount(options: P170aSectorsOptions, seats = 2, mode?: TableMode) {
-  return renderDecision({ P170aAssignSectors: options }, { seats, options: mode === undefined ? {} : { mode } })
+  return renderDecision(
+    { P170aAssignSectors: options },
+    { seats, options: mode === undefined ? {} : { mode } },
+  )
 }
 
 describe.each<[number, TableMode | undefined]>([
