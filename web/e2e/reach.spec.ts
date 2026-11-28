@@ -84,6 +84,9 @@ const PRIORITY = 'seats=4&prompt=priority&turn=you'
 const STOPS: readonly Stop[] = [
   crowded('4 seats, your priority', PRIORITY),
   table('4 seats, a take-back offered', `${PRIORITY}&takeback=1`),
+  table('4 seats, asked to let a seat go back', `${PRIORITY}&goback=ask`),
+  table('4 seats, waiting on the table to go back', `${PRIORITY}&goback=wait`),
+  table('2 seats, asked to let a seat go back', 'seats=2&prompt=priority&turn=you&goback=ask'),
   table('4 seats, the table menu open', PRIORITY, {
     press: 'button[aria-label="Table menu"]',
     shows: '[data-slot="popover-content"][data-open]',
