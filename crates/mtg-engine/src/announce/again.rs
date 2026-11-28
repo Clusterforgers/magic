@@ -6,6 +6,8 @@
 use crate::answers::{Outcome, handle};
 use crate::choose::Choices;
 use crate::decision::Answer;
+use crate::events::Event;
+use crate::spotlight_aim::target_note;
 use crate::state::GameState;
 
 use super::{Answered, Done, Next, Pending, announce};
@@ -48,6 +50,15 @@ impl Pending {
         self.answers.push(answer);
     }
 
+    /// Keeps the log note for the targets just chosen, once for a spell or ability (`spotlight_aim::target_shifted`).
+    pub(crate) fn note_aim(&mut self, note: Option<Event>) {
+        if let Some(note) = note
+            && !self.done.aim_notes.contains(&note)
+        {
+            self.done.aim_notes.push(note);
+        }
+    }
+
     /// Marks the announcement to be asked again before its next question: a manual action changed the state under it.
     pub(crate) fn unsettle(&mut self) {
         self.stale = true;
@@ -68,15 +79,20 @@ impl Pending {
             let Next::Ask(decision) = announce(state, self) else {
                 return;
             };
-            let Some(answered) = handle(state, Some(self), false, &decision, answer.clone())
-                .ok()
-                .and_then(Answered::of)
-            else {
+            let Ok(outcome) = handle(state, Some(self), false, &decision, answer.clone()) else {
+                return;
+            };
+            let note = match &outcome {
+                Outcome::Targets(targets) => target_note(state, &decision, targets),
+                _ => None,
+            };
+            let Some(answered) = Answered::of(outcome) else {
                 return;
             };
             if self.accept(answered).is_err() {
                 return;
             }
+            self.note_aim(note);
             self.answers.push(answer);
         }
     }

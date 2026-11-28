@@ -499,13 +499,17 @@ player: PlayerId,
  */
 eyed: PlayerId, 
 /**
- * The hero its attack goes at instead.
+ * The hero its attack or targets go at instead.
  */
 instead: PlayerId, 
 /**
  * Why.
  */
-why: AimWhy, } } | { "BandFormed": { 
+why: AimWhy, 
+/**
+ * The spell or ability whose targets go at `instead`; `None` for an attack.
+ */
+source?: ObjectId, } } | { "BandFormed": { 
 /**
  * The attacking player.
  */

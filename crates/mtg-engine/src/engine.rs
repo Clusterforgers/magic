@@ -8,7 +8,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use crate::announce::{Answered, Next, Pending, Special, What, announce};
 use crate::answers::{Outcome, handle};
 use crate::characteristics::controller_of_object;
-use crate::choose::Choice;
+use crate::choose::{Choice, Target};
 use crate::decision::{Answer, Decision, Unplayable};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::error::{EngineError, PreviewError};
@@ -61,6 +61,16 @@ pub fn replay(setup: &GameSetup, events: &[Event]) -> Result<GameState, EngineEr
         apply_event(&mut state, event)?;
     }
     Ok(state)
+}
+
+/// The `events` that finish the announcement `pending`, behind the log notes it gathered.
+fn noted(pending: Option<Pending>, events: Vec<Event>) -> Vec<Event> {
+    let Some(pending) = pending.filter(|pending| !pending.done.aim_notes.is_empty()) else {
+        return events;
+    };
+    let mut all = pending.done.aim_notes;
+    all.extend(events);
+    all
 }
 
 /// Whether `events` all apply one after the other to a copy of `state`.
@@ -723,7 +733,7 @@ impl Engine {
                 self.drop_pending()
             }
             Outcome::Events(events) => {
-                self.pending = None;
+                let events = noted(self.pending.take(), events);
                 self.commit(events)
             }
             Outcome::BeginCast(spell) => {
@@ -783,7 +793,7 @@ impl Engine {
             }
             Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),
             Outcome::Way(pick) => self.announced(Answered::Way(pick)),
-            Outcome::Targets(targets) => self.announced(Answered::Targets(targets)),
+            Outcome::Targets(targets) => self.targets_announced(targets),
             Outcome::Number(number) => self.announced(Answered::Number(number)),
             Outcome::Costs(costs) => self.announced(Answered::Costs(costs)),
             Outcome::Cards(cards) => self.announced(Answered::Cards(cards)),
@@ -817,6 +827,18 @@ impl Engine {
     pub(crate) fn begin(&mut self, pending: Pending) -> Result<(), EngineError> {
         self.pending = Some(pending);
         self.advance()
+    }
+
+    /// Hands the targets chosen to the announcement, with the log note when a boss's side leaves the hero it eyes.
+    fn targets_announced(&mut self, targets: Vec<Target>) -> Result<(), EngineError> {
+        let note = self.decision.as_ref().and_then(|decision| {
+            crate::spotlight_aim::target_note(&self.state, decision, &targets)
+        });
+        self.announced(Answered::Targets(targets))?;
+        if let Some(pending) = self.pending.as_mut() {
+            pending.note_aim(note);
+        }
+        Ok(())
     }
 
     /// Hands the answer to a question of the announcement to the cast or activation that asked it.
@@ -996,7 +1018,7 @@ impl Engine {
                         self.drop_pending()?;
                     }
                     Next::Commit(events) => {
-                        self.pending = None;
+                        let events = noted(self.pending.take(), events);
                         self.commit(events)?;
                     }
                     Next::Drop => self.drop_pending()?,

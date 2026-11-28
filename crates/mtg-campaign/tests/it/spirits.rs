@@ -10,6 +10,7 @@ use mtg_cards::CardDefinition;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::{TeamMode, Teams};
+use mtg_engine::PresetPermanent;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
@@ -45,6 +46,17 @@ fn custom(id: &str) -> Arc<CardDefinition> {
 /// Seat 0, a hero at 0 life with the Spirit rule; seat 1, its living teammate; seat 2, the boss with a 3/3 and a
 /// Mountain and a Bolt in hand. Every seat has a library of twenty Mountains.
 fn table() -> Scenario {
+    table_on(
+        [ready(free_creature("Squire", 2, 2))],
+        [ready(free_creature("Brute", 3, 3)), ready(mountain())],
+    )
+}
+
+/// `table` with exactly these permanents on seat 1 and on seat 2.
+fn table_on<const A: usize, const B: usize>(
+    first: [PresetPermanent; A],
+    second: [PresetPermanent; B],
+) -> Scenario {
     let house = HouseRules {
         teams: Some(Teams {
             mode: TeamMode::Teams,
@@ -59,8 +71,8 @@ fn table() -> Scenario {
         .life(2, 40)
         .spirit(0, custom("restless_spirit"))
         .spirit(1, custom("restless_spirit"))
-        .battlefield(1, [ready(free_creature("Squire", 2, 2))])
-        .battlefield(2, [ready(free_creature("Brute", 3, 3)), ready(mountain())])
+        .battlefield(1, first)
+        .battlefield(2, second)
         .hand(2, [burn("Bolt", 3)]);
     for seat in 0..3 {
         scenario = scenario.library(seat, (0..20).map(|_| mountain()));
@@ -410,9 +422,11 @@ fn only_the_spirits_team_can_target_it(
     #[case] caster: usize,
     #[case] legal: bool,
 ) -> Result<(), ScriptError> {
-    let scenario = table()
-        .hand(1, [burn("Bolt", 3)])
-        .battlefield(1, [ready(mountain())]);
+    let scenario = table_on(
+        [ready(mountain())],
+        [ready(free_creature("Brute", 3, 3)), ready(mountain())],
+    )
+    .hand(1, [burn("Bolt", 3)]);
     let mut driver = Driver::from_scenario(scenario)?;
     driver.pass_until(Step::Main1)?;
     for _ in 0..20 {
@@ -453,7 +467,10 @@ fn a_bot_spirit_rises_as_soon_as_it_can() -> Result<(), ScriptError> {
 #[test]
 fn a_bot_spirit_wards_its_team_against_a_big_attack_and_saves_otherwise() -> Result<(), ScriptError>
 {
-    let scenario = table().battlefield(2, [ready(free_creature("Ogre", 5, 5))]);
+    let scenario = table_on(
+        [ready(free_creature("Squire", 2, 2))],
+        [ready(free_creature("Ogre", 5, 5))],
+    );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.pass_until(Step::Main1)?;
     // Out of combat with one ectoplasm a bot Spirit saves it.

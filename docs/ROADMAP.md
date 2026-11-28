@@ -128,7 +128,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (ts1m) A workspace-hack crate (cargo-hakari) fixes the dependency features, so every package selection shares one build and `cargo test -p mtg-engine` in a warm worktree compiles nothing (now 86 s; `Cargo.toml`, `crates/`; no dependency)
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
 - [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds: over 90% is `Engine::apply` (`priority_options` 36%, `triggers::detect` 24%, `layers::compute` 14%, whole-object clones), so the next cut is in the engine; opt-level 3 for `mtg-cards` and mimalloc save about 5% and slow every rebuild, so they are not adopted
-- [ ] (t5c) `Scenario::battlefield(seat, ...)` called twice for one seat adds to that seat's permanents instead of replacing them
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load
 - [ ] (t3c) DSL amounts for what an earlier effect did and for the mana value a cost took, and a partner by creature type (Foul-Tongue Shriek, The Knight of Land Drops)
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand (`docs/deck-check.md`)
@@ -148,7 +147,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## Delves
 
 - [ ] (dl3d) Delves at four to six heroes measured over 30 fights a cell, on the Ember Foundry, the Gloamwood and at a deeper depth (the Spire against six heroes won 75 % of 8)
-- [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
 - [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
 - [ ] (dl4b) Bot allies see their deck list, so they can give up a deck card for an event's cost and not only a Satchel card
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run

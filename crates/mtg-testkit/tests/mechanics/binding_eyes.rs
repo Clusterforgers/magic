@@ -25,7 +25,7 @@ use mtg_engine::spotlight_aim::{self, AimWhy};
 use mtg_engine::turn::Step;
 use mtg_testkit::brain::seen::Seen;
 use mtg_testkit::brain::{Level, brain, combat, targets};
-use mtg_testkit::cards::{burn, free_creature, mountain};
+use mtg_testkit::cards::{burn, free_creature, mountain, pinger};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -396,7 +396,7 @@ fn the_log_carries_the_reason_when_the_declared_attack_leaves_the_eyed_hero()
     assert_eq!(found.len(), 1);
     assert!(matches!(
         found[0],
-        Event::FocusShifted { player, eyed, instead, why: AimWhy::Lethal }
+        Event::FocusShifted { player, eyed, instead, why: AimWhy::Lethal, .. }
             if *player == pid(3) && *eyed == pid(0) && *instead == pid(1)
     ));
     Ok(())
@@ -514,4 +514,149 @@ fn removal_leaves_a_hero_that_cannot_be_targeted_with_that_reason(#[case] heroes
     );
     let first = holder(&driver, ranked[0]);
     assert_eq!(first, aim.hero, "the first of the others goes first");
+}
+
+/// The boss's brain picks the targets of the spell or ability `begin` starts on its third turn and the cast or
+/// activation goes on: the object it comes from and the events from the pick on.
+fn boss_targets(
+    scenario: Scenario,
+    heroes: usize,
+    name: &str,
+    begin: impl FnOnce(&mut Driver, &str),
+) -> (mtg_core::ids::ObjectId, Vec<Event>) {
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver
+        .idle_until(turn_of(heroes, 3, heroes + 1), Step::Main1)
+        .unwrap();
+    begin(&mut driver, name);
+    let decision = driver.decision().unwrap().clone();
+    let DecisionKind::ChooseTargets(asked) = &decision.kind else {
+        panic!("expected a target decision")
+    };
+    let source = asked.source;
+    let answer =
+        brain(Level::Normal, 7, pid(heroes), false).choose(&decision, Some(driver.engine()));
+    let mut events = driver.answer(answer).unwrap();
+    if matches!(driver.decision().unwrap().kind, DecisionKind::PayMana(_)) {
+        events.extend(
+            driver
+                .answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))
+                .unwrap(),
+        );
+    }
+    (source, events)
+}
+
+fn cast(driver: &mut Driver, name: &str) {
+    driver.begin_cast(name).unwrap();
+}
+
+fn activate(driver: &mut Driver, name: &str) {
+    driver.begin_activation(name).unwrap();
+}
+
+#[rstest]
+#[case::two_heroes(2)]
+#[case::three_heroes(3)]
+#[case::four_heroes(4)]
+fn a_spell_leaving_a_hero_that_cannot_be_targeted_says_why(#[case] heroes: usize) {
+    let (zap, events) = boss_targets(zap_table(heroes, true), heroes, "Zap", cast);
+    let [
+        Event::FocusShifted {
+            player,
+            eyed,
+            instead,
+            why,
+            source,
+        },
+    ] = shifts(&events)[..]
+    else {
+        panic!("one note expected, got {:?}", shifts(&events))
+    };
+    assert_eq!(
+        (*player, *eyed, *why),
+        (pid(heroes), pid(0), AimWhy::Unreachable)
+    );
+    assert_ne!(*instead, pid(0));
+    assert_eq!(*source, Some(zap));
+    let note = events
+        .iter()
+        .position(|e| matches!(e, Event::FocusShifted { .. }));
+    let cast = events
+        .iter()
+        .position(|e| matches!(e, Event::SpellCast { .. }));
+    assert!(note < cast, "the note comes ahead of the cast");
+    assert!(
+        matches!(
+            &events[cast.unwrap()],
+            Event::SpellCast { choices, .. }
+                if choices.targets == [vec![mtg_engine::choose::Target::Player(*instead)]]
+        ),
+        "the spell goes at the hero the note names"
+    );
+}
+
+#[rstest]
+#[case::two_heroes(2)]
+#[case::three_heroes(3)]
+#[case::four_heroes(4)]
+fn a_spell_at_the_eyed_hero_has_no_note(#[case] heroes: usize) {
+    let (_, events) = boss_targets(zap_table(heroes, false), heroes, "Zap", cast);
+    assert!(events.iter().any(|e| matches!(e, Event::SpellCast { .. })));
+    assert!(shifts(&events).is_empty(), "no reason is needed");
+}
+
+#[test]
+fn an_ability_leaving_a_hero_that_cannot_be_targeted_says_why() {
+    let table = zap_table(3, true).battlefield(3, [ready(pinger("Pinger", 0))]);
+    let (pinger, events) = boss_targets(table, 3, "Pinger", activate);
+    let [
+        Event::FocusShifted {
+            eyed, why, source, ..
+        },
+    ] = shifts(&events)[..]
+    else {
+        panic!("one note expected, got {:?}", shifts(&events))
+    };
+    assert_eq!(
+        (*eyed, *why, *source),
+        (pid(0), AimWhy::Unreachable, Some(pinger))
+    );
+    assert!(
+        events
+            .iter()
+            .any(|e| matches!(e, Event::AbilityPutOnStack(_)))
+    );
+}
+
+#[test]
+fn a_spell_at_an_overwhelming_hero_says_so_and_one_at_the_eyed_hero_does_not() {
+    // Hero 0 towers but has taken the pressure, so the boss eyes a smaller hero (see the attack case above).
+    let heroes = vec![
+        hero(30).rocks(12).with(&[("Giant", 4, 4)]),
+        hero(30).cards(7),
+        hero(30).cards(7),
+    ];
+    let scenario =
+        fight(&heroes, 40, &[], vec![burn("Zap", 3)], 0).battlefield(3, [ready(mountain())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.idle_until(turn_of(3, 3, 4), Step::Main1).unwrap();
+    driver.begin_cast("Zap").unwrap();
+    let DecisionKind::ChooseTargets(options) = driver.decision().unwrap().kind.clone() else {
+        panic!("expected a target decision")
+    };
+    let mut state = driver.state().clone();
+    attention(&mut state, 0, 25);
+    let eyed = spotlight::focus(&state, pid(3)).unwrap();
+    assert_ne!(eyed, pid(0), "the pressure moved the eye");
+    let at = |hero: PlayerId| [mtg_engine::choose::Target::Player(hero)];
+    assert!(matches!(
+        spotlight_aim::target_shifted(&state, pid(3), &options, &at(pid(0))),
+        Some(Event::FocusShifted { why: AimWhy::Overwhelming, instead, source, eyed: e, .. })
+            if instead == pid(0) && source == Some(options.source) && e == eyed
+    ));
+    assert_eq!(
+        spotlight_aim::target_shifted(&state, pid(3), &options, &at(eyed)),
+        None
+    );
 }

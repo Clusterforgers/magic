@@ -1092,6 +1092,17 @@ describe('events with more than one shape', () => {
     expect(say({ FocusShifted: { player: 2, eyed: 0, instead: 1, why } })).toBe(text)
   })
 
+  it.each<[AimWhy, string]>([
+    ['Unreachable', "Cy targets Bo with Lightning Bolt instead of Ana: Ana can't be targeted"],
+    ['Overwhelming', 'Cy targets Bo with Lightning Bolt instead of Ana: Bo is the greatest threat'],
+    [
+      { Deadly: { boss: 2 } },
+      "Cy targets Bo with Lightning Bolt instead of Ana: Bo's creatures could kill Cy",
+    ],
+  ])('names why a spell or ability of the boss side leaves the hero it eyes (%j)', (why, text) => {
+    expect(say({ FocusShifted: { player: 2, eyed: 0, instead: 1, why, source: 4 } })).toBe(text)
+  })
+
   it('tells attackers and blockers apart in NothingToDo', () => {
     expect(say({ NothingToDo: { player: 1, kind: 'Block' } })).toBe('Bo has no possible blockers')
   })
