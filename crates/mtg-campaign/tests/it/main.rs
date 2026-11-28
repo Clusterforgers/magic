@@ -4,6 +4,7 @@
 mod boss_decks;
 mod boss_scale;
 mod boss_switch;
+mod bot_upgrades;
 mod common;
 mod content;
 mod descent_loot;
