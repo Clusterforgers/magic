@@ -4,6 +4,7 @@
 
 use mtg_core::house::{Handicap, HouseRules};
 use mtg_core::ids::PlayerId;
+use mtg_core::personality::Personality;
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::phases::{BossPhase, PhaseStart};
 use mtg_engine::{GameSetup, PlayerSetup};
@@ -64,6 +65,9 @@ pub struct BossSeat {
     /// Its satchel, whose cards the caller resolves as the last cards of [`FightPlan::boss_deck`].
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub satchel: Vec<SatchelCard>,
+    /// How it weighs the heroes' threat; a plan stored before personalities carries the default.
+    #[serde(default, skip_serializing_if = "Personality::is_watchful")]
+    pub personality: Personality,
 }
 
 impl BossSeat {
@@ -197,6 +201,7 @@ impl FightPlan {
         boss.opening_lands = Some(mtg_engine::opening_lands::OpeningLands::BOSS);
         take_satchel(boss, &self.boss.satchel);
         boss.boss_sheet = Some(std::sync::Arc::new(self.boss.sheet(content)?));
+        boss.personality = self.boss.personality;
         setup.validate_decks = false;
         Ok(setup)
     }

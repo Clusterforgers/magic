@@ -1,5 +1,5 @@
 //! The boss on the fight's intro: its innate with its level, the encounter modifier, its relics, its two phases with
-//! their rounds and its Satchel with each card's reusable mark, from the plan its game is made with.
+//! their rounds, its Satchel with each card's reusable mark and its personality, from the plan its game is made with.
 
 use mtg_campaign::FightPlan;
 use mtg_campaign::content::Content;
@@ -47,5 +47,9 @@ pub(crate) fn fight_view(plan: &FightPlan, content: &Content) -> Option<DelveFig
                 object: None,
             })
             .collect(),
+        personality: Some(BossPartView {
+            name: boss.personality.name().to_owned(),
+            text: boss.personality.text().to_owned(),
+        }),
     })
 }

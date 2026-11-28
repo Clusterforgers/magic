@@ -54,6 +54,7 @@ mod dl2_party_turn;
 mod dl2b_party_attacks;
 mod dl2c_party_attack_tax;
 mod dl2d_party_attack_sacrifice;
+mod dl3a_personality;
 mod e10a_earlier_targets;
 mod e10b_sealed;
 mod e14d_mechanics;

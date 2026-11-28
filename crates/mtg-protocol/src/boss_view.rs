@@ -48,7 +48,16 @@ pub(crate) fn of(state: &GameState, player: &Player) -> Option<BossView> {
                 })
             })
             .collect(),
+        personality: sheet.map(|_| personality(player.personality())),
     })
+}
+
+/// A personality as the view names it: its name and whom it hunts.
+fn personality(personality: mtg_core::personality::Personality) -> BossPartView {
+    BossPartView {
+        name: personality.name().to_owned(),
+        text: personality.text().to_owned(),
+    }
 }
 
 /// A sheet card as the view names it.

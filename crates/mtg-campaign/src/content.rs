@@ -177,6 +177,8 @@ pub struct Boss {
     pub line: String,
     /// The real card whose art pictures it.
     pub art: BossArt,
+    /// How it weighs the heroes' threat when it eyes one, from [`crate::run::PERSONALITY_FROM`].
+    pub personality: mtg_core::personality::Personality,
 }
 
 /// A spell of a boss's satchel.

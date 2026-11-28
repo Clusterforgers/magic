@@ -96,6 +96,8 @@ pub struct Player {
     pub(crate) held: Vec<String>,
     /// A reworked boss seat's public sheet ([`crate::boss_sheet`]).
     pub(crate) sheet: crate::boss_sheet::SheetSlot,
+    /// How a Delves boss seat weighs the heroes' threat ([`crate::spotlight`]).
+    pub(crate) personality: crate::spotlight::PersonalitySlot,
 }
 
 impl Player {
@@ -127,6 +129,7 @@ impl Player {
             leader: None,
             held: Vec::new(),
             sheet: crate::boss_sheet::SheetSlot::default(),
+            personality: crate::spotlight::PersonalitySlot::default(),
         }
     }
 
@@ -158,6 +161,11 @@ impl Player {
     /// A reworked boss seat's public sheet: its innate, modifier, relics and the words of its phases.
     pub fn boss_sheet(&self) -> Option<&crate::boss_sheet::BossSheet> {
         self.sheet.0.as_deref()
+    }
+
+    /// How the seat weighs the heroes' threat when it is a Delves boss.
+    pub fn personality(&self) -> mtg_core::personality::Personality {
+        self.personality.0
     }
 
     /// The player's boss phases, in the order they begin.

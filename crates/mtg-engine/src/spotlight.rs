@@ -1,6 +1,6 @@
 //! The spotlight, a campaign rule that spreads a boss's pressure over the party: every hero gathers attention as the
-//! boss's side hurts them (damage, life loss, permanents removed), the boss eyes the hero whose presence on the table
-//! minus attention is highest, a hero past their share of the recent pressure is left alone, and no hero falls to the
+//! boss's side hurts them (damage, life loss, permanents removed), the boss eyes the hero whose presence on the table,
+//! weighed by the boss's personality, minus attention is highest, a hero past their share of the recent pressure is left alone, and no hero falls to the
 //! boss's side before every hero has had three turns. The lull opens a fight: the boss's side attacks and sets schemes
 //! in motion from the boss's third turn (`docs/delves.md`, Spotlight and ramp-up).
 
@@ -8,6 +8,7 @@ use std::collections::BTreeMap;
 
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::personality::Personality;
 
 use crate::combat::DamageTarget;
 use crate::events::Event;
@@ -38,13 +39,50 @@ pub struct Spotlight {
     recent: Vec<(u32, PlayerId, u32)>,
     /// The pressure each hero received this fight.
     total: BTreeMap<PlayerId, u32>,
+    /// (turn number, hero, life gained) in the window, which a Spiteful boss weighs.
+    gained: Vec<(u32, PlayerId, u32)>,
 }
 
 impl Spotlight {
     /// Whether nothing was recorded.
     pub fn is_empty(&self) -> bool {
-        self.total.is_empty()
+        self.total.is_empty() && self.gained.is_empty()
     }
+}
+
+/// A boss seat's personality; the default leaves the game's hash as it was.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub(crate) struct PersonalitySlot(pub(crate) Personality);
+
+impl std::hash::Hash for PersonalitySlot {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        if !self.0.is_watchful() {
+            self.0.hash(state);
+        }
+    }
+}
+
+/// The personality of the boss's side: the first boss-side seat's that is not the default, else Watchful.
+pub fn personality(state: &GameState) -> Personality {
+    state
+        .players()
+        .iter()
+        .filter(|p| is_boss_side(state, p.id()))
+        .map(crate::player::Player::personality)
+        .find(|p| !p.is_watchful())
+        .unwrap_or_default()
+}
+
+/// The life `hero` gained in the window.
+pub fn gained(state: &GameState, hero: PlayerId) -> u32 {
+    let from = window_start(state);
+    state
+        .spotlight
+        .gained
+        .iter()
+        .filter(|(turn, who, _)| *who == hero && *turn >= from)
+        .map(|(_, _, life)| *life)
+        .fold(0, u32::saturating_add)
 }
 
 /// Whether `player` is a hero of a campaign fight: a seat that becomes a Spirit.
@@ -139,11 +177,30 @@ pub fn presence(state: &GameState, hero: PlayerId) -> i64 {
     presences(state, &[hero])[0]
 }
 
+/// A hero's threat as the boss's [`personality`] weighs it: their [`presence`] with each part weighted its own way and
+/// the life they [`gained`] in the window; it orders the heroes the boss eyes, while the cap and the overwhelming
+/// threat read the plain presence.
+pub fn threat(state: &GameState, hero: PlayerId) -> i64 {
+    weighed(state, &[hero], personality(state).weights())[0]
+}
+
 /// The [`presence`] of each of `heroes`, read in one pass over the battlefield.
 fn presences(state: &GameState, heroes: &[PlayerId]) -> Vec<i64> {
+    weighed(state, heroes, Personality::Watchful.weights())
+}
+
+/// The table of each of `heroes` under `weights`, read in one pass over the battlefield.
+fn weighed(
+    state: &GameState,
+    heroes: &[PlayerId],
+    weights: mtg_core::personality::Weights,
+) -> Vec<i64> {
     let mut found: Vec<i64> = heroes
         .iter()
-        .map(|hero| i64::try_from(state.zone(Zone::Hand(*hero)).len()).unwrap_or(0))
+        .map(|hero| {
+            let hand = i64::try_from(state.zone(Zone::Hand(*hero)).len()).unwrap_or(0);
+            weights.hand * hand + weights.gained * i64::from(gained(state, *hero))
+        })
         .collect();
     for id in state.zone(Zone::Battlefield) {
         let Some(at) = crate::characteristics::controller_of(state, *id)
@@ -155,9 +212,9 @@ fn presences(state: &GameState, heroes: &[PlayerId]) -> Vec<i64> {
             continue;
         };
         if chars.types.contains(CardType::Creature) {
-            found[at] += i64::from(chars.power.unwrap_or(0).max(0));
+            found[at] += weights.power * i64::from(chars.power.unwrap_or(0).max(0));
         } else if !chars.types.contains(CardType::Land) {
-            found[at] += 2;
+            found[at] += weights.permanent;
         }
     }
     found
@@ -184,12 +241,16 @@ pub fn overwhelming(state: &GameState, hero: PlayerId) -> bool {
 }
 
 /// The standing heroes in the order the boss's side eyes them: those not capped (or overwhelming) first, then by
-/// presence minus attention, ties going round the table with the boss's turns.
+/// [`threat`] minus attention, ties going round the table with the boss's turns.
 pub fn ranking(state: &GameState) -> Vec<PlayerId> {
     let heroes = standing(state);
     let count = heroes.len().max(1);
     let rotation = usize::try_from(boss_turns(state)).unwrap_or(0) % count;
     let presences = presences(state, &heroes);
+    let threats = match personality(state) {
+        Personality::Watchful => presences.clone(),
+        other => weighed(state, &heroes, other.weights()),
+    };
     let attentions: Vec<u32> = heroes.iter().map(|h| attention(state, *h)).collect();
     let total = attentions.iter().copied().fold(0, u32::saturating_add);
     let cap = cap_percent(heroes.len());
@@ -201,7 +262,7 @@ pub fn ranking(state: &GameState) -> Vec<PlayerId> {
                 && total >= LEAST_PRESSURE
                 && attentions[at].saturating_mul(100) > total.saturating_mul(cap);
             let held = capped && !towers(&presences, at);
-            let score = presences[at] - i64::from(attentions[at]);
+            let score = threats[at] - i64::from(attentions[at]);
             (held, -score, (at + count - rotation) % count, *hero)
         })
         .collect();
@@ -346,9 +407,17 @@ pub(crate) fn note(state: &mut GameState, event: &Event) {
                 .is_some_and(|o| o.kind() == ObjectKind::Token);
             (owner, if token { 1 } else { REMOVED })
         }
+        Event::LifeGained { player, amount } => {
+            if *amount > 0 && is_hero(state, *player) {
+                let turn = state.turn.number;
+                state.spotlight.gained.push((turn, *player, *amount));
+            }
+            return;
+        }
         Event::TurnBegan { .. } => {
             let from = window_start(state);
             state.spotlight.recent.retain(|(turn, _, _)| *turn >= from);
+            state.spotlight.gained.retain(|(turn, _, _)| *turn >= from);
             return;
         }
         _ => return,

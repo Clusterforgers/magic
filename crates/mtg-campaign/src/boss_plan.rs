@@ -1,6 +1,7 @@
 //! The boss's seat: its precon deck, its innate at the level of the run's depth and Heat, one encounter modifier and
 //! its relics drawn by the seed keyed by floor and room, two phases by round, its satchel, its life and reinforcements
-//! by party size only, and the Hard brain. A phase written with levels (as an innate is) plays at the innate's level.
+//! by party size only, its personality and the Hard brain. A phase written with levels (as an innate is) plays at the
+//! innate's level.
 
 use mtg_engine::boss_sheet::{BossSheet, SheetCard};
 
@@ -63,6 +64,11 @@ impl Run {
                 .zip(PHASE_ROUNDS)
                 .collect(),
             satchel: boss.satchel.clone(),
+            personality: if self.content >= crate::run::PERSONALITY_FROM {
+                boss.personality
+            } else {
+                mtg_core::personality::Personality::Watchful
+            },
         })
     }
 }
