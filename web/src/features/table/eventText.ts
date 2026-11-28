@@ -1077,9 +1077,15 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   return line(`${n.seat(player)} reveals ${joinWords(shown.map(n.card))}`)
 }
 
-/** Why a seat of the boss's side attacks another hero than the one it eyes, in words. */
-function focusShiftReason(why: AimWhy, eyed: PlayerId, instead: PlayerId, n: EventNames): string {
-  if (why === 'Unreachable') return `${n.seat(eyed)} can't be attacked`
+/** Why a seat of the boss's side attacks, or targets with a spell or ability, another hero than the one it eyes. */
+function focusShiftReason(
+  why: AimWhy,
+  eyed: PlayerId,
+  instead: PlayerId,
+  n: EventNames,
+  targeting: boolean,
+): string {
+  if (why === 'Unreachable') return `${n.seat(eyed)} can't be ${targeting ? 'targeted' : 'attacked'}`
   if (why === 'Overwhelming') return `${n.seat(instead)} is the greatest threat`
   if (why === 'Futile') return `every attack at ${n.seat(eyed)} would be blocked and lost`
   if (why === 'Lethal') return `the attack kills ${n.seat(instead)}`
@@ -1632,9 +1638,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     )
   }
   if ('FocusShifted' in event) {
-    const { player, eyed, instead, why } = event.FocusShifted
+    const { player, eyed, instead, why, source } = event.FocusShifted
+    const what =
+      source === undefined
+        ? `attacks ${n.seat(instead)}`
+        : `targets ${n.seat(instead)} with ${n.card(source)}`
     return line(
-      `${n.seat(player)} attacks ${n.seat(instead)} instead of ${n.seat(eyed)}: ${focusShiftReason(why, eyed, instead, n)}`,
+      `${n.seat(player)} ${what} instead of ${n.seat(eyed)}: ${focusShiftReason(why, eyed, instead, n, source !== undefined)}`,
     )
   }
   if ('BandFormed' in event) {

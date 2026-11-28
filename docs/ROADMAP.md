@@ -149,7 +149,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## Delves
 
 - [ ] (dl3d) Delves at four to six heroes measured over 30 fights a cell, on the Ember Foundry, the Gloamwood and at a deeper depth (the Spire against six heroes won 75 % of 8)
-- [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
 - [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
 - [ ] (dl4b) Bot allies see their deck list, so they can give up a deck card for an event's cost and not only a Satchel card
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run

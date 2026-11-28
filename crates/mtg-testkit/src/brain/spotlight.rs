@@ -45,16 +45,7 @@ pub fn holder(seen: &Seen<'_>, target: Target) -> Option<PlayerId> {
 
 /// The hero the seat's targeted spell or ability goes at among the heroes holding the targets `options` offers.
 pub fn target_aim(seen: &Seen<'_>, options: &TargetOptions) -> Option<Aim> {
-    let mut offered: Vec<PlayerId> = Vec::new();
-    for target in options.c10_dice_choosable() {
-        if let Some(hero) = holder(seen, *target)
-            && spotlight::is_hero(seen.state(), hero)
-            && !offered.contains(&hero)
-        {
-            offered.push(hero);
-        }
-    }
-    spotlight_aim::target_aim(seen.state(), seen.seat(), &offered)
+    spotlight_aim::target_aim_of(seen.state(), seen.seat(), options)
 }
 
 /// Whether `attack` goes at the hero of `aim` as far as each attacker can: an attacker names no other hero while its
