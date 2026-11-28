@@ -100,18 +100,27 @@ fn fingerprint(engine: &Engine) -> (u64, String, PlayerId, Step) {
 
 /// Goes back and checks the result: the state of the pass, the note last, the log replaying to the live state and a
 /// rebuilt engine asking the same.
-fn go_back_and_check(setup: &GameSetup, engine: &mut Engine, before: &(u64, String, PlayerId, Step)) {
+fn go_back_and_check(
+    setup: &GameSetup,
+    engine: &mut Engine,
+    before: &(u64, String, PlayerId, Step),
+) {
     let offer = engine.go_back_offer(SEAT, |_| true).unwrap();
     assert_eq!(offer.step, before.3);
     let at = usize::try_from(offer.at).unwrap();
     let events = engine.go_back(SEAT, offer.at).unwrap();
-    assert!(matches!(events.first(), Some(Event::WentBack { player, step, .. }) if *player == SEAT && *step == before.3));
+    assert!(
+        matches!(events.first(), Some(Event::WentBack { player, step, .. }) if *player == SEAT && *step == before.3)
+    );
     assert_eq!(engine.events().len(), at + events.len());
     let (hash, kind, who, at_step) = before.clone();
     assert_eq!(engine.decision().unwrap().kind.name(), kind);
     assert_eq!((holder(engine), step(engine)), (who, at_step));
     assert_eq!(engine.state_hash(), hash, "the note changes nothing");
-    assert_eq!(replay(setup, engine.events()).unwrap().state_hash(), engine.state_hash());
+    assert_eq!(
+        replay(setup, engine.events()).unwrap().state_hash(),
+        engine.state_hash()
+    );
     let rebuilt = Engine::resume(setup.clone(), engine.events().to_vec()).unwrap();
     assert_eq!(rebuilt.decision(), engine.decision());
 }
@@ -148,7 +157,11 @@ fn a_land_played_before_the_pass_stays_and_the_seat_can_go_back_twice() {
     pass_on(&mut engine);
     go_back_and_check(&setup, &mut engine, &combat);
     go_back_and_check(&setup, &mut engine, &main);
-    assert_eq!(engine.state().zone(Zone::Battlefield).len(), 2, "the land played stays");
+    assert_eq!(
+        engine.state().zone(Zone::Battlefield).len(),
+        2,
+        "the land played stays"
+    );
 }
 
 /// What happens after seat 0 passed its precombat main phase and is asked at beginning of combat.
@@ -161,7 +174,10 @@ enum Since {
 #[rstest]
 #[case::a_spell(Since::CastSpark, GoBackRefusal::Acted)]
 #[case::a_mana_ability(Since::TappedForMana, GoBackRefusal::Acted)]
-fn an_action_since_the_pass_refuses_going_back(#[case] since: Since, #[case] refusal: GoBackRefusal) {
+fn an_action_since_the_pass_refuses_going_back(
+    #[case] since: Since,
+    #[case] refusal: GoBackRefusal,
+) {
     let (_, mut engine) = table(2, 0, Step::Main1, HouseRules::default());
     pass_on(&mut engine);
     assert!(engine.go_back_offer(SEAT, |_| true).is_ok());
@@ -178,7 +194,9 @@ fn an_action_since_the_pass_refuses_going_back(#[case] since: Since, #[case] ref
     }
     let mut answered = 0;
     while !matches!(engine.decision().unwrap().kind, DecisionKind::Priority(_)) && answered < 5 {
-        engine.apply(Answer::PayMana(mtg_engine::decision::PayChoice::Auto)).unwrap();
+        engine
+            .apply(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))
+            .unwrap();
         answered += 1;
     }
     assert_eq!(engine.go_back_offer(SEAT, |_| true), Err(refusal));
@@ -189,7 +207,10 @@ fn a_draw_since_the_pass_refuses_going_back_past_it() {
     let (_, mut engine) = table(2, 0, Step::Upkeep, HouseRules::default());
     pass_on(&mut engine);
     assert_eq!(step(&engine), Step::Draw);
-    assert_eq!(engine.go_back_offer(SEAT, |_| true), Err(GoBackRefusal::CardDrawn));
+    assert_eq!(
+        engine.go_back_offer(SEAT, |_| true),
+        Err(GoBackRefusal::CardDrawn)
+    );
 }
 
 #[test]
@@ -204,19 +225,31 @@ fn an_attack_declared_since_refuses_going_back() {
     let DecisionKind::DeclareAttackers(options) = &engine.decision().unwrap().kind else {
         panic!("seat 0 declares attackers");
     };
-    let attack = vec![(options.attackers[0].object, options.attackers[0].defenders[0])];
+    let attack = vec![(
+        options.attackers[0].object,
+        options.attackers[0].defenders[0],
+    )];
     engine.apply(Answer::DeclareAttackers(attack)).unwrap();
     assert_eq!(holder(&engine), SEAT);
-    assert_eq!(engine.go_back_offer(SEAT, |_| true), Err(GoBackRefusal::Declared));
+    assert_eq!(
+        engine.go_back_offer(SEAT, |_| true),
+        Err(GoBackRefusal::Declared)
+    );
 }
 
 #[test]
 fn an_action_under_way_a_table_without_take_backs_and_no_pass_refuse() {
     let (_, mut engine) = table(2, 0, Step::Main1, HouseRules::default());
-    assert_eq!(engine.go_back_offer(SEAT, |_| true), Err(GoBackRefusal::Nothing));
+    assert_eq!(
+        engine.go_back_offer(SEAT, |_| true),
+        Err(GoBackRefusal::Nothing)
+    );
     let card = hand_card(&engine, "Ogre");
     priority(&mut engine, PriorityAction::CastSpell(card));
-    assert_eq!(engine.go_back_offer(SEAT, |_| true), Err(GoBackRefusal::Busy));
+    assert_eq!(
+        engine.go_back_offer(SEAT, |_| true),
+        Err(GoBackRefusal::Busy)
+    );
 
     let off = HouseRules {
         take_backs: Some(false),
@@ -224,7 +257,10 @@ fn an_action_under_way_a_table_without_take_backs_and_no_pass_refuse() {
     };
     let (_, mut engine) = table(2, 0, Step::Main1, off);
     pass_on(&mut engine);
-    assert_eq!(engine.go_back_offer(SEAT, |_| true), Err(GoBackRefusal::Off));
+    assert_eq!(
+        engine.go_back_offer(SEAT, |_| true),
+        Err(GoBackRefusal::Off)
+    );
     assert!(engine.go_back(SEAT, 0).is_err());
 }
 
@@ -233,7 +269,18 @@ fn only_a_pass_the_caller_chose_is_gone_back_to() {
     let (_, mut engine) = table(2, 0, Step::Main1, HouseRules::default());
     pass_on(&mut engine);
     let offer = engine.go_back_offer(SEAT, |_| true).unwrap();
-    assert_eq!(engine.go_back_offer(SEAT, |at| at != offer.at), Err(GoBackRefusal::Nothing));
-    assert!(engine.go_back(SEAT, offer.at + 1).is_err(), "a position that is no pass is refused");
-    assert_eq!(engine.go_back_offer(PlayerId(1), |_| true).map(|o| o.player), Ok(PlayerId(1)));
+    assert_eq!(
+        engine.go_back_offer(SEAT, |at| at != offer.at),
+        Err(GoBackRefusal::Nothing)
+    );
+    assert!(
+        engine.go_back(SEAT, offer.at + 1).is_err(),
+        "a position that is no pass is refused"
+    );
+    assert_eq!(
+        engine
+            .go_back_offer(PlayerId(1), |_| true)
+            .map(|o| o.player),
+        Ok(PlayerId(1))
+    );
 }

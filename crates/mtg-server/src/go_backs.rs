@@ -44,7 +44,11 @@ impl GoBacks {
 
     /// The step `seat` may go back to: its latest own pass in an earlier step the engine allows, with no pass another
     /// person sent since (a bot's is fine).
-    pub(crate) fn offer(&self, engine: &Engine, seat: PlayerId) -> Result<GoBackOffer, GoBackRefusal> {
+    pub(crate) fn offer(
+        &self,
+        engine: &Engine,
+        seat: PlayerId,
+    ) -> Result<GoBackOffer, GoBackRefusal> {
         if self.bots.contains(&seat) {
             return Err(GoBackRefusal::Nothing);
         }
@@ -154,7 +158,9 @@ mod tests {
         let mut go_backs = GoBacks::default();
         for seat in SEATS {
             let at = u64::try_from(engine.events().len()).unwrap();
-            engine.apply(Answer::Priority(PriorityAction::Pass)).unwrap();
+            engine
+                .apply(Answer::Priority(PriorityAction::Pass))
+                .unwrap();
             if sent[seat.index()] {
                 go_backs.sent(seat, at);
             }

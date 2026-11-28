@@ -151,14 +151,14 @@ pub(crate) fn refusal_in(
         other => other,
     };
     named.or_else(|| {
-            after.iter().find(|point| !point.pass).map(|point| {
-                if point.player == player {
-                    GoBackRefusal::Chose
-                } else {
-                    GoBackRefusal::OtherPlayerActed
-                }
-            })
+        after.iter().find(|point| !point.pass).map(|point| {
+            if point.player == player {
+                GoBackRefusal::Chose
+            } else {
+                GoBackRefusal::OtherPlayerActed
+            }
         })
+    })
 }
 
 /// The refusal one event makes, if any.

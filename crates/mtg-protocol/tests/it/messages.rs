@@ -28,6 +28,7 @@ use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::forecast::{
     AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
+use mtg_engine::go_back::{GoBackOffer, GoBackRefusal};
 use mtg_engine::library::{CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::manual::{ManualAction, ManualZone};
@@ -36,7 +37,6 @@ use mtg_engine::snapshot::snapshot;
 use mtg_engine::spend::Spend;
 use mtg_engine::stack_forecast::{Change, Fate, ForecastChange, Forecasted};
 use mtg_engine::state::GameResult;
-use mtg_engine::go_back::{GoBackOffer, GoBackRefusal};
 use mtg_engine::take_back::{TakeBackKind, TakeBackOffer, TakeBackRefusal};
 use mtg_engine::tokens::TokenCreated;
 use mtg_engine::triggers::{DelayedId, Triggered};

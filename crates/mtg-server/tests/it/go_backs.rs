@@ -24,7 +24,10 @@ async fn table(config: GameConfig, rules: HouseRules) -> (GameHandle, MemoryStor
         .unwrap();
     let store = MemoryStore::new();
     let handle = spawn_game_with(game_id(1), setup, store.clone(), config).unwrap();
-    let clients = vec![Client::join(&handle, 0).await, Client::join(&handle, 1).await];
+    let clients = vec![
+        Client::join(&handle, 0).await,
+        Client::join(&handle, 1).await,
+    ];
     for client in &clients {
         client.say(&handle, ClientMessage::Ready).await;
     }
@@ -41,11 +44,15 @@ fn decision_of(messages: &[ServerMessage]) -> Option<(DecisionId, bool)> {
     })
 }
 
-fn offer_of(messages: &[ServerMessage]) -> Option<Option<Step>> {
-    messages.iter().rev().find_map(|m| match m {
-        ServerMessage::GoBackOffer { offer } => Some(offer.as_ref().map(|offer| offer.step)),
-        _ => None,
-    })
+/// Each offer the messages tell, in order.
+fn offers_of(messages: &[ServerMessage]) -> Vec<Option<Step>> {
+    messages
+        .iter()
+        .filter_map(|m| match m {
+            ServerMessage::GoBackOffer { offer } => Some(offer.as_ref().map(|offer| offer.step)),
+            _ => None,
+        })
+        .collect()
 }
 
 fn pass(id: DecisionId) -> ClientMessage {
@@ -64,15 +71,26 @@ async fn a_seat_goes_back_to_its_main_phase_for_every_seat() {
     let before = store.load(game_id(1)).await.unwrap();
 
     let passed = poke(&handle, &mut clients, 0, pass(id)).await;
-    assert_eq!(offer_of(&passed[0]), Some(Some(Step::Main1)), "{:?}", passed[0]);
-    assert_eq!(offer_of(&passed[1]), None, "the other seat is offered nothing");
+    assert_eq!(
+        offers_of(&passed[0]),
+        [Some(Step::Main1)],
+        "{:?}",
+        passed[0]
+    );
+    assert_eq!(
+        offers_of(&passed[1]),
+        [],
+        "the other seat is offered nothing"
+    );
 
     let back = poke(&handle, &mut clients, 0, ClientMessage::GoBack).await;
     for seen in &back {
         let log = seen
             .iter()
             .find_map(|m| match m {
-                ServerMessage::Snapshot { rewound: true, log, .. } => Some(log),
+                ServerMessage::Snapshot {
+                    rewound: true, log, ..
+                } => Some(log),
                 _ => None,
             })
             .expect("every seat gets a rewound snapshot");
@@ -82,16 +100,27 @@ async fn a_seat_goes_back_to_its_main_phase_for_every_seat() {
                 if *player == seat(0) && *active == seat(0)
         )));
     }
-    assert!(decision_of(&back[0]).is_some_and(|(_, priority)| priority), "seat 0 is asked again");
+    assert!(
+        decision_of(&back[0]).is_some_and(|(_, priority)| priority),
+        "seat 0 is asked again"
+    );
     let stored = store.load(game_id(1)).await.unwrap();
     assert_eq!(stored[..before.len()], before[..]);
     assert_eq!(stored.len(), before.len() + 1);
     assert!(matches!(stored.last(), Some(Event::WentBack { .. })));
-    assert_eq!(offer_of(&back[0]), Some(None), "nothing earlier is left to go back to");
+    assert_eq!(
+        offers_of(&back[0]),
+        [None],
+        "nothing earlier is left to go back to"
+    );
 }
 
 #[rstest]
-#[case::the_other_person_passed_by_hand(roomy(), HouseRules::default(), GoBackRefusal::OtherPlayerActed)]
+#[case::the_other_person_passed_by_hand(
+    roomy(),
+    HouseRules::default(),
+    GoBackRefusal::OtherPlayerActed
+)]
 #[case::without_take_backs(windowed(), HouseRules { take_backs: Some(false), ..HouseRules::default() }, GoBackRefusal::Off)]
 #[tokio::test]
 async fn a_go_back_the_table_does_not_allow_is_refused_to_the_asker(
@@ -127,6 +156,8 @@ async fn nothing_to_go_back_to_is_refused() {
     let refused = poke(&handle, &mut clients, 0, ClientMessage::GoBack).await;
     assert!(refused[0].iter().any(|m| matches!(
         m,
-        ServerMessage::GoBackRefused { reason: GoBackRefusal::Nothing }
+        ServerMessage::GoBackRefused {
+            reason: GoBackRefusal::Nothing
+        }
     )));
 }

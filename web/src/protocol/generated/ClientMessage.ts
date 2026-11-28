@@ -62,7 +62,7 @@ until: YieldUntil, } | { "type": "CancelYield" } | { "type": "TakeBack" } | { "t
 /**
  * True to agree.
  */
-approve: boolean, } | { "type": "SetStop", 
+approve: boolean, } | { "type": "GoBack" } | { "type": "SetStop", 
 /**
  * Whose turns the stop is for.
  */

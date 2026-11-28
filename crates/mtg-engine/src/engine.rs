@@ -16,6 +16,7 @@ use crate::events::Event;
 use crate::flow::{Progress, next};
 use crate::fold::apply_event;
 use crate::forecast::CombatForecast;
+use crate::go_back::{GoBackOffer, GoBackRefusal};
 use crate::mulligan;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::LossReason;
@@ -25,7 +26,6 @@ use crate::replace::{self, Processed};
 use crate::rules::{Rule, RuleEffect};
 use crate::setup::GameSetup;
 use crate::state::{GameResult, GameState, Stage};
-use crate::go_back::{GoBackOffer, GoBackRefusal};
 use crate::take_back::{self, LastAction, ManaRun, StepFacts, TakeBackOffer, TakeBackRefusal};
 use crate::triggers;
 
