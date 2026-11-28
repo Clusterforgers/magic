@@ -285,8 +285,8 @@ fn dwell_range() -> std::ops::RangeInclusive<u64> {
 /// waits for (`Deciding`, the same for a seat that can act and one the table passes for). Anything else
 /// (`Yielding`, `Stops`, `FullControl`, a snapshot, an error) can depend on somebody else's hand.
 // `TakeBackOffer` is about the seat's own last action; the other seats' answers end it the same way in both games.
-// `GoBackOffer` is about the seat's own passes; any pass of another person ends it, given by hand or by the table, so
-// it changes the same way in both games.
+// `GoBackOffer` is about the seat's own passes and the events since; other people's passes never change it, so
+// it is the same in both games.
 const MAY_BE_SENT: [&str; 9] = [
     "Welcome",
     "Lobby",

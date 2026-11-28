@@ -2,7 +2,7 @@
 import type { PlayerId } from "./PlayerId";
 
 /**
- * How a take-back request ended.
+ * How a request to the table ended: a take-back or a go-back.
  */
 export type TakeBackOutcome = { "type": "Approved" } | { "type": "Declined", 
 /**

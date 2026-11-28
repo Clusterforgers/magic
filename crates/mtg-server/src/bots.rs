@@ -536,6 +536,13 @@ async fn play(
                     return Ended::Over;
                 }
             }
+            // A bot's passes are never asked about; one asked all the same agrees.
+            ServerMessage::GoBackAsked { waiting, .. } if waiting.contains(&seat) => {
+                let vote = ClientMessage::GoBackVote { approve: true };
+                if handle.send(seat, vote).await.is_err() {
+                    return Ended::Over;
+                }
+            }
             // A change of teams takes every Ready back; the bot says it again so the lobby can still start.
             ServerMessage::Lobby { seats, .. }
                 if seats.iter().any(|lobby| lobby.seat == seat && !lobby.ready) =>

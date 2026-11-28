@@ -1,4 +1,4 @@
-//! Goal: a seat that passed its main phase by hand while the table passed for a bot is offered that step, and `GoBack` cuts the stored log back to its pass with `WentBack` last, sends every seat a `rewound` snapshot whose log names it, and asks the seat at its main phase again; any pass of another person since (sent by hand or given by the table, which would otherwise show where that seat was asked), a table without take-backs or nothing to go back to is refused to the asker alone and changes nothing.
+//! Goal: a seat that passed its main phase by hand while the table passed for a bot is offered that step, and `GoBack` cuts the stored log back to its pass with `WentBack` last, sends every seat a `rewound` snapshot whose log names it, and asks the seat at its main phase again; a pass of another person since (sent by hand or given by the table alike, so nothing shows where that seat was asked) asks that person first, and a table without take-backs or nothing to go back to is refused to the asker alone; neither changes the log.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -123,25 +123,15 @@ async fn a_seat_goes_back_to_its_main_phase_for_every_seat() {
 }
 
 #[rstest]
-#[case::the_other_person_passed_by_hand(
-    roomy(),
-    HouseRules::default(),
-    false,
-    GoBackRefusal::OtherPlayerActed
-)]
-#[case::the_table_passed_for_the_other_person(
-    windowed(),
-    HouseRules::default(),
-    false,
-    GoBackRefusal::OtherPlayerActed
-)]
-#[case::without_take_backs(windowed(), HouseRules { take_backs: Some(false), ..HouseRules::default() }, true, GoBackRefusal::Off)]
+#[case::the_other_person_passed_by_hand(roomy(), HouseRules::default(), false, None)]
+#[case::the_table_passed_for_the_other_person(windowed(), HouseRules::default(), false, None)]
+#[case::without_take_backs(windowed(), HouseRules { take_backs: Some(false), ..HouseRules::default() }, true, Some(GoBackRefusal::Off))]
 #[tokio::test]
-async fn a_go_back_the_table_does_not_allow_is_refused_to_the_asker(
+async fn a_go_back_over_a_persons_pass_asks_them_and_one_the_table_does_not_allow_is_refused(
     #[case] config: GameConfig,
     #[case] rules: HouseRules,
     #[case] bot: bool,
-    #[case] refusal: GoBackRefusal,
+    #[case] refusal: Option<GoBackRefusal>,
 ) {
     let (handle, store, mut clients) = table(config, rules, bot).await;
     let first = clients[0].drain();
@@ -153,15 +143,27 @@ async fn a_go_back_the_table_does_not_allow_is_refused_to_the_asker(
         poke(&handle, &mut clients, 1, pass(id)).await;
     }
     let before = store.load(game_id(1)).await.unwrap();
-    let refused = poke(&handle, &mut clients, 0, ClientMessage::GoBack).await;
-    assert!(
-        refused[0]
-            .iter()
-            .any(|m| matches!(m, ServerMessage::GoBackRefused { reason } if *reason == refusal)),
-        "{:?}",
-        refused[0]
-    );
-    assert!(refused[1].is_empty(), "the other seat hears nothing");
+    let seen = poke(&handle, &mut clients, 0, ClientMessage::GoBack).await;
+    if let Some(refusal) = refusal {
+        assert!(
+            seen[0].iter().any(
+                |m| matches!(m, ServerMessage::GoBackRefused { reason } if *reason == refusal)
+            ),
+            "{:?}",
+            seen[0]
+        );
+        assert!(seen[1].is_empty(), "the other seat hears nothing");
+    } else {
+        for messages in &seen {
+            assert!(
+                messages.iter().any(|m| matches!(
+                    m,
+                    ServerMessage::GoBackAsked { waiting, .. } if *waiting == [seat(1)]
+                )),
+                "{messages:?}"
+            );
+        }
+    }
     assert_eq!(store.load(game_id(1)).await.unwrap(), before);
 }
 

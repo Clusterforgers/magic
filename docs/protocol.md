@@ -114,7 +114,8 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 
 ### Going back
 
-- `GoBack` takes back the seat's passes to the earlier step `GoBackOffer {offer}` names (a `GoBackOffer`: player, step, active player, log position `at`; `None` while there is none); no one is asked. `GoBackRefused {reason}` is a `GoBackRefusal` ([engine.md](engine.md), Going back), sent to the asker alone.
+- `GoBack` takes back the seat's passes to the earlier step `GoBackOffer {offer}` names (a `GoBackOffer`: player, step, active player, log position `at`; `None` while there is none). `GoBackRefused {reason}` is a `GoBackRefusal` ([engine.md](engine.md), Going back), sent to the asker alone.
+- When other people passed since, they are asked first, as for a take-back: `GoBackAsked {offer, waiting, deadline_ms}` to every viewer, `GoBackVote {approve}` from each waiting seat, `CancelGoBack` from the asker, and `GoBackEnded {offer, outcome}` (a `TakeBackOutcome`) closes it. The offer never depends on who passed since.
 - It cuts the log like a take-back: every viewer gets a `Snapshot` with `rewound`, and `WentBack {player, step, active}` is the public log line ("Ana went back to her main phase").
 
 ### Payments

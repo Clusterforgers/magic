@@ -56,8 +56,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 24;
-const SERVER_VARIANTS: usize = 29;
+const CLIENT_VARIANTS: usize = 26;
+const SERVER_VARIANTS: usize = 31;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -119,6 +119,8 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::TakeBack => 21,
         ClientMessage::TakeBackVote { .. } => 22,
         ClientMessage::GoBack => 23,
+        ClientMessage::GoBackVote { .. } => 24,
+        ClientMessage::CancelGoBack => 25,
     }
 }
 
@@ -154,6 +156,8 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::DeckPictures { .. } => 26,
         ServerMessage::GoBackOffer { .. } => 27,
         ServerMessage::GoBackRefused { .. } => 28,
+        ServerMessage::GoBackAsked { .. } => 29,
+        ServerMessage::GoBackEnded { .. } => 30,
     }
 }
 
@@ -668,6 +672,9 @@ fn client_samples() -> Vec<ClientMessage> {
         ClientMessage::TakeBackVote { approve: true },
         ClientMessage::TakeBackVote { approve: false },
         ClientMessage::GoBack,
+        ClientMessage::GoBackVote { approve: true },
+        ClientMessage::GoBackVote { approve: false },
+        ClientMessage::CancelGoBack,
         ClientMessage::Join {
             protocol_version: PROTOCOL_VERSION,
             game: "table-1".into(),
@@ -1001,6 +1008,28 @@ fn server_samples() -> Vec<ServerMessage> {
     out.push(ServerMessage::GoBackRefused {
         reason: GoBackRefusal::Declared,
     });
+    let go_back = GoBackOffer {
+        player: PlayerId(1),
+        step: Step::End,
+        active: PlayerId(2),
+        at: 77,
+    };
+    out.push(ServerMessage::GoBackAsked {
+        offer: go_back.clone(),
+        waiting: vec![PlayerId(0), PlayerId(3)],
+        deadline_ms: 15_000,
+    });
+    for outcome in [
+        TakeBackOutcome::Approved,
+        TakeBackOutcome::Declined { by: PlayerId(3) },
+        TakeBackOutcome::TimedOut { by: PlayerId(0) },
+        TakeBackOutcome::Withdrawn,
+    ] {
+        out.push(ServerMessage::GoBackEnded {
+            offer: go_back.clone(),
+            outcome,
+        });
+    }
     out.push(ServerMessage::Deciding {
         seats: vec![
             DecidingView {

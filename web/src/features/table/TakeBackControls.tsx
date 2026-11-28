@@ -1,22 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { TakeBackNotice } from '@/play/store'
 import { useSeatNamer } from './names'
 import { outcomeWords, REFUSAL_WORDS, secondsLeft, TAKE_BACK_NOTICE_MS, takeBackAction } from './takeBackText'
+import { useNow } from './useNow'
 import type { SeatNamer } from './names'
-
-/** The time now, read again every second while `running`. */
-function useNow(running: boolean): number {
-  const [now, setNow] = useState(() => Date.now())
-  useEffect(() => {
-    if (!running) return
-    const timer = window.setInterval(() => setNow(Date.now()), 1000)
-    return () => window.clearInterval(timer)
-  }, [running])
-  return now
-}
 
 const noticeText = (notice: TakeBackNotice, seat: SeatNamer): string =>
   'refused' in notice ? REFUSAL_WORDS[notice.refused] : outcomeWords(notice.offer, notice.outcome, seat)
@@ -67,6 +57,7 @@ export function TakeBackControls() {
         {asked ? (
           <div
             role="group"
+            data-request
             aria-label="Take-back request"
             className="flex flex-wrap items-center justify-end gap-2"
           >

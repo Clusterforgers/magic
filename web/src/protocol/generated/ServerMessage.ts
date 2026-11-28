@@ -229,7 +229,27 @@ offer: GoBackOffer | null, } | { "type": "GoBackRefused",
 /**
  * Why.
  */
-reason: GoBackRefusal, } | { "type": "Yielding", 
+reason: GoBackRefusal, } | { "type": "GoBackAsked", 
+/**
+ * The step and who asks.
+ */
+offer: GoBackOffer, 
+/**
+ * The seats whose answer is still awaited.
+ */
+waiting: Array<PlayerId>, 
+/**
+ * Milliseconds left before the request counts as declined.
+ */
+deadline_ms: number, } | { "type": "GoBackEnded", 
+/**
+ * What was asked.
+ */
+offer: GoBackOffer, 
+/**
+ * How it ended.
+ */
+outcome: TakeBackOutcome, } | { "type": "Yielding", 
 /**
  * The yield now in force, or `None` when the seat is not yielding.
  */
