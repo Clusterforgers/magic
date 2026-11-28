@@ -1,4 +1,4 @@
-// Goal: on a desktop and on a phone a reworked boss's phase pill sits in the top bar ("Phase 1 in 3 rounds", short "P1 in 3"; then the phase's name with Phase 2's countdown) at one width whatever it says, never in the abilities row; the row keeps the innate and modifier as chips and every part behind "All"; the pill, each chip, each row of "All", the boss's emblems and an ally's relic (Grid) open their custom card in the card preview (its frame, what it is to the fight, a phase's steps that move between the phases); the boss's Satchel list marks reusable cards "returns · +{N}" and the once card "once"; in Grid the pod's track names the countdown.
+// Goal: on a desktop and on a phone a reworked boss's phase pill sits in the top bar ("Phase 1 in 3 rounds", short "P1 in 3"; then the phase's name with Phase 2's countdown) at one width whatever it says, never in the abilities row; the row keeps the innate, personality and modifier as chips and every part behind "All"; the pill, each chip, each row of "All", the boss's emblems and an ally's relic (Grid) open their custom card in the card preview (its frame, what it is to the fight, a phase's steps that move between the phases); the boss's Satchel list marks reusable cards "returns · +{N}" and the once card "once"; in Grid the pod's track names the countdown.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -30,7 +30,7 @@ describe.each([
   ['desktop', DESKTOP],
   ['phone', PHONE],
 ] as const)('a reworked boss on a %s', (_, viewport) => {
-  it('counts down to Phase 1 in the top bar and keeps the innate and modifier in the row', () => {
+  it('counts down to Phase 1 in the top bar and keeps the innate, personality and modifier in the row', () => {
     fight(1, viewport)
     expect(pill()).toHaveAccessibleName('Phase 1 in 3 rounds.')
     expect(pill()).toHaveTextContent('Phase 1 in 3 rounds')
@@ -41,7 +41,7 @@ describe.each([
     const kinds = within(row)
       .getAllByRole('button', { hidden: true })
       .map((chip) => chip.getAttribute('data-kind'))
-    expect(kinds.slice(0, 2)).toEqual(['innate', 'modifier'])
+    expect(kinds.slice(0, 3)).toEqual(['innate', 'personality', 'modifier'])
     expect(kinds).not.toContain('next-phase')
     expect(kinds).not.toContain('phase')
     expect(within(row).getByText('Brood III')).toBeInTheDocument()

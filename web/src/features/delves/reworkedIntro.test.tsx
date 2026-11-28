@@ -1,4 +1,4 @@
-// Goal: the intro of a reworked boss's fight shows its two effects (the innate with its level, the modifier), its two phases with "Phase 1 at round 8", its Satchel with each card's mark and its relics with copies counted, at a desktop and a phone width with nothing wider than one column on a phone.
+// Goal: the intro of a reworked boss's fight shows its two effects (the innate with its level, the modifier), its two phases with "Phase 1 at round 8", whom it hunts (its personality within the spotlight's cap), its Satchel with each card's mark and its relics with copies counted, at a desktop and a phone width with nothing wider than one column on a phone.
 import { render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -35,8 +35,12 @@ describe.each(WIDTHS)('the intro of a reworked boss at %i px', (width) => {
       'Second Harvestonce',
     ])
     expect(within(section(/^Relics$/)).getByText('Whetstone ×2')).toBeInTheDocument()
+    const hunts = section(/^Whom Skrix, the Rat Queen hunts$/)
+    expect(within(hunts).getByText('Spiteful')).toBeInTheDocument()
+    expect(within(hunts).getByText(/Personality/)).toBeInTheDocument()
+    expect(within(hunts).getByText(/spotlight's cap/)).toBeInTheDocument()
     // Each list is one column until the small breakpoint, so a phone never scrolls sideways.
-    for (const list of [effects, phases, satchel].map((part) => must(part.querySelector('ul'))))
+    for (const list of [effects, hunts, phases, satchel].map((part) => must(part.querySelector('ul'))))
       expect([...list.classList].filter((name) => /^grid-cols-/.test(name))).toEqual([])
   })
 })

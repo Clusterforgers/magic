@@ -43,6 +43,7 @@ export const KIND_WORDS: Record<BossAbilityKind, string> = {
   'next-phase': 'Next phase',
   modifier: 'This fight',
   relic: 'Boss relic',
+  personality: 'Personality',
 }
 
 /** The abilities of the boss at `seat`, read from the table. */

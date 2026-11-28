@@ -5,8 +5,8 @@
 import type { ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { reworkedAbilities } from './reworkedBoss'
 
-/** What an ability is to the fight: its innate, this fight's modifier, a relic it brings, the phase in force, a phase to come. */
-export type BossAbilityKind = 'innate' | 'modifier' | 'relic' | 'phase' | 'next-phase'
+/** What an ability is to the fight: its innate, this fight's modifier, a relic it brings, the phase in force, a phase to come, its personality. */
+export type BossAbilityKind = 'innate' | 'modifier' | 'relic' | 'phase' | 'next-phase' | 'personality'
 
 /** One boss ability: its name, its whole rules text and a one-line summary. */
 export interface BossAbility {
@@ -42,8 +42,9 @@ const BAR_RANK: Record<BossAbilityKind, number> = {
   phase: 0,
   'next-phase': 1,
   innate: 2,
-  modifier: 3,
-  relic: 4,
+  personality: 3,
+  modifier: 4,
+  relic: 5,
 }
 
 /** `abilities` in the order of the table's row (`BAR_RANK`), each kind keeping its own order. */

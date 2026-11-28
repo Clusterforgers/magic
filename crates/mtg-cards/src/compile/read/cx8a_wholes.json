@@ -1,0 +1,9 @@
+[
+[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Reveal":{"what":{"Each":[{"In":"Hand"},{"OwnedBy":"Opponents"}]}}},{"RepeatEach":{"over":"Opponents","as":"player","effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":{"Bound":"player"}},{"Type":"Creature"}]},"as":"picked"}},{"Exile":{"what":{"Bound":"picked"},"duration":"WhileSourceOnBattlefield"}}]}}]}},"When ~ enters, each opponent reveals their hand. For each opponent, exile a creature card they revealed this way until ~ leaves the battlefield."]
+,
+[{"Activated":{"cost":"{X}","effects":[{"Choose":{"from":{"Each":[{"In":"Exile"},{"ExiledWith":"This"},{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Eq","to":"X"}}]},"as":"card"}},{"BecomeCopy":{"what":"This","of":{"Bound":"card"},"duration":"Forever"}}]}},"{X}: Choose a creature card exiled with ~ with mana value X. ~ becomes a copy of that card."]
+,
+[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsEnters":[{"CreateEmblem":{"abilities":[{"Rule":{"rule":{"MayCast":{"what":[{"ExiledWith":"This"}],"from":"Exile","play":true,"spend_as":"AnyColor"}}}}]}}]}}},"As ~ enters, you get an emblem with \"You may play cards exiled with ~, and you may spend mana as though it were mana of any color to cast those spells.\""]
+,
+[{"Loyalty":{"cost":{"Plus":2},"effects":[{"ExileTop":{"who":"EachPlayer","as":"exiled"}}]}},"+2: Exile the top card of each player's library."]
+]

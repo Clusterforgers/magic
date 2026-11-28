@@ -1,4 +1,4 @@
-// Goal: a reworked boss's words are right at every point of the fight: the countdown to Phase 1 ("in N rounds", "at the end of this round"), the phase in force with the countdown to the next, no countdown once both began; a reusable Satchel card's "returns · +{N}" against a once card's "once"; the abilities list innate (with its level), modifier, relics (copies counted) and phases with their rounds; an old boss is not reworked.
+// Goal: a reworked boss's words are right at every point of the fight: the countdown to Phase 1 ("in N rounds", "at the end of this round"), the phase in force with the countdown to the next, no countdown once both began; a reusable Satchel card's "returns · +{N}" against a once card's "once"; the abilities list innate (with its level), modifier, relics (copies counted), phases with their rounds and last its personality; an old boss is not reworked.
 import { describe, expect, it } from 'vitest'
 import type { BossView, RoundPhaseView } from '@/protocol/generated'
 import { devReworkedView } from '../dev/reworkedBoss'
@@ -66,6 +66,7 @@ describe('reworkedAbilities', () => {
         ? ['phase', 'The Nest Stirs', 'Phase 1']
         : ['next-phase', 'The Nest Stirs', 'Phase 1 at round 8'],
       ['next-phase', 'Plague Tide', 'Phase 2 at round 14'],
+      ['personality', 'Spiteful', undefined],
     ])
     for (const ability of abilities) expect(ability.text).not.toBe('')
   })

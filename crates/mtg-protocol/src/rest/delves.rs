@@ -138,6 +138,10 @@ pub struct DelveFightView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<crate::view::BossSatchelView>>", optional)]
     pub satchel: Vec<crate::view::BossSatchelView>,
+    /// The boss's personality, how it weighs the heroes' threat when it eyes one: its name and whom it hunts.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub personality: Option<crate::view::BossPartView>,
 }
 
 /// A hero's deck that no longer plays, so the next fight waits until they choose another.

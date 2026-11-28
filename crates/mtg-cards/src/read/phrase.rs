@@ -68,6 +68,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
             "the player who controlled it when it became blocked".to_owned()
         }
         Ref::R111Object(id) => format!("the object {}", id.0),
+        Ref::R6072Source { .. } => "the permanent that made this emblem".to_owned(),
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::AttackedThisTurn => "each opponent you attacked this turn".to_owned(),

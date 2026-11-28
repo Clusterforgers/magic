@@ -111,6 +111,8 @@ pub struct PlayerSetup {
     pub opening_lands: Option<crate::opening_lands::OpeningLands>,
     /// A reworked boss seat's public sheet, which names its innate, modifier, relics and phases ([`crate::boss_sheet`]).
     pub boss_sheet: Option<Arc<crate::boss_sheet::BossSheet>>,
+    /// How a Delves boss weighs the heroes' threat when it eyes one ([`crate::spotlight::threat`]).
+    pub personality: mtg_core::personality::Personality,
     /// Cards the seat starts with in its command zone that nothing lets it cast from there; only an effect casts them (a
     /// Delves boss's commander card, cast by its last phase).
     pub held: Vec<Arc<CardDefinition>>,
@@ -510,6 +512,7 @@ fn starting_player(
     player.leader = setup.leader;
     player.held = setup.held.iter().map(|card| card.name.clone()).collect();
     player.sheet = crate::boss_sheet::SheetSlot(setup.boss_sheet.clone());
+    player.personality = crate::spotlight::PersonalitySlot(setup.personality);
     for (kind, count) in &setup.counters {
         if *count > 0 {
             *player.counters.entry(kind.clone()).or_default() += count;

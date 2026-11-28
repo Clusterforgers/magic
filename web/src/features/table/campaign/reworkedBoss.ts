@@ -1,6 +1,6 @@
 /**
  * The words of a reworked boss: its innate with its level, the fight's modifier, its relics, its two phases by round
- * with the countdown to the next, and the marks of its Satchel. Pure over the public `BossView` (in the game) or
+ * with the countdown to the next, the marks of its Satchel and its personality. Pure over the public `BossView` (in the game) or
  * `DelveFightView` (on the intro), whose cards carry their own rules text.
  */
 import type {
@@ -20,6 +20,7 @@ export interface ReworkedParts {
   modifier?: BossPartView
   round_phases?: RoundPhaseView[]
   relics?: BossPartView[]
+  personality?: BossPartView
 }
 
 /** Whether a boss view is a reworked boss's: it has an innate or phases by round. */
@@ -122,7 +123,8 @@ function part(
 
 /**
  * The abilities of a reworked boss in reading order: its innate with its level, the fight's modifier, its relics (a
- * copy counted, "×2"), then its phases: the begun ones in force, the others to come with the round they begin at.
+ * copy counted, "×2"), then its phases: the begun ones in force, the others to come with the round they begin at, and
+ * last its personality, whom it hunts.
  */
 export function reworkedAbilities(parts: ReworkedParts): BossAbility[] {
   const out: BossAbility[] = []
@@ -148,5 +150,8 @@ export function reworkedAbilities(parts: ReworkedParts): BossAbility[] {
         : part(`phase-${phase.name}`, 'next-phase', phase.name, phase.text, phaseAt(at, phase)),
     )
   })
+  const personality = parts.personality
+  if (personality !== undefined)
+    out.push(part(`personality-${personality.name}`, 'personality', personality.name, personality.text))
   return out
 }

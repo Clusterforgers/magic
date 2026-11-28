@@ -9,23 +9,77 @@ use mtg_core::ids::ObjectId;
 
 use super::wrong_effect;
 use crate::events::Event;
+use crate::object::ObjectRef;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::w6b_emblems::{EmblemCreated, w6b_definition};
+use crate::zones::Zone;
 
 /// The abilities with each value the resolution chose (`Pred::ChosenAs`) written in as what was chosen, so the emblem
 /// keeps it after the resolution ("Choose a creature type. You get an emblem with "Creatures you control of the chosen
 /// type get +3/+3 ...""); the abilities as they are when nothing was written.
 fn r4702_fixed(cx: &Cx<'_>, abilities: &[Ability]) -> Vec<Ability> {
+    let source = r6072_permanent(cx);
     abilities
         .iter()
         .map(|ability| {
             serde_json::to_value(ability)
                 .ok()
-                .and_then(|mut value| super::rule::fix(&cx.scope, &mut value).then_some(value))
+                .and_then(|mut value| {
+                    let fixed = r6072_fix(source, &mut value);
+                    (super::rule::fix(&cx.scope, &mut value) || fixed).then_some(value)
+                })
                 .and_then(|value| serde_json::from_value(value).ok())
                 .unwrap_or_else(|| ability.clone())
         })
         .collect()
+}
+
+/// The permanent that makes the emblem as it is on the battlefield: the source itself, or, as it enters (`AsEnters`:
+/// "As Tibalt enters, you get an emblem"), the permanent it becomes (CR 400.7).
+fn r6072_permanent(cx: &Cx<'_>) -> ObjectRef {
+    let source = cx.scope.source;
+    let entering = cx.state().object(source.id).is_some_and(|object| {
+        object.counter() == source.counter && object.zone() != Zone::Battlefield
+    });
+    if entering {
+        ObjectRef {
+            id: source.id,
+            counter: source.counter + 1,
+        }
+    } else {
+        source
+    }
+}
+
+/// Writes the permanent in for each card it exiled the emblem names (`ExiledWith(This)`: "You may play cards exiled with
+/// Tibalt, Cosmic Impostor"), so the emblem goes on naming that permanent's cards after it left (CR 607.2a).
+fn r6072_fix(source: ObjectRef, value: &mut serde_json::Value) -> bool {
+    match value {
+        serde_json::Value::Object(fields) => {
+            if fields.len() == 1
+                && fields.get("ExiledWith").and_then(serde_json::Value::as_str) == Some("This")
+            {
+                fields.insert(
+                    "ExiledWith".to_owned(),
+                    serde_json::json!({ "R6072Source": { "id": source.id, "counter": source.counter } }),
+                );
+                return true;
+            }
+            let mut any = false;
+            for inner in fields.values_mut() {
+                any |= r6072_fix(source, inner);
+            }
+            any
+        }
+        serde_json::Value::Array(items) => {
+            let mut any = false;
+            for inner in items {
+                any |= r6072_fix(source, inner);
+            }
+            any
+        }
+        _ => false,
+    }
 }
 
 /// One `EmblemCreated` for each player the effect names who is still in the game, in turn order of the names.
@@ -61,7 +115,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 mod tests {
     //! Goal: an emblem is one new object in the command zone of each player named who is still in the game, with the
     //! abilities working from there; the fold refuses an object that exists and an owner who left; another effect is
-    //! refused.
+    //! refused; each `ExiledWith(This)` of the abilities, and only it, is written as the permanent that made the emblem.
     use mtg_cards::refs::ZoneKind;
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
@@ -141,5 +195,30 @@ mod tests {
             resolving: &resolving,
         };
         assert!(run(&cx, &serde_json::from_str(r#"{"Draw":{}}"#).unwrap()).is_err());
+    }
+
+    #[rstest]
+    #[case::exiled_with_this(r#"{"ExiledWith":"This"}"#, true)]
+    #[case::nested_in_a_permission(
+        r#"{"MayCast":{"what":[{"In":"Exile"},{"ExiledWith":"This"}],"from":"Exile"}}"#,
+        true
+    )]
+    #[case::exiled_with_another(r#"{"ExiledWith":{"Target":0}}"#, false)]
+    #[case::this_alone(r#"{"Is":"This"}"#, false)]
+    fn r6072_the_maker_is_written_in(#[case] json: &str, #[case] fixed: bool) {
+        let maker = ObjectRef {
+            id: ObjectId(7),
+            counter: 3,
+        };
+        let mut value: serde_json::Value = serde_json::from_str(json).unwrap();
+        assert_eq!(r6072_fix(maker, &mut value), fixed);
+        let written = value.to_string();
+        let named = ["R6072Source", r#""counter":3"#, r#""id":7"#];
+        assert_eq!(
+            named.iter().all(|part| written.contains(part)),
+            fixed,
+            "{written}"
+        );
+        assert!(!fixed || !written.contains(r#""This""#), "{written}");
     }
 }

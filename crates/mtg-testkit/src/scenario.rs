@@ -406,6 +406,19 @@ impl Scenario {
         self
     }
 
+    /// Gives a boss seat a personality, how it weighs the heroes' threat (`mtg_engine::spotlight::threat`).
+    #[must_use]
+    pub fn personality(
+        mut self,
+        player: usize,
+        personality: mtg_core::personality::Personality,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.personality = personality;
+        }
+        self
+    }
+
     /// Gives a player the Spirit emblem they get on becoming a Spirit (`mtg_engine::spirits`).
     #[must_use]
     pub fn spirit(mut self, player: usize, card: Arc<CardDefinition>) -> Self {

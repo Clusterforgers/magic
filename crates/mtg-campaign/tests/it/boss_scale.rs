@@ -134,7 +134,7 @@ fn the_fight_plan_carries_the_reinforcements_by_party_size(
 }
 
 #[test]
-fn a_solo_hero_meets_the_same_boss_apart_from_the_early_relics() {
+fn a_solo_hero_meets_the_same_boss_apart_from_the_early_relics_and_the_personality() {
     let content = content().unwrap();
     let old = run(1, FOUNDRY_FROM)
         .fight_plan(content)
@@ -144,6 +144,7 @@ fn a_solo_hero_meets_the_same_boss_apart_from_the_early_relics() {
     let mut now = run(1, CONTENT).fight_plan(content).unwrap().unwrap().boss;
     assert_eq!(now.reinforcements, Vec::<String>::new());
     now.relics.clone_from(&old.relics);
+    now.personality = old.personality;
     assert_eq!(now, old);
 }
 
@@ -342,8 +343,10 @@ fn a_deep_warrens_boss_brings_at_most_three_relics_from_the_cap(
     if now.relics.len() == all {
         assert_eq!(now.relics, old.relics);
     }
-    // Apart from the relics, the boss is the one of generation 14, its reinforcements faded by the depth's count.
+    // Apart from the relics and the personality, the boss is the one of generation 14, its reinforcements faded by the
+    // depth's count.
     now.relics.clone_from(&old.relics);
+    now.personality = old.personality;
     assert_eq!(now, old);
 }
 
@@ -464,7 +467,9 @@ fn a_party_of_four_to_six_meets_warbands_in_place_of_reinforcements(
         now.sheet(content).unwrap().relics.len(),
         now.relics.len() + now.reinforcements.len()
     );
-    // Up to three heroes the boss is the one of the generation before; beyond, it differs only in its reinforcements.
+    // Up to three heroes the boss is the one of the generation before but for its personality; beyond, it differs also in
+    // its reinforcements.
+    now.personality = old.personality;
     if beyond == 0 {
         assert_eq!(now, old);
     }

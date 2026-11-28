@@ -4,7 +4,7 @@
  * of it and counted on the "All" button at its end, which lists every ability in full. The phases stand in the top
  * bar's pill (`BossPhasePill`). The intro screen of a Delves fight lists the same abilities (`BossAbilityList`).
  */
-import { CrownIcon, FlameIcon, GemIcon, HourglassIcon, ListIcon, SparklesIcon } from 'lucide-react'
+import { CrownIcon, EyeIcon, FlameIcon, GemIcon, HourglassIcon, ListIcon, SparklesIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
@@ -24,6 +24,7 @@ const ICONS: Record<BossAbilityKind, LucideIcon> = {
   'next-phase': HourglassIcon,
   modifier: SparklesIcon,
   relic: GemIcon,
+  personality: EyeIcon,
 }
 
 /** Each kind's chip: the phase in force filled, what is always on plain, what is to come dashed. */
@@ -33,6 +34,7 @@ const CHIP: Record<BossAbilityKind, { chip: string; icon: string }> = {
   'next-phase': { chip: 'border-dashed border-boss/60 bg-card text-muted-foreground', icon: 'text-boss' },
   modifier: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
   relic: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
+  personality: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
 }
 
 /** One ability's kind, when it comes, name and whole text: a row of the full list. */
@@ -194,13 +196,13 @@ function AllAbilities({
 }
 
 /**
- * The boss's abilities as one row of chips: its innate, modifier and relics; what does not fit is counted on the button
+ * The boss's abilities as one row of chips: its innate, personality, modifier and relics; what does not fit is counted on the button
  * at the end, which lists them all with the phases.
  */
 export function BossAbilitiesBar({ seat }: { seat: PlayerId }) {
   const all = barOrder(useBossAbilities(seat))
   const name = useSeatNamer()(seat)
-  // The phases stand in the top bar's pill; the row keeps the innate, modifier and relics.
+  // The phases stand in the top bar's pill; the row keeps the innate, personality, modifier and relics.
   const abilities = all.filter((ability) => ability.kind !== 'next-phase' && ability.kind !== 'phase')
   const list = useRef<HTMLUListElement>(null)
   const hidden = useWrapped(list, abilities.length)

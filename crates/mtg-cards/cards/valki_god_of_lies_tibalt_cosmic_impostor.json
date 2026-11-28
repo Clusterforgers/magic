@@ -1,0 +1,129 @@
+{
+  "oracle_id": "907ae517-22d5-4ac7-bc3a-3f4d5eaeeb57",
+  "name": "Valki, God of Lies // Tibalt, Cosmic Impostor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valki, God of Lies",
+      "oracle_fingerprint": "b8983201d82bc4363c47cab454ef7b53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Opponents" }] } } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Exile": {
+                        "what": { "Bound": "picked" },
+                        "duration": "WhileSourceOnBattlefield"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "ExiledWith": "This" },
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "BecomeCopy": { "what": "This", "of": { "Bound": "card" }, "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tibalt, Cosmic Impostor",
+      "oracle_fingerprint": "01841d7230a1c197bbcc61e4660b0f8b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "CreateEmblem": {
+                    "abilities": [
+                      {
+                        "Rule": {
+                          "rule": {
+                            "MayCast": {
+                              "what": [{ "ExiledWith": "This" }],
+                              "from": "Exile",
+                              "play": true,
+                              "spend_as": "AnyColor"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "ExileTop": { "who": "EachPlayer", "as": "exiled" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } },
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

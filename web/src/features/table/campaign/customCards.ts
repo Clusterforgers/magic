@@ -21,6 +21,7 @@ const KIND_CARD: Record<BossAbilityKind, CardKind> = {
   relic: 'Relic',
   phase: 'Phase',
   'next-phase': 'Phase',
+  personality: 'Innate',
 }
 
 /** The content's custom card named `name`; undefined when the content is not known or holds none. */
@@ -35,7 +36,7 @@ function madeCard(ability: BossAbility): CustomCardView {
     id: ability.key,
     name: ability.card,
     kind,
-    type_line: kind,
+    type_line: ability.kind === 'personality' ? 'Boss personality' : kind,
     text: ability.text,
     art: '',
     role: '',

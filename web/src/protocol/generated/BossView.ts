@@ -40,4 +40,8 @@ relics?: Array<BossPartView>,
 /**
  * The cards in its Satchel now, each with its reusable mark and tax.
  */
-satchel?: Array<BossSatchelView>, };
+satchel?: Array<BossSatchelView>, 
+/**
+ * Its personality, how it weighs the heroes' threat when it eyes one: its name and whom it hunts.
+ */
+personality?: BossPartView, };

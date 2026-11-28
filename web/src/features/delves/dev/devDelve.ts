@@ -66,6 +66,10 @@ export const DEV_REWORKED_FIGHT: DelveFightView = {
     { name: 'Village Rites', reusable: true, tax: 0 },
     { name: 'Second Harvest', reusable: false, tax: 0 },
   ],
+  personality: {
+    name: 'Spiteful',
+    text: 'Hunts the healer: eyes the hero with the most on the table, each life they gained in the last rounds counting 2 more.',
+  },
 }
 
 /** The content: the test theme with a third boss and more relics. */
