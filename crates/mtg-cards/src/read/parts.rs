@@ -626,9 +626,20 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
     }
 }
 
+/// An assembly replaced (Steamflogger Boss); `None` for any other event.
+fn p170b_replace_when(ctx: &Ctx, when: &ReplaceWhen) -> Option<String> {
+    let ReplaceWhen::P170bAssembles { what } = when else {
+        return None;
+    };
+    Some(format!(
+        "{} would assemble a Contraption",
+        phrase::selector(ctx, what)
+    ))
+}
+
 /// What a replacement effect waits for.
 pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
-    if let Some(text) = r115_replace_when(ctx, when) {
+    if let Some(text) = r115_replace_when(ctx, when).or_else(|| p170b_replace_when(ctx, when)) {
         return text;
     }
     match when {

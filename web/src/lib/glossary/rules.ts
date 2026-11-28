@@ -242,6 +242,10 @@ const PERMANENTS: readonly Entry[] = [
     'A card of a separate deck of Attractions; open one to put it on the battlefield, and roll to visit them at your turn.',
   ],
   [
+    'Contraption|Contraptions',
+    'A card of a separate deck of Contraptions; assemble one to put it on one of your three sprockets, and crank the ones on your marked sprocket at your turn.',
+  ],
+  [
     'Face down|Face-down permanent',
     'A face-down spell or permanent is a nameless, colorless 2/2 creature with no text; its controller may look at it.',
   ],
@@ -498,6 +502,7 @@ export const MARKED_RULES: ReadonlySet<string> = new Set([
   'Without paying its mana cost',
   'Face down',
   'Attraction',
+  'Contraption',
   'Legend rule',
   'Color identity',
   'Monarch',

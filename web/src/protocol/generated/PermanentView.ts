@@ -50,4 +50,9 @@ doors?: [boolean, boolean],
 /**
  * The sector of space sculptor the permanent is in; left out while it is in none. A public fact of the permanent.
  */
-sector?: Sector, };
+sector?: Sector, 
+/**
+ * The sprocket, 1 to 3, an assembled Contraption is on; left out for any other permanent. A public fact of the
+ * permanent.
+ */
+sprocket?: number, };

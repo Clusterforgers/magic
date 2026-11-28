@@ -455,6 +455,8 @@ pub struct GameState {
     pub(crate) w11d: crate::w11d_dungeon::W11dDungeons,
     /// The Attraction decks and the lights of the Attraction cards (CR 717).
     pub(crate) un33: crate::un33_attractions::Attractions,
+    /// The Contraption decks, the sprocket markers and the crank that asks (Unstable).
+    pub(crate) p170b: crate::p170b_contraptions::Contraptions,
     /// The sticker sheets and the stickers on permanents (CR 123).
     pub(crate) un34: crate::un34_stickers::Stickers,
     /// Who has the initiative (CR 725) and the object that stands for it.
@@ -1294,6 +1296,10 @@ impl Hash for GameState {
         // Likewise a game without Attractions.
         if !self.un33.is_empty() {
             self.un33.hash(state);
+        }
+        // Likewise a game without Contraptions.
+        if !self.p170b.is_empty() {
+            self.p170b.hash(state);
         }
         // And a game without stickers.
         if !self.un34.is_empty() {

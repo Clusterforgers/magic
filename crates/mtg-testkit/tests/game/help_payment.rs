@@ -178,20 +178,8 @@ fn cost_modifiers_apply_before_the_helpers(
     #[case] graveyard: usize,
     #[case] offered: bool,
 ) {
-    let scenario = table(spell, lands, creatures, graveyard).battlefield(
-        holder,
-        [ready(modifier(modifier_name).unwrap())]
-            .into_iter()
-            .chain(if holder == 0 {
-                lands
-                    .iter()
-                    .map(|name| land(name))
-                    .chain(creatures.iter().map(|spec| bear(spec)))
-                    .collect::<Vec<_>>()
-            } else {
-                Vec::new()
-            }),
-    );
+    let scenario = table(spell, lands, creatures, graveyard)
+        .battlefield(holder, [ready(modifier(modifier_name).unwrap())]);
     assert_eq!(castable(&driver(scenario)), offered);
 }
 
@@ -602,7 +590,7 @@ fn automatic_payment_exiles_only_the_cards_it_needs(
 #[test]
 fn a_reduction_takes_cards_off_what_automatic_payment_exiles() {
     let scenario = table("Gurmag Angler", &["Swamp"], &[], 8)
-        .battlefield(0, [land("Swamp"), ready(modifier("My Helm").unwrap())]);
+        .battlefield(0, [ready(modifier("My Helm").unwrap())]);
     let mut driver = driver(scenario);
     driver.cast("Gurmag Angler").unwrap();
     // {6}{B} costs {5}{B} under the Helm: the Swamp pays the {B} and five cards pay the rest.

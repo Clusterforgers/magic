@@ -394,14 +394,7 @@ fn r372_taigam_copies_the_second_spell_and_suspends_it(
 ) -> Result<(), ScriptError> {
     let scenario = r372_table(seats, &["Taigam, Master Opportunist"], &[])
         .hand(0, [burn("Shock", 2), burn("Spark", 1)])
-        .battlefield(
-            0,
-            [
-                ready(card("Taigam, Master Opportunist").unwrap()),
-                ready(mountain()),
-                ready(mountain()),
-            ],
-        );
+        .battlefield(0, [ready(mountain())]);
     let mut driver = Driver::from_scenario(scenario.clone())?;
     let at = driver.target_player(1);
     driver.cast_at("Shock", &[at])?;

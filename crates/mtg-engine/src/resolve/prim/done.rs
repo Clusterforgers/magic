@@ -109,6 +109,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Seek { .. }
         | Effect::Venture { .. }
         | Effect::OpenAttraction { .. }
+        | Effect::P170bAssemble { .. }
         | Effect::RollToVisit { .. }
         | Effect::PutSticker { .. }
         | Effect::Parade { .. }

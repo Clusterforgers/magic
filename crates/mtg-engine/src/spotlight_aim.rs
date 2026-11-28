@@ -8,8 +8,9 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::{characteristics, controller_of, sidelined};
+use crate::choose::{Target, TargetOptions};
 use crate::combat::{AttackTarget, defending_player};
-use crate::decision::AttackOptions;
+use crate::decision::{AttackOptions, Decision, DecisionKind};
 use crate::events::Event;
 use crate::keywords::keywords_of;
 use crate::spotlight;
@@ -311,6 +312,76 @@ pub fn target_aim(state: &GameState, seat: PlayerId, offered: &[PlayerId]) -> Op
     pick(state, seat, &reach, |_| false, |_| false)
 }
 
+/// Who holds `target`: the player, or the controller of the object.
+fn holder(state: &GameState, target: Target) -> Option<PlayerId> {
+    match target {
+        Target::Player(player) => Some(player),
+        Target::Object(object) => controller_of(state, object.id),
+    }
+}
+
+/// The heroes holding the targets `options` offers, in the order they first appear.
+fn offered(state: &GameState, options: &TargetOptions) -> Vec<PlayerId> {
+    let mut heroes: Vec<PlayerId> = Vec::new();
+    for target in options.c10_dice_choosable() {
+        if let Some(hero) = holder(state, *target)
+            && spotlight::is_hero(state, hero)
+            && !heroes.contains(&hero)
+        {
+            heroes.push(hero);
+        }
+    }
+    heroes
+}
+
+/// The hero the targeted spell or ability of `seat` goes at among the heroes holding the targets `options` offers
+/// ([`target_aim`]).
+pub fn target_aim_of(state: &GameState, seat: PlayerId, options: &TargetOptions) -> Option<Aim> {
+    target_aim(state, seat, &offered(state, options))
+}
+
+/// The log's note that the spell or ability of `seat` whose targets are `targets` goes at a hero other than the one it
+/// eyes, with the reason; `None` when it goes at the eyed hero or the engine finds no reason.
+pub fn target_shifted(
+    state: &GameState,
+    seat: PlayerId,
+    options: &TargetOptions,
+    targets: &[Target],
+) -> Option<Event> {
+    let heroes = offered(state, options);
+    let aim = target_aim(state, seat, &heroes)?;
+    let instead = targets
+        .iter()
+        .filter_map(|target| holder(state, *target))
+        .find(|hero| *hero != aim.eyed && spotlight::is_hero(state, *hero))?;
+    let why = if heroes.contains(&aim.eyed) {
+        aim.why.filter(|_| aim.hero == instead)
+    } else {
+        aim.why
+    }?;
+    Some(Event::FocusShifted {
+        player: seat,
+        eyed: aim.eyed,
+        instead,
+        why,
+        source: Some(options.source),
+    })
+}
+
+/// The note for the targets an answer of `decision` chooses, when it asks for them.
+pub(crate) fn target_note(
+    state: &GameState,
+    decision: &Decision,
+    targets: &[Target],
+) -> Option<Event> {
+    match &decision.kind {
+        DecisionKind::ChooseTargets(options) => {
+            target_shifted(state, decision.player, options, targets)
+        }
+        _ => None,
+    }
+}
+
 /// The log's note that the attack `seat` declares goes at a hero other than the one it eyes, with the reason; `None`
 /// when it goes at the eyed hero or the engine finds no reason.
 pub fn shifted(
@@ -343,6 +414,7 @@ pub fn shifted(
         eyed: aim.eyed,
         instead,
         why,
+        source: None,
     })
 }
 

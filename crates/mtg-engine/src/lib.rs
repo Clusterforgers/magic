@@ -168,6 +168,7 @@ pub mod monarch;
 pub mod object;
 pub mod opening_lands;
 pub mod p170a_sectors;
+pub mod p170b_contraptions;
 mod party;
 mod party_attacks;
 pub mod phases;

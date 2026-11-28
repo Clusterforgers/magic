@@ -114,6 +114,7 @@ describe('statusChips', () => {
     ['a prepared permanent', permanent({ prepared: true }), ['Prepared:plain']],
     ['a suspected permanent', permanent({ suspected: true }), ['Suspected:plain']],
     ['a creature in a sector', permanent({ sector: 'Beta' }), ['Beta sector:plain']],
+    ['a Contraption on a sprocket', permanent({ sprocket: 2 }), ['Sprocket 2:plain']],
     ['a solved Case', permanent({ solved: true }), ['Solved:plain']],
     ['a phased-out permanent', permanent({ phased_out: true }), ['Phased out:plain']],
     ['a level 2 Class', permanent({ level: 2 }), ['Level 2:plain']],

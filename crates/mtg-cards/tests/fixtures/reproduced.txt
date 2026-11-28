@@ -89,6 +89,7 @@ Angel of Flight Alabaster
 Angel of Invention
 Angel of Jubilation
 Angel of Sanctions
+Angel of Serenity
 Angel of Vitality
 Angel of the Ruins
 Angelic Accord
@@ -2840,6 +2841,7 @@ Stasis Cocoon
 Stasis Field
 Steady Progress
 Steam Vents
+Steamflogger Boss
 Steampath Charger
 Steel Leaf Champion
 Steel Overseer

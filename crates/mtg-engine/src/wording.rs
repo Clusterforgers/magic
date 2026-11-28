@@ -817,6 +817,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         }
         TriggerPattern::Ventured { room: Some(_), .. } => ("you enter this room".to_owned(), false),
         TriggerPattern::Visit {} => ("you visit this Attraction".to_owned(), true),
+        TriggerPattern::P170bCranked {} => ("you crank this Contraption".to_owned(), true),
         TriggerPattern::RolledToVisit { who: by } => {
             let (name, s) = who(by);
             (format!("{name} roll{s} to visit Attractions"), false)

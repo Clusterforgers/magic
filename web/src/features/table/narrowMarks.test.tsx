@@ -64,6 +64,13 @@ const CASES: Case[] = [
   },
   { mark: 'level', slot: 'card-status', object: permanent({ level: 12 }), glyph: 'L12', words: 'Level 12' },
   {
+    mark: 'sprocket',
+    slot: 'card-status',
+    object: permanent({ sprocket: 3 }),
+    glyph: '3',
+    words: 'On sprocket 3',
+  },
+  {
     mark: '+1/+1 counters',
     slot: 'card-counter',
     object: permanent({}, { counters: [['+1/+1', 2]] }),

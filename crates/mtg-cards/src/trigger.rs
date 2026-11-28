@@ -549,6 +549,9 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         what: Selector,
     },
+    /// "Whenever you crank this Contraption" (Unstable): its controller cranks the source as their precombat main phase
+    /// begins; `Triggering` is that player.
+    P170bCranked {},
     /// The prize ability of an Attraction ("Prize â "): its controller claims the prize of the source; `Triggering` is
     /// that player.
     Prize {},
@@ -1231,6 +1234,12 @@ pub enum ReplaceWhen {
     /// it applies from the face turned up, and never to a permanent that enters transformed (CR 712.14a).
     R6603Transforms {
         /// The permanent that transforms.
+        what: Selector,
+    },
+    /// An object matching the selector would assemble Contraptions (Unstable): the object whose ability assembles; only
+    /// `Multiply`, which changes how many ("it assembles two Contraptions instead").
+    P170bAssembles {
+        /// The object that would assemble.
         what: Selector,
     },
     /// A creature matching the selector would explore (CR 701.44); only `Instead`, whose `Explore` of `Triggering` is

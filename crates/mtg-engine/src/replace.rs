@@ -775,6 +775,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::LoseGame { .. }
         | ReplaceWhen::Explores { .. }
         | ReplaceWhen::Connives { .. }
+        | ReplaceWhen::P170bAssembles { .. }
         | ReplaceWhen::Proliferates { .. }
         | ReplaceWhen::Scries { .. }
         | ReplaceWhen::Surveils { .. }
@@ -4794,6 +4795,7 @@ fn r6104_worked_out(
     })
 }
 
+pub(crate) mod p170b_assemble;
 mod r109_next_batch;
 mod r1193_life;
 #[cfg(test)]

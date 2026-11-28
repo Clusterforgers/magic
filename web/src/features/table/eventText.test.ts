@@ -320,6 +320,19 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     },
     'Bo assigns sectors: Forest to alpha, Forest to gamma',
   ],
+  P170bContraptionDeckShuffled: [
+    { P170bContraptionDeckShuffled: { player: 1, order: [3] } },
+    'Bo shuffles their Contraption deck',
+  ],
+  P170bAssembled: [
+    { P170bAssembled: { player: 1, contraption: 3, sprocket: 2 } },
+    'Bo assembles Forest on sprocket 2',
+  ],
+  P170bSprocketMoved: [
+    { P170bSprocketMoved: { player: 1, sprocket: 3 } },
+    'Bo moves their sprocket marker to sprocket 3',
+  ],
+  P170bCranked: [{ P170bCranked: { player: 1, sprocket: 1, contraptions: [3] } }, 'Bo cranks Forest'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   ExtraTurnAdded: [{ ExtraTurnAdded: { player: 1 } }, 'Bo takes an extra turn after this one'],
   ExtraTurnSkipped: [{ ExtraTurnSkipped: { player: 1 } }, 'Bo skips an extra turn'],
@@ -837,6 +850,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   ],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
   AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
+  P170bContraptionDeckShuffled: [
+    { P170bContraptionDeckShuffled: { player: 1 } },
+    'Bo shuffles their Contraption deck',
+  ],
   LibraryRefilled: [
     { LibraryRefilled: { player: 1, count: 5 } },
     'Bo shuffles their graveyard into their library',
@@ -1090,6 +1107,17 @@ describe('events with more than one shape', () => {
     ['Lethal', 'Cy attacks Bo instead of Ana: the attack kills Bo'],
   ])('names why the boss side leaves the hero it eyes (%j)', (why, text) => {
     expect(say({ FocusShifted: { player: 2, eyed: 0, instead: 1, why } })).toBe(text)
+  })
+
+  it.each<[AimWhy, string]>([
+    ['Unreachable', "Cy targets Bo with Lightning Bolt instead of Ana: Ana can't be targeted"],
+    ['Overwhelming', 'Cy targets Bo with Lightning Bolt instead of Ana: Bo is the greatest threat'],
+    [
+      { Deadly: { boss: 2 } },
+      "Cy targets Bo with Lightning Bolt instead of Ana: Bo's creatures could kill Cy",
+    ],
+  ])('names why a spell or ability of the boss side leaves the hero it eyes (%j)', (why, text) => {
+    expect(say({ FocusShifted: { player: 2, eyed: 0, instead: 1, why, source: 4 } })).toBe(text)
   })
 
   it('tells attackers and blockers apart in NothingToDo', () => {

@@ -256,9 +256,11 @@ pub(crate) fn fold_left(state: &mut GameState, object: ObjectId, from: Zone) {
 }
 
 /// Where an Attraction card goes in place of `to` (CR 717.6): its owner's command zone (the junkyard) in place of a
-/// hand, a library or a graveyard; `None` for any other object or zone.
+/// hand, a library or a graveyard; so does a Contraption card, to its scrapheap there (Unstable); `None` for any other
+/// object or zone.
 pub(crate) fn junkyard(state: &GameState, object: ObjectId, to: Zone) -> Option<Zone> {
-    if state.lights(object).is_none()
+    if (state.lights(object).is_none()
+        && !crate::p170b_contraptions::is_contraption_card(state, object))
         || !matches!(to, Zone::Hand(_) | Zone::Library(_) | Zone::Graveyard(_))
     {
         return None;

@@ -28,6 +28,7 @@ const COUNTS: PodCounts = {
   command: 1,
   satchel: 0,
   attractions: 0,
+  contraptions: 0,
 }
 
 const zones = (counts: Partial<Record<ZoneKey, number>>): PlayerView =>
@@ -105,7 +106,16 @@ describe('podCounts and chipZones', () => {
 
   it('draws the four chips even when every one is empty: a zero is a figure', () => {
     expect(
-      chipZones({ hand: 0, library: 0, graveyard: 0, exile: 0, command: 0, satchel: 0, attractions: 0 }),
+      chipZones({
+        hand: 0,
+        library: 0,
+        graveyard: 0,
+        exile: 0,
+        command: 0,
+        satchel: 0,
+        attractions: 0,
+        contraptions: 0,
+      }),
     ).toHaveLength(4)
   })
 
@@ -118,6 +128,14 @@ describe('podCounts and chipZones', () => {
       'command',
       'attractions',
     ])
+  })
+
+  it.each([
+    [{ contraptions: 10 }, ['command', 'contraptions']],
+    [{ attractions: 2, contraptions: 1 }, ['command', 'attractions', 'contraptions']],
+    [{ contraptions: 0 }, ['command']],
+  ])('draws the Contraption deck chip after the Attraction deck with %j', (counts, extra) => {
+    expect(chipZones({ ...COUNTS, ...counts })).toEqual(['hand', 'library', 'graveyard', 'exile', ...extra])
   })
 })
 

@@ -117,9 +117,10 @@ impl<'a> Sight<'a> {
     /// How the viewer sees the object: whole, as a face-down card that is there with no identity, or not at all.
     pub(crate) fn look(&self, object: &GameObject) -> Look {
         let id = object.id();
-        // A card of an Attraction deck is in no zone a seat looks into: the deck is a count.
+        // A card of an Attraction or Contraption deck is in no zone a seat looks into: the deck is a count.
         let in_view = zone_is_visible_in(self.state, object.zone(), self.viewer)
-            && !self.state.in_attraction_deck(id);
+            && !self.state.in_attraction_deck(id)
+            && !self.state.in_contraption_deck(id);
         if (in_view && self.state.may_look_at(self.viewer, id))
             || self.offered.contains(&id)
             || self.state.is_shown_to(self.viewer, id)
@@ -203,11 +204,12 @@ fn sticker_sheets(state: &GameState, seat: PlayerId) -> Vec<StickerSheetView> {
         .collect()
 }
 
-/// The command zone of `seat` without the face-down cards of its Attraction deck, which `attraction_deck` counts, and
-/// without its Satchel, which `satchel` lists.
+/// The command zone of `seat` without the face-down cards of its Attraction and Contraption decks, which
+/// `attraction_deck` and `contraption_deck` count, and without its Satchel, which `satchel` lists.
 fn command_view(state: &GameState, viewer: PlayerId, seat: PlayerId) -> ZoneView {
     let mut view = zone_view(state, viewer, Zone::Command(seat));
     let mut apart = state.attraction_deck(seat).to_vec();
+    apart.extend(state.contraption_deck(seat));
     apart.extend(state.satchel(seat));
     if !apart.is_empty() {
         view.count = view.count.saturating_sub(count(apart.len()));
@@ -507,6 +509,7 @@ impl ObjectView {
                 .then(|| p.level()),
             doors: state.dk1c5_doors(id),
             sector: p.sector(),
+            sprocket: p.sprocket(),
         })
     }
 
@@ -758,6 +761,8 @@ impl PlayerView {
             command: command_view(state, viewer, seat),
             satchel: state.satchel(seat),
             attraction_deck: count(state.attraction_deck(seat).len()),
+            contraption_deck: count(state.contraption_deck(seat).len()),
+            sprocket_marker: state.sprocket_marker(seat),
             sticker_sheets: sticker_sheets(state, seat),
             commanders: state
                 .commanders()

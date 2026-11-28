@@ -95,6 +95,9 @@ pub struct PlayerSetup {
     /// The seat's Attraction deck (CR 717.2), top card first: cards outside its deck that begin the game face down in
     /// its command zone.
     pub attractions: Vec<crate::un33_attractions::AttractionCard>,
+    /// The seat's Contraption deck (Unstable), top card first: cards outside its deck that begin the game face down in
+    /// its command zone.
+    pub contraptions: Vec<Arc<CardDefinition>>,
     /// The seat's sticker sheets (CR 123): outside the game; it plays with three of them, chosen at random as the game
     /// begins.
     pub stickers: Vec<Arc<CardDefinition>>,
@@ -218,6 +221,15 @@ impl GameSetup {
     ) -> Self {
         for (player, deck) in self.players.iter_mut().zip(decks) {
             player.attractions = deck;
+        }
+        self
+    }
+
+    /// The setup with these Contraption decks, one entry for each seat in table order, top card first.
+    #[must_use]
+    pub fn with_contraptions(mut self, decks: Vec<Vec<Arc<CardDefinition>>>) -> Self {
+        for (player, deck) in self.players.iter_mut().zip(decks) {
+            player.contraptions = deck;
         }
         self
     }
@@ -542,6 +554,7 @@ impl GameState {
         let mut presets = Vec::new();
         let mut commander_ids = Vec::new();
         let mut un33 = crate::un33_attractions::Attractions::default();
+        let mut p170b = crate::p170b_contraptions::Contraptions::default();
         let mut un34 = crate::un34_stickers::Stickers::default();
         let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
         let mut emblems = Vec::new();
@@ -570,6 +583,10 @@ impl GameState {
             for attraction in setup_player.attractions.iter().rev() {
                 let id = create(owner, &attraction.card, Zone::Command(owner));
                 un33.add(owner, id, attraction.lights);
+            }
+            for card in setup_player.contraptions.iter().rev() {
+                let id = create(owner, card, Zone::Command(owner));
+                p170b.add(owner, id);
             }
             for card in &setup_player.emblems {
                 emblems.push(create(owner, card, Zone::Command(owner)));
@@ -618,6 +635,11 @@ impl GameState {
         for id in un33.lights.keys() {
             if let Some(object) = objects.get_mut(id) {
                 object.face_down = Some(FaceDown::Attraction);
+            }
+        }
+        for id in &p170b.cards {
+            if let Some(object) = objects.get_mut(id) {
+                object.face_down = Some(FaceDown::Contraption);
             }
         }
         for (id, preset) in presets {
@@ -750,6 +772,7 @@ impl GameState {
             ring: crate::ring::Rings::new(),
             w11d: crate::w11d_dungeon::W11dDungeons::default(),
             un33,
+            p170b,
             un34,
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
@@ -777,7 +800,7 @@ impl GameState {
         };
         game.note_what_cards_can_do();
         // An Attraction card goes to the junkyard by a replacement effect (CR 717.6).
-        if !game.un33.is_empty() {
+        if !game.un33.is_empty() || !game.p170b.is_empty() {
             game.possible.replacements = true;
         }
         // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.

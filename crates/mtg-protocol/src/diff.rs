@@ -82,6 +82,7 @@ mod tests {
                 level: None,
                 doors: None,
                 sector: None,
+                sprocket: None,
             }),
             face_down: false,
             face: None,

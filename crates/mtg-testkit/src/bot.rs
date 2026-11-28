@@ -215,7 +215,10 @@ pub fn apply_answer(
                     | IllegalAnswer::TooLittleValue { .. }
                     | IllegalAnswer::TooFewCardTypes { .. }
                     | IllegalAnswer::WrongPick(
-                        R5518_ALIKE_SAME_NAME | R5518_ALIKE_SHARE_COLOR | R112_ONE_GRAVEYARD,
+                        R5518_ALIKE_SAME_NAME
+                        | R5518_ALIKE_SHARE_COLOR
+                        | R702_ALIKE_SHARE_CARD_TYPE
+                        | R112_ONE_GRAVEYARD,
                     ),
                 ),
             ) => error,
@@ -286,6 +289,8 @@ pub fn apply_answer(
 const R5518_ALIKE_SAME_NAME: &str = "cards with the same name";
 /// The refusal of a pick of cards that share no color.
 const R5518_ALIKE_SHARE_COLOR: &str = "cards that share a color";
+/// The refusal of a pick of cards that share no card type (Craft with two that share a card type).
+const R702_ALIKE_SHARE_CARD_TYPE: &str = "cards that share a card type";
 
 /// Whether a pick of cards may take every card offered: its upper bound reaches them all.
 fn takes_all(options: &CardsOptions) -> bool {

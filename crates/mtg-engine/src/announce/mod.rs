@@ -414,6 +414,9 @@ pub(crate) struct Done {
     pub(crate) rewound: Option<Unplayable>,
     /// The detail of `rewound`, read off the step that could not be met.
     pub(crate) rewound_why: Option<Why>,
+    /// The log notes for targets chosen at a hero other than the one a boss's side eyes (`spotlight_aim`), ahead of the
+    /// cast or activation that carries them.
+    pub(crate) aim_notes: Vec<crate::events::Event>,
 }
 
 impl Done {

@@ -104,16 +104,8 @@ fn table(seats: usize, equipment: &[Arc<CardDefinition>], mana: usize) -> Scenar
 
 /// The same table with a Mountain and a Spark for seat 0, so it can kill one of its own creatures.
 fn burning(seats: usize, equipment: &[Arc<CardDefinition>], mana: usize) -> Scenario {
-    let mut permanents: Vec<_> = equipment.iter().cloned().map(ready).collect();
-    permanents.extend([
-        ready(free_creature("Grizzly Bears", 2, 2)),
-        ready(free_creature("Wolf", 3, 3)),
-        ready(free_creature("Elk", 1, 4)),
-        ready(mountain()),
-    ]);
-    permanents.extend((0..mana).map(|_| ready(forest())));
     table(seats, equipment, mana)
-        .battlefield(0, permanents)
+        .battlefield(0, [ready(mountain())])
         .hand(0, [burn("Spark", 2)])
 }
 

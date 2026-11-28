@@ -1079,9 +1079,15 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   return line(`${n.seat(player)} reveals ${joinWords(shown.map(n.card))}`)
 }
 
-/** Why a seat of the boss's side attacks another hero than the one it eyes, in words. */
-function focusShiftReason(why: AimWhy, eyed: PlayerId, instead: PlayerId, n: EventNames): string {
-  if (why === 'Unreachable') return `${n.seat(eyed)} can't be attacked`
+/** Why a seat of the boss's side attacks, or targets with a spell or ability, another hero than the one it eyes. */
+function focusShiftReason(
+  why: AimWhy,
+  eyed: PlayerId,
+  instead: PlayerId,
+  n: EventNames,
+  targeting: boolean,
+): string {
+  if (why === 'Unreachable') return `${n.seat(eyed)} can't be ${targeting ? 'targeted' : 'attacked'}`
   if (why === 'Overwhelming') return `${n.seat(instead)} is the greatest threat`
   if (why === 'Futile') return `every attack at ${n.seat(eyed)} would be blocked and lost`
   if (why === 'Lethal') return `the attack kills ${n.seat(instead)}`
@@ -1132,6 +1138,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
     return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
+  if ('P170bContraptionDeckShuffled' in event)
+    return quiet(`${n.seat(event.P170bContraptionDeckShuffled.player)} shuffles their Contraption deck`)
   if ('R111GraveyardOrdered' in event)
     return line(`${n.seat(event.R111GraveyardOrdered.player)} reorders their graveyard`)
   if ('HandDealt' in event) {
@@ -1333,6 +1341,19 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, sectors } = event.P170aSectorsAssigned
     const placed = sectors.map(([object, sector]) => `${n.card(object)} to ${sector.toLowerCase()}`)
     return line(`${n.seat(player)} assigns sectors: ${placed.join(', ')}`)
+  }
+  if ('P170bAssembled' in event) {
+    const { player, contraption, sprocket } = event.P170bAssembled
+    return line(`${n.seat(player)} assembles ${n.card(contraption)} on sprocket ${sprocket}`)
+  }
+  if ('P170bSprocketMoved' in event) {
+    const { player, sprocket } = event.P170bSprocketMoved
+    return quiet(`${n.seat(player)} moves their sprocket marker to sprocket ${sprocket}`)
+  }
+  if ('P170bCranked' in event) {
+    const { player, sprocket, contraptions } = event.P170bCranked
+    if (contraptions.length === 0) return quiet(`${n.seat(player)} cranks nothing on sprocket ${sprocket}`)
+    return line(`${n.seat(player)} cranks ${joinWords(contraptions.map((id) => n.card(id)))}`)
   }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit
@@ -1641,9 +1662,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     )
   }
   if ('FocusShifted' in event) {
-    const { player, eyed, instead, why } = event.FocusShifted
+    const { player, eyed, instead, why, source } = event.FocusShifted
+    const what =
+      source === undefined
+        ? `attacks ${n.seat(instead)}`
+        : `targets ${n.seat(instead)} with ${n.card(source)}`
     return line(
-      `${n.seat(player)} attacks ${n.seat(instead)} instead of ${n.seat(eyed)}: ${focusShiftReason(why, eyed, instead, n)}`,
+      `${n.seat(player)} ${what} instead of ${n.seat(eyed)}: ${focusShiftReason(why, eyed, instead, n, source !== undefined)}`,
     )
   }
   if ('BandFormed' in event) {
@@ -1758,6 +1783,8 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
     return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
+  if ('P170bContraptionDeckShuffled' in event)
+    return quiet(`${n.seat(event.P170bContraptionDeckShuffled.player)} shuffles their Contraption deck`)
   if ('LibraryRefilled' in event) {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
   }

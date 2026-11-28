@@ -55,6 +55,11 @@ pub enum HiddenEvent {
         /// Owner of the deck.
         player: PlayerId,
     },
+    /// A Contraption deck was shuffled; the new order is known to nobody.
+    P170bContraptionDeckShuffled {
+        /// Owner of the deck.
+        player: PlayerId,
+    },
     /// A library was shuffled; the new order is known to nobody.
     LibraryShuffled {
         /// Owner of the library.
@@ -335,6 +340,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::AttractionDeckShuffled { player, .. } => {
             Some(HiddenEvent::AttractionDeckShuffled { player: *player })
         }
+        Event::P170bContraptionDeckShuffled { player, .. } => {
+            Some(HiddenEvent::P170bContraptionDeckShuffled { player: *player })
+        }
         Event::LibraryRefilled { player, order } => Some(HiddenEvent::LibraryRefilled {
             player: *player,
             count: count(order.len()),
@@ -535,6 +543,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Suspected { .. }
         | Event::Unsuspected { .. }
         | Event::P170aSectorsAssigned { .. }
+        | Event::P170bAssembled { .. }
+        | Event::P170bSprocketMoved { .. }
+        | Event::P170bCranked { .. }
         | Event::P170aSectorsLost
         | Event::Solved { .. }
         | Event::Harnessed { .. }

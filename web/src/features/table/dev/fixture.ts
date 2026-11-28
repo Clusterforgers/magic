@@ -328,8 +328,8 @@ export function buildFixture(options: FixtureOptions): Fixture {
     ),
     commanders: mine.command.map((object, index) => ({ object, ...commanderCasts(seat, index) })),
     commander_lethal: 21,
-    // One opponent plays with an Attraction deck, so the table shows its chip.
-    ...(seat === 1 ? { attraction_deck: 9 } : {}),
+    // One opponent plays with an Attraction deck and a Contraption deck, so the table shows their chips.
+    ...(seat === 1 ? { attraction_deck: 9, contraption_deck: 7, sprocket_marker: 2 } : {}),
     ...commanderDamage(seat, seats, cards, objects),
     bank: 0,
     // A chess-clock tally per seat, past an hour at many seats; standing still, so the table starts no timer.

@@ -525,16 +525,21 @@ pub enum Event {
         /// Why the team's declaration is illegal.
         reason: String,
     },
-    /// A seat of the boss's side aims its attack at another hero than the one it eyes, for the reason given.
+    /// A seat of the boss's side aims its attack, or a spell or ability, at another hero than the one it eyes, for the
+    /// reason given.
     FocusShifted {
         /// The seat of the boss's side.
         player: PlayerId,
         /// The hero it eyes.
         eyed: PlayerId,
-        /// The hero its attack goes at instead.
+        /// The hero its attack or targets go at instead.
         instead: PlayerId,
         /// Why.
         why: crate::spotlight_aim::AimWhy,
+        /// The spell or ability whose targets go at `instead`; `None` for an attack.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        source: Option<ObjectId>,
     },
     /// Attackers declared together form a band (CR 702.22c).
     BandFormed {
@@ -1417,6 +1422,40 @@ pub enum Event {
         /// The cards, top card last.
         order: Vec<ObjectId>,
     },
+    /// A player's Contraption deck was shuffled before the game began: its cards in the new order, top card last.
+    P170bContraptionDeckShuffled {
+        /// Whose deck.
+        player: PlayerId,
+        /// The cards, top card last.
+        order: Vec<ObjectId>,
+    },
+    /// A player assembled a Contraption: the card the `ZoneChanged` before it put onto the battlefield is assigned to
+    /// one of the player's sprockets.
+    P170bAssembled {
+        /// Who assembled it.
+        player: PlayerId,
+        /// The Contraption.
+        contraption: ObjectId,
+        /// Its sprocket, 1 to 3.
+        sprocket: u8,
+    },
+    /// A player moved their sprocket marker to the next sprocket as their precombat main phase began.
+    P170bSprocketMoved {
+        /// Whose marker.
+        player: PlayerId,
+        /// The sprocket it is on now, 1 to 3.
+        sprocket: u8,
+    },
+    /// A player cranked the Contraptions they chose on the sprocket their marker moved to: their crank abilities
+    /// trigger.
+    P170bCranked {
+        /// Who cranked.
+        player: PlayerId,
+        /// The sprocket.
+        sprocket: u8,
+        /// The Contraptions cranked; none when the player chose none.
+        contraptions: Vec<ObjectId>,
+    },
     /// A player rolled to visit their Attractions (CR 701.52a): the result of the `DieRolled` before it and the
     /// Attractions with that number lit up, each visited.
     RolledToVisit {
@@ -1929,6 +1968,7 @@ impl Event {
             | Event::FocusShifted { .. }
             | Event::SpiritRevived { .. }
             | Event::AttractionDeckShuffled { .. }
+            | Event::P170bContraptionDeckShuffled { .. }
             | Event::RolledToVisit { .. }
             | Event::PrizeClaimed { .. }
             | Event::StickerSheetsChosen { .. }
@@ -1987,6 +2027,9 @@ impl Event {
             | Event::R706VisitAsks { .. }
             | Event::R509PilesAssigned { .. }
             | Event::P170aSectorsAssigned { .. }
+            | Event::P170bAssembled { .. }
+            | Event::P170bSprocketMoved { .. }
+            | Event::P170bCranked { .. }
             | Event::P170aSectorsLost
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
