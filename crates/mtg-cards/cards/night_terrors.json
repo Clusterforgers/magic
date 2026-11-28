@@ -12,7 +12,7 @@
             "targets": [{ "what": "Player" }],
             "effects": [
               {
-                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
               },
               {
                 "Choose": {
