@@ -332,7 +332,11 @@ fn the_end_step_reassembles_one_contraption_the_next_crank_follows(
             _ => None,
         })
         .collect();
-    assert_eq!(asked, vec![(pid(0), choice > 0)], "once, on seat 0's turn only");
+    assert_eq!(
+        asked,
+        vec![(pid(0), choice > 0)],
+        "once, on seat 0's turn only"
+    );
     let seen = cranks(&mut driver, 1, false)?;
     assert_eq!(seen, vec![next_crank]);
     let replayed = replay(&setup, driver.engine().events()).unwrap();

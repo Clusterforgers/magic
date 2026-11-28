@@ -522,7 +522,10 @@ impl ChosenDeck {
             return Ok(self);
         }
         if let DeckRef::Oracle { contraptions, .. } = &mut self.deck {
-            *contraptions = cards.iter().map(|(oracle_id, _)| oracle_id.clone()).collect();
+            *contraptions = cards
+                .iter()
+                .map(|(oracle_id, _)| oracle_id.clone())
+                .collect();
             self.contraptions = cards.into_iter().map(|(_, card)| card).collect();
             self.fingerprint = DeckFingerprint::of_seat_all(
                 &self.cards,

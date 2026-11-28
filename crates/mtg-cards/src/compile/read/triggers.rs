@@ -702,7 +702,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         draw_event(r, by, whose)
     } else if verb == "reveal" {
         super::r4708_reveal::r4708_revealed(r, &by)
-    } else if verb == "crank" && by == Ref::You && r.words("this Contraption") {
+    } else if verb == "crank" && by == Ref::You && r.word("this") && r.name() == Some("Contraption")
+    {
         Some(TriggerPattern::P170bCranked {})
     } else if verb == if third { "discards" } else { "discard" } {
         if r.words("one or more") {

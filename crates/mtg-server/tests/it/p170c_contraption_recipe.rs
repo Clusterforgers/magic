@@ -84,7 +84,11 @@ fn a_recipe_rebuilds_the_setup_with_the_contraption_deck(#[values(2, 3, 4)] seat
             &[]
         };
         assert_eq!(names, expected, "seat {seat}");
-        assert_eq!(player.library.len(), 20, "the Contraptions are no cards of the deck");
+        assert_eq!(
+            player.library.len(),
+            20,
+            "the Contraptions are no cards of the deck"
+        );
     }
 }
 

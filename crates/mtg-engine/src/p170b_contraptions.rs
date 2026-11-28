@@ -269,16 +269,11 @@ pub(crate) fn reassembly_question(state: &GameState) -> Option<Decision> {
             .object(id)
             .map_or_else(String::new, |object| object.card().name.clone())
     };
-    let options = std::iter::once(ChoiceOption::Label(
-        "Move none".to_owned(),
-    ))
-    .chain(moves.iter().map(|(id, from, to)| {
-        ChoiceOption::Label(format!(
-            "Sprocket {from} \u{2192} {to}: {}",
-            name(*id)
-        ))
-    }))
-    .collect();
+    let options = std::iter::once(ChoiceOption::Label("Move none".to_owned()))
+        .chain(moves.iter().map(|(id, from, to)| {
+            ChoiceOption::Label(format!("Sprocket {from} \u{2192} {to}: {}", name(*id)))
+        }))
+        .collect();
     Some(Decision {
         player,
         kind: DecisionKind::ChooseOption(OptionOptions {

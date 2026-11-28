@@ -1085,8 +1085,8 @@ fn a_card_the_database_lacks_quotes_nothing() {
 
 /// The names of the test Contraptions.
 const GIZMOS: [&str; 16] = [
-    "Gizmo A", "Gizmo B", "Gizmo C", "Gizmo D", "Gizmo E", "Gizmo F", "Gizmo G", "Gizmo H", "Gizmo I", "Gizmo J",
-    "Gizmo K", "Gizmo L", "Gizmo M", "Gizmo N", "Gizmo O", "Gizmo P",
+    "Gizmo A", "Gizmo B", "Gizmo C", "Gizmo D", "Gizmo E", "Gizmo F", "Gizmo G", "Gizmo H",
+    "Gizmo I", "Gizmo J", "Gizmo K", "Gizmo L", "Gizmo M", "Gizmo N", "Gizmo O", "Gizmo P",
 ];
 
 fn contraption_specs() -> Vec<Spec> {
