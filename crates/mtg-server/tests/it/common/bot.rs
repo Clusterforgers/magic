@@ -196,6 +196,8 @@ impl Bot {
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }
             | ServerMessage::TakeBackRefused { .. }
+            | ServerMessage::GoBackOffer { .. }
+            | ServerMessage::GoBackRefused { .. }
             | ServerMessage::EndedByAdmin { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
             ServerMessage::Forecast { .. } => {

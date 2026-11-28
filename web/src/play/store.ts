@@ -17,6 +17,8 @@ import type {
   LobbySeat,
   LogHost,
   ObjectId,
+  GoBackOffer,
+  GoBackRefusal,
   ObjectView,
   PictureCard,
   PlayerId,
@@ -226,6 +228,10 @@ export interface PlayState {
   takeBackRequest: TakeBackRequest | null
   /** The last ending or refusal of a take-back, until it is dismissed or a new request opens. */
   takeBackNotice: TakeBackNotice | null
+  /** The earlier step this seat may go back to (`GoBackOffer`), or null while none. */
+  goBackOffer: GoBackOffer | null
+  /** Why the seat's last `GoBack` was refused, until it is dismissed or the seat goes back. */
+  goBackRefused: GoBackRefusal | null
 }
 
 /** An open take-back request (`TakeBackAsked`): what it undoes, the seats still to answer, and its clock. */
@@ -285,6 +291,8 @@ export function initialPlayState(): PlayState {
     takeBackOffer: null,
     takeBackRequest: null,
     takeBackNotice: null,
+    goBackOffer: null,
+    goBackRefused: null,
   }
 }
 

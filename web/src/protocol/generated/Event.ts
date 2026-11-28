@@ -268,7 +268,19 @@ kind: TakeBackKind,
 /**
  * The card cast or played, or the source of the ability.
  */
-name: string, } } | { "ManaUndone": { 
+name: string, } } | { "WentBack": { 
+/**
+ * Who went back.
+ */
+player: PlayerId, 
+/**
+ * The step they returned to.
+ */
+step: Step, 
+/**
+ * Whose turn that step is in.
+ */
+active: PlayerId, } } | { "ManaUndone": { 
 /**
  * Who undid it.
  */

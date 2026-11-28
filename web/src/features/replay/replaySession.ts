@@ -29,6 +29,8 @@ export function replaySession(store: PlayStore): Session {
     takeBack: no,
     voteTakeBack: no,
     dismissTakeBackNotice: () => undefined,
+    goBack: no,
+    dismissGoBackRefusal: () => undefined,
     chat: no,
     resync: no,
     clearDueLines: () => undefined,

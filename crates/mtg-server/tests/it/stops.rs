@@ -138,7 +138,9 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::TakeBackOffer { .. }
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }
-            | ServerMessage::TakeBackRefused { .. } => "take-back",
+            | ServerMessage::TakeBackRefused { .. }
+            | ServerMessage::GoBackOffer { .. }
+            | ServerMessage::GoBackRefused { .. } => "take-back",
         };
         if now != "events" || out.last().is_none_or(|last| *last != "events") {
             out.push(now);

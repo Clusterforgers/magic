@@ -659,6 +659,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::ManaAbilityActivated { tapped: false, .. }
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
+        | Event::WentBack { .. }
         | Event::ManaUndone { .. }
         | Event::LoopRepeated(_)
         | Event::LoopStopped { .. }

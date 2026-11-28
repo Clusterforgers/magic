@@ -97,6 +97,10 @@ pub(crate) enum Command {
     Leave {
         seat: PlayerId,
     },
+    /// A server bot plays the seat.
+    Bot {
+        seat: PlayerId,
+    },
     /// Names the person at a seat of the lobby, or empties the seat.
     Seat {
         seat: PlayerId,
@@ -209,6 +213,12 @@ impl GameHandle {
     pub async fn leave(&self, seat: PlayerId) {
         // A closed game has no connections left to drop, so there is nothing to report.
         let _ = self.commands.send(Command::Leave { seat }).await;
+    }
+
+    /// Notes that a server bot plays `seat`: its passes never stop another seat going back a step.
+    pub async fn mark_bot(&self, seat: PlayerId) {
+        // A closed game has no going back left to judge.
+        let _ = self.commands.send(Command::Bot { seat }).await;
     }
 
     /// Puts `name` at `seat` of the lobby and tells the table. False, and nothing changed, once

@@ -13,6 +13,8 @@ import type { EventView } from "./EventView";
 import type { ForecastChange } from "./ForecastChange";
 import type { FullControlMode } from "./FullControlMode";
 import type { GameResult } from "./GameResult";
+import type { GoBackOffer } from "./GoBackOffer";
+import type { GoBackRefusal } from "./GoBackRefusal";
 import type { LobbySeat } from "./LobbySeat";
 import type { LogHost } from "./LogHost";
 import type { LogName } from "./LogName";
@@ -219,7 +221,15 @@ outcome: TakeBackOutcome, } | { "type": "TakeBackRefused",
 /**
  * Why.
  */
-reason: TakeBackRefusal, } | { "type": "Yielding", 
+reason: TakeBackRefusal, } | { "type": "GoBackOffer", 
+/**
+ * The step and the seat's pass there.
+ */
+offer: GoBackOffer | null, } | { "type": "GoBackRefused", 
+/**
+ * Why.
+ */
+reason: GoBackRefusal, } | { "type": "Yielding", 
 /**
  * The yield now in force, or `None` when the seat is not yielding.
  */

@@ -28,6 +28,7 @@ use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::forecast::{
     AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
+use mtg_engine::go_back::{GoBackOffer, GoBackRefusal};
 use mtg_engine::library::{CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::manual::{ManualAction, ManualZone};
@@ -55,8 +56,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 23;
-const SERVER_VARIANTS: usize = 27;
+const CLIENT_VARIANTS: usize = 24;
+const SERVER_VARIANTS: usize = 29;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -117,6 +118,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::CancelAutoSkip { .. } => 20,
         ClientMessage::TakeBack => 21,
         ClientMessage::TakeBackVote { .. } => 22,
+        ClientMessage::GoBack => 23,
     }
 }
 
@@ -150,6 +152,8 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::EndedByAdmin { .. } => 24,
         ServerMessage::DecksRevealed { .. } => 25,
         ServerMessage::DeckPictures { .. } => 26,
+        ServerMessage::GoBackOffer { .. } => 27,
+        ServerMessage::GoBackRefused { .. } => 28,
     }
 }
 
@@ -663,6 +667,7 @@ fn client_samples() -> Vec<ClientMessage> {
         ClientMessage::TakeBack,
         ClientMessage::TakeBackVote { approve: true },
         ClientMessage::TakeBackVote { approve: false },
+        ClientMessage::GoBack,
         ClientMessage::Join {
             protocol_version: PROTOCOL_VERSION,
             game: "table-1".into(),
@@ -983,6 +988,18 @@ fn server_samples() -> Vec<ServerMessage> {
     }
     out.push(ServerMessage::TakeBackRefused {
         reason: TakeBackRefusal::CardDrawn,
+    });
+    out.push(ServerMessage::GoBackOffer {
+        offer: Some(GoBackOffer {
+            player: PlayerId(0),
+            step: Step::Main1,
+            active: PlayerId(1),
+            at: 41,
+        }),
+    });
+    out.push(ServerMessage::GoBackOffer { offer: None });
+    out.push(ServerMessage::GoBackRefused {
+        reason: GoBackRefusal::Declared,
     });
     out.push(ServerMessage::Deciding {
         seats: vec![

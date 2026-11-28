@@ -190,6 +190,8 @@ export type { GameSeat } from "./GameSeat";
 export type { Gift } from "./Gift";
 export type { GivenRule } from "./GivenRule";
 export type { GivesView } from "./GivesView";
+export type { GoBackOffer } from "./GoBackOffer";
+export type { GoBackRefusal } from "./GoBackRefusal";
 export type { Grant } from "./Grant";
 export type { Granter } from "./Granter";
 export type { HandGroup } from "./HandGroup";

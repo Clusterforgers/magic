@@ -55,7 +55,12 @@ impl<S: EventStore> GameActor<S> {
             return Ok(());
         };
         match running.answer(seat, id, answer) {
-            Ok(step) => self.publish(step).await,
+            Ok(step) => {
+                if step.passed {
+                    self.go_backs.sent(seat, step.from_seq);
+                }
+                self.publish(step).await
+            }
             Err(rejection) => {
                 self.refuse(seat, rejection);
                 Ok(())
@@ -145,15 +150,18 @@ impl<S: EventStore> GameActor<S> {
             times,
             cut,
         } = step;
-        let Phase::Running(running) = &mut self.phase else {
-            return Ok(());
-        };
         // The step's own events come first, so the passes that follow already meet the stops and the mode it left.
         stops.left(stops::place(&before), &events);
         stops.resolved(&stops::by_hand_on_stack(&before), &events);
         if passed {
             stops.passed(origin);
         }
+        if cut {
+            self.go_backs.cut(from_seq);
+        }
+        let Phase::Running(running) = &mut self.phase else {
+            return Ok(());
+        };
         let skipped = running.skip_idle(&mut events, &mut stops, &mut yields);
         let halt = skipped.as_ref().ok().copied().unwrap_or(Halt::Ask);
         let committed = match skipped {
@@ -275,6 +283,7 @@ impl<S: EventStore> GameActor<S> {
         }
         self.presence.told(&connected);
         self.take_back_news();
+        self.go_back_news();
     }
 
     /// Records the server's `wrong` verdict for each ability the game left to the table in `events`, on the card whose
@@ -317,6 +326,7 @@ impl<S: EventStore> GameActor<S> {
             self.seats.send(seat, notice);
         }
         self.take_back_news();
+        self.go_back_news();
         for Issued {
             id,
             decision,

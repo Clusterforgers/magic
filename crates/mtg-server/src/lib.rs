@@ -105,6 +105,7 @@ mod dwell;
 mod favourites;
 mod fix_marks;
 mod game_id;
+mod go_backs;
 mod handle;
 mod images;
 pub mod join_code;

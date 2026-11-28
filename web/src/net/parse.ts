@@ -38,6 +38,8 @@ import type {
   Stop,
   StopSide,
   TableView,
+  GoBackOffer,
+  GoBackRefusal,
   TakeBackKind,
   TakeBackOffer,
   TakeBackOutcome,
@@ -93,6 +95,8 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   TakeBackAsked: true,
   TakeBackEnded: true,
   TakeBackRefused: true,
+  GoBackOffer: true,
+  GoBackRefused: true,
   EndedByAdmin: true,
   DecksRevealed: true,
   DeckPictures: true,
@@ -641,6 +645,37 @@ function isTakeBackOutcome(value: unknown): value is TakeBackOutcome {
 const isTakeBackRefusal = (value: unknown): value is TakeBackRefusal =>
   isText(value) && Object.hasOwn(TAKE_BACK_REFUSALS, value)
 
+const GO_BACK_REFUSALS: Record<GoBackRefusal, true> = {
+  Off: true,
+  Nothing: true,
+  Busy: true,
+  Acted: true,
+  Declared: true,
+  Chose: true,
+  Changed: true,
+  CardDrawn: true,
+  CardRevealed: true,
+  LibrarySearched: true,
+  LibraryShuffled: true,
+  Random: true,
+  OtherPlayerActed: true,
+  MovedOn: true,
+}
+
+function isGoBackOffer(value: unknown): value is GoBackOffer {
+  return (
+    isRecord(value) &&
+    isCount(value.player) &&
+    isText(value.step) &&
+    Object.hasOwn(STEPS, value.step) &&
+    isCount(value.active) &&
+    isCount(value.at)
+  )
+}
+
+const isGoBackRefusal = (value: unknown): value is GoBackRefusal =>
+  isText(value) && Object.hasOwn(GO_BACK_REFUSALS, value)
+
 function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
   switch (type) {
     case 'Welcome':
@@ -830,6 +865,13 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       return { type, offer: v.offer, outcome: v.outcome }
     case 'TakeBackRefused':
       if (!isTakeBackRefusal(v.reason)) return '"reason" is not a known take-back refusal'
+      return { type, reason: v.reason }
+    case 'GoBackOffer':
+      if (v.offer !== null && !isGoBackOffer(v.offer))
+        return '"offer" must be null or a go-back offer (player, step, active, at)'
+      return { type, offer: v.offer }
+    case 'GoBackRefused':
+      if (!isGoBackRefusal(v.reason)) return '"reason" is not a known go-back refusal'
       return { type, reason: v.reason }
     case 'EndedByAdmin':
       if (v.reason !== undefined && !isText(v.reason)) return '"reason" must be text when present'

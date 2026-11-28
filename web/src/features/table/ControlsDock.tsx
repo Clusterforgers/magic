@@ -13,6 +13,7 @@ import { HomeSlotsContext, useDecisionHome } from './prompt/useDecisionHome'
 import { DockFormContext, DockWideContext, useDockForm } from './dockLayout'
 import type { DockForm } from './dockLayout'
 import { StopsDock } from './stops/StopsDock'
+import { GoBackControl } from './GoBackControl'
 import { TakeBackControls } from './TakeBackControls'
 import { useEdgeFade } from './useEdgeFade'
 import { YieldIndicator } from './YieldIndicator'
@@ -110,6 +111,12 @@ function Dock({ stopsRow }: { stopsRow: boolean }) {
         className={cn('max-w-full empty:hidden', phone && 'min-w-0 flex-[1_1_8rem] [&_button]:max-w-full')}
       >
         <TakeBackControls />
+      </div>
+      <div
+        data-slot="go-back-slot"
+        className={cn('max-w-full empty:hidden', phone && 'min-w-0 flex-[1_1_8rem] [&_button]:max-w-full')}
+      >
+        <GoBackControl />
       </div>
       <div data-slot="yield-slot" className="max-w-full empty:hidden">
         <YieldIndicator />

@@ -225,6 +225,7 @@ export function DevTableRoute() {
     if (takeback !== true || view === null) return
     game.session.store.setState({
       takeBackOffer: { player: view.viewer, kind: 'Cast', name: 'Lightning Bolt', at: 0 },
+      goBackOffer: { player: view.viewer, step: 'Main1', active: view.viewer, at: 0 },
     })
   }, [takeback, game, view])
   useEffect(() => {
