@@ -186,7 +186,7 @@ impl Scenario {
         self
     }
 
-    /// Sets a player's permanents.
+    /// Adds permanents to a player's battlefield, after those an earlier call put there.
     #[must_use]
     pub fn battlefield(
         mut self,
@@ -194,7 +194,7 @@ impl Scenario {
         permanents: impl IntoIterator<Item = PresetPermanent>,
     ) -> Self {
         if let Some(seat) = self.seat(player) {
-            seat.battlefield = permanents.into_iter().collect();
+            seat.battlefield.extend(permanents);
         }
         self
     }
@@ -313,7 +313,7 @@ impl Scenario {
         self.graveyard(player, cards)
     }
 
-    /// Sets a player's permanents to the corpus cards called `names`, untapped and ready.
+    /// Adds the corpus cards called `names` to a player's battlefield, untapped and ready.
     #[must_use]
     pub fn battlefield_named<N: AsRef<str>>(
         mut self,
@@ -577,6 +577,44 @@ mod tests {
             ["Brainstorm", "Opt"],
             "the top card is first in the list and last in the zone"
         );
+    }
+
+    #[rstest]
+    #[case(2)]
+    #[case(4)]
+    fn a_second_battlefield_call_for_a_seat_adds_to_its_permanents(#[case] seats: usize) {
+        let engine = Scenario::new(seats)
+            .battlefield(0, [ready(bear())])
+            .battlefield(1, [ready(elf())])
+            .battlefield(0, [tapped(elf())])
+            .battlefield_named(0, ["Forest"])
+            .build()
+            .unwrap();
+        let state = engine.state();
+        let held = |seat: usize| -> Vec<(String, bool)> {
+            state
+                .zone(Zone::Battlefield)
+                .iter()
+                .filter_map(|id| state.object(*id))
+                .filter(|o| o.controller() == PlayerId::from_index(seat))
+                .map(|o| {
+                    (
+                        o.card().name.clone(),
+                        o.permanent()
+                            .is_some_and(mtg_engine::object::PermanentState::tapped),
+                    )
+                })
+                .collect()
+        };
+        assert_eq!(
+            held(0),
+            [
+                ("Grizzly Bears".to_owned(), false),
+                ("Llanowar Elf".to_owned(), true),
+                ("Forest".to_owned(), false)
+            ]
+        );
+        assert_eq!(held(1), [("Llanowar Elf".to_owned(), false)]);
     }
 
     #[test]

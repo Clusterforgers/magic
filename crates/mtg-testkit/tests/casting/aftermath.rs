@@ -232,10 +232,7 @@ fn a_spell_cast_from_the_graveyard_is_exiled_wherever_it_goes_from_the_stack(
 fn the_front_half_goes_to_the_graveyard_and_the_back_half_is_cast_from_there_and_exiled(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let build = || {
-        scenario(seats, &["Cut // Ribbons"], &[], lands(4, 2, 0))
-            .battlefield_named(1, ["Grizzly Bears"])
-    };
+    let build = || scenario(seats, &["Cut // Ribbons"], &[], lands(4, 2, 0));
     let setup = build().setup().unwrap();
     let mut driver = Driver::from_scenario(build())?;
     assert!(!castable_back_half(&driver));

@@ -247,16 +247,7 @@ fn bears_enter_tapped(holder: &str, seats: usize, active: usize) -> Result<bool,
         .at(1, active, Step::Main1)
         .battlefield(0, copies(holder, 1))
         .hand_named(active, ["Grizzly Bears"])
-        .battlefield(
-            active,
-            if active == 0 {
-                let mut both = copies(holder, 1);
-                both.extend(lands(2, forest));
-                both
-            } else {
-                lands(2, forest)
-            },
-        );
+        .battlefield(active, lands(2, forest));
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast("Grizzly Bears")?;
     while !driver.state().stack().is_empty() {

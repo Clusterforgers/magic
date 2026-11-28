@@ -319,7 +319,6 @@ fn a_sticker_goes_only_on_a_creature_you_own_that_entered_this_turn(
     let scenario = table(seats, "Fun", vec![free("Grizzly Bears")]).battlefield(
         0,
         [
-            ready(bear()),
             ready(card("Park Bleater").unwrap()),
             ready(mtg_testkit::cards::plains()),
         ],
